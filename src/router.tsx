@@ -1,4 +1,4 @@
-import {createBrowserRouter, createRoutesFromElements, Routes, Route} from 'react-router-dom';
+import {createBrowserRouter, createRoutesFromElements, Route} from 'react-router-dom';
 import {SignIn} from "./pages/signin/SignIn";
 import {SignUp} from "./pages/signin/SignUp";
 import {SignUpFinished} from "./pages/signin/SignUpFinished";
