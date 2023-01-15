@@ -9,9 +9,11 @@ export default function Header (){
         <div className='header' >
             <div><a href='/'><img src={logo} alt='logo' className='logo'/></a></div>
             <div>
-                <IconButton  aria-label="search" disabled color="primary">
-                    <SearchIcon className='search-btn'/>
-                </IconButton>
+                <NavLink to='/search'>
+                    <IconButton  aria-label="search" disabled color="primary">
+                        <SearchIcon className='search-btn'/>
+                    </IconButton>
+                </NavLink>
                 <NavLink to='/sign-in'><Button className='login-btn' variant="contained">로그인</Button></NavLink>
             </div>
         </div>
