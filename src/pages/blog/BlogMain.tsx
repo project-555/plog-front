@@ -1,7 +1,31 @@
-import Box from '@mui/material/Box';
+import AccessTimeFilledIcon from '@mui/icons-material/AccessTimeFilled';
+import TrendingUpIcon from '@mui/icons-material/TrendingUp';
+import Header from "../../components/common/Header";
+import PostCard from "../../components/blog/PostCard";
+
 
 export function BlogMain (){
+
     return (
-        <Box>blog main page</Box>
+        <>
+            <Header/>
+            <div className='sort-tab'>
+                <div className='trending-sort on'><TrendingUpIcon/>트렌딩</div>
+                <div className='recent-sort'><AccessTimeFilledIcon/>최신</div>
+            </div>
+            <div className='postArea'>
+                <p className='title' style={{textAlign:'center'}}>새로운 글</p>
+                <PostCard/>
+                <PostCard/>
+                <PostCard/>
+                <PostCard/>
+                <PostCard/>
+                <PostCard/>
+                <PostCard/>
+                <PostCard/>
+                <PostCard/>
+            </div>
+        </>
+
     )
 }
