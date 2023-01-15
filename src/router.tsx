@@ -3,9 +3,11 @@ import {SignIn} from "./pages/signin/SignIn";
 import {SignUp} from "./pages/signin/SignUp";
 import {SignUpFinished} from "./pages/signin/SignUpFinished";
 import {BlogMain} from "./pages/blog/BlogMain";
-import {UserBlog} from "./pages/blog/UserBlog"
-import {PostingWrite} from "./pages/posting/PostingWrite"
-import {PostingDetail} from "./pages/posting/PostingDetail"
+import {UserBlog} from "./pages/blog/UserBlog";
+import {SearchPosting} from "./pages/blog/SearchPosting";
+import {PostingWrite} from "./pages/posting/PostingWrite";
+import {PostingDetail} from "./pages/posting/PostingDetail";
+
 // import Header from "./components/common/Header"
 
 
@@ -20,6 +22,7 @@ const router = createBrowserRouter(
     <Route path="/blogs/:blogID" element={<UserBlog/>} />  {/*Page plog user's blog home*/}
     <Route path="/blogs/:blogID/write-posting" element={<PostingWrite/>} />   {/*Page when user want to write posting*/}
     <Route path="/blogs/:blogID/postings/:postingID" element={<PostingDetail/>} />  {/*Blog posting detail page*/}
+    <Route path="/search" element={<SearchPosting/>} />  {/*Search posting*/}
 </Route>
     )
 )
