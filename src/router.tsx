@@ -6,6 +6,7 @@ import {BlogMain} from "./pages/blog/BlogMain";
 import {UserBlog} from "./pages/blog/UserBlog"
 import {PostingWrite} from "./pages/posting/PostingWrite"
 import {PostingDetail} from "./pages/posting/PostingDetail"
+// import Header from "./components/common/Header"
 
 
 const router = createBrowserRouter(
