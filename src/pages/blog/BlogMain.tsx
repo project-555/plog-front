@@ -13,8 +13,7 @@ export function BlogMain (){
                 <div className='trending-sort on'><TrendingUpIcon/>트렌딩</div>
                 <div className='recent-sort'><AccessTimeFilledIcon/>최신</div>
             </div>
-            <div className='postArea'>
-                <p className='title' style={{textAlign:'center'}}>새로운 글</p>
+            <div className='posting-area'>
                 <PostCard/>
                 <PostCard/>
                 <PostCard/>
