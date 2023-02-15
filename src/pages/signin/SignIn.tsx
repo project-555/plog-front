@@ -2,6 +2,7 @@ import {useState} from 'react'
 import {useNavigate} from 'react-router-dom';
 import axios from 'axios'
 import logo from '../../assets/static/logo_pic.png';
+import {Login} from '../../types/userType';
 
 export function SignIn (){
     const navigate = useNavigate();
@@ -9,7 +10,7 @@ export function SignIn (){
     const [password, setPassword] = useState<string>('rirively');
 
     const loginRequest = () => {
-        const params = {
+        const params :Login  = {
             "email": email,
             "password": password
         }
@@ -18,9 +19,8 @@ export function SignIn (){
             .then((res:any) => {
                 if(res.status === 200){
                     const token = res.data.data.token.accessToken
-                    // console.log(token)
                     localStorage.setItem('token', token)
-                    navigate('/')
+                    window.location.replace('/')
                 }
                 else { console.log(res.status)}
             })
