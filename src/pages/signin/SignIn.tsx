@@ -1,7 +1,8 @@
 import {useState} from 'react'
 import {useNavigate} from 'react-router-dom';
 import axios from 'axios'
-import logo from '../../assets/static/logo_pic.png';
+import {Button, Typography} from '@mui/material';
+// import logo from '../../assets/static/logo_pic.png';
 import {Login} from '../../types/UMSType';
 
 export function SignIn (){
@@ -30,16 +31,22 @@ export function SignIn (){
             <div className='login-container'>
                 <div className='login-modal'>
                     <div className='login-form'>
-                        <a href='/'><img src={logo} className="login-logo" alt='logo_login'/></a>
-                        <p className='login-title'>로그인</p>
+                        {/*<a href='/'><img src={logo} className="login-logo" alt='logo_login'/></a>*/}
+                        <Typography variant="h3" gutterBottom align="center">
+                            Sign In
+                        </Typography>
                         <div className='login-inputs'>
                             <input className= 'login-input' type='email' placeholder='email' onChange={(e)=>setEmail(e.target.value)}/>
                         </div>
                         <div className='login-inputs'>
                             <input className='login-input' type='password' placeholder='password' onChange={(e)=>setPassword(e.target.value)}/>
                         </div>
-                        <button className='login-btn' onClick={loginRequest}>Login</button>
-                        <p className='sentence'>아직 회원이 아니신가요? <span className='sign-up' onClick={()=>navigate('/sign-up')}>회원가입</span></p>
+                        <Button className='login-btn-full' variant='contained' onClick={loginRequest}>Login</Button>
+                        <p className='sentence'>
+                            <span className='forgot-pw' onClick={()=>navigate('/forgot-password')}>비밀번호 찾기 </span>
+                             |
+                            <span className='sign-up' onClick={()=>navigate('/sign-up')}> 회원가입</span>
+                        </p>
                     </div>
                 </div>
             </div>

@@ -1,3 +1,4 @@
+/* eslint-disable */
 import {useState} from 'react'
 import {useNavigate} from 'react-router-dom';
 import axios from 'axios'
@@ -91,15 +92,15 @@ export function SignUp(){
 
         const params :SignupParams = {
             "birth": birth,
-            "blogName": '',
+            "blogName": blogName,
             "email": account,
             "firstName": firstName,
-            "introHtml" : '',
+            "introHtml" : introHtml,
             "lastName": lastName,
             "nickName": nickName,
             "password": password,
             "sex": sex,
-            "shortIntro": '',
+            "shortIntro": shortIntro,
             "verifyToken" :	verifyToken
         }
 
@@ -214,13 +215,13 @@ export function SignUp(){
                     </div>
 
                     <div className='signup-inputs'>
-                        <input className= 'signup-input' type='text' placeholder='* 블로그 이름' onChange={(e)=> setNickName(e.target.value)}/>
+                        <input className= 'signup-input' type='text' placeholder='* 블로그 이름' onChange={(e)=> setBlogName(e.target.value)}/>
                     </div>
                     <div className='signup-inputs'>
                         <input className= 'signup-input' type='text' placeholder='* 닉네임' onChange={(e)=> setNickName(e.target.value)}/>
                     </div>
                     <div className='signup-inputs'>
-                        <input className= 'signup-input' type='text' placeholder='* 본인 소개' onChange={(e)=> setNickName(e.target.value)}/>
+                        <input className= 'signup-input' type='text' placeholder='* 본인 소개' onChange={(e)=> setShortIntro(e.target.value)}/>
                     </div>
                     <Button className='signup-btn-full' onClick={signupRequest}>회원가입</Button>
                 </div>
