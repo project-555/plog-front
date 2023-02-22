@@ -3,7 +3,7 @@ import { NavLink } from "react-router-dom";
 import jwt_decode from "jwt-decode";
 import {Button, IconButton} from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
-import {UserInfo} from "../../types/userType";
+import {UserInfo} from "../../types/UMSType";
 
 
 export default function Header (){
@@ -16,7 +16,7 @@ export default function Header (){
             const decoded = jwt_decode(localStorage.getItem('token')||'')
             setUserInfo(decoded||{})
         }
-    }, [userInfo])
+    }, [])
 
 
     return (
