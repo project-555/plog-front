@@ -67,7 +67,7 @@ export function ForgotPassword(){
         <div className='signup-container'>
             <div className='signup-modal'>
                 <Typography variant="h3" gutterBottom align="center">
-                    비밀번호 찾기
+                    Forgot Password
                 </Typography>
 
 
