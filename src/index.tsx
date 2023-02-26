@@ -5,10 +5,18 @@ import './assets/css.css'
 import reportWebVitals from './reportWebVitals';
 import Router from './Router'
 import {RouterProvider} from "react-router-dom";
+import axios from "axios";
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
 );
+
+axios.defaults.baseURL = process.env.REACT_APP_API_URL;
+axios.defaults.headers.common = {
+    'X-AUTH-TOKEN': localStorage.getItem('token')? localStorage.getItem('token') : ''
+}
+
+
 root.render(
   <React.StrictMode>
       <RouterProvider router={Router} />

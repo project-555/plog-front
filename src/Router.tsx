@@ -13,7 +13,7 @@ import {ForgotPassword} from "./pages/signin/ForgotPassword";
 const router = createBrowserRouter(
     createRoutesFromElements(
 <Route path="/" element={<Root />}>
-    <Route path="" element={<BlogMain/>} />  {/*Page When User want to login plog*/}
+    <Route path="main" element={<BlogMain/>} />  {/*Page When User want to login plog*/}
     <Route path="sign-in" element={<SignIn/>} />  {/*Page When User want to login plog*/}
     <Route path="sign-up" element={<SignUp/>} />  {/*Page When User ant to join plog*/}
     <Route path="forgot-password" element={<ForgotPassword/>} />  {/*Page When User forgot password page*/}
