@@ -1,14 +1,15 @@
 import {useState} from 'react'
 import {useNavigate} from 'react-router-dom';
 import axios from 'axios'
-import {Button, Typography} from '@mui/material';
-// import logo from '../../assets/static/logo_pic.png';
+import {Button, Typography, Alert, AlertTitle} from '@mui/material';
 import {Login} from '../../types/UMSType';
+import logo from '../../assets/static/logo_pic.png';
+import {getData, getErrorCode, plogAxios} from "../../config";
 
-export function SignIn (){
+export function SignIn() {
     const navigate = useNavigate();
-    const [email, setEmail] = useState<string>('beyonce@rirively.com');
-    const [password, setPassword] = useState<string>('rirively');
+    const [email, setEmail] = useState<string>('');
+    const [password, setPassword] = useState<string>('');
 
     const loginRequest = () => {
         const params :Login  = {
@@ -16,14 +17,20 @@ export function SignIn (){
             "password": password
         }
 
-        axios.post('http://api.plogcareers.com/auth/login', params)
-            .then((res:any) => {
-                if(res.status === 200){
-                    const token = res.data.data.token.accessToken
-                    localStorage.setItem('token', token)
-                    window.location.replace('/')
+        plogAxios.post('/auth/login', params)
+            .then((res: any) => {
+                localStorage.setItem('token', getData(res).token.accessToken)
+                window.location.replace('/')
+            })
+            .catch((err: any) => {
+                switch (getErrorCode(err) ?? "UNKNOWN") {
+                    case "ERR_LOGIN_FAILED":
+                        console.log("로그인에 실패")
+                        break;
+                    case "UNKNOWN":
+                        console.log("알 수 없는 오류입니다.")
+                        break;
                 }
-                else { console.log(res.status)}
             })
     }
 

@@ -21,7 +21,7 @@ export default function Header (){
 
     return (
         <div className='header' >
-            <div><a href='/'><span className='logo'>flog</span></a></div>
+            <div><a href='/'><span className='logo'>Plog</span></a></div>
             <div>
                 <NavLink to='/search'>
                     <IconButton  aria-label="search" disabled color="primary">
