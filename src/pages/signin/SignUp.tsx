@@ -106,6 +106,7 @@ export function SignUp(){
 
             axios.post('http://api.plogcareers.com/auth/join', params)
                 .then((res :any)=> {
+                    {/*TODO 백엔드 영역 */}
                     if(res.status === 200){
                         console.log(res.status)
                         setActiveStep(2)

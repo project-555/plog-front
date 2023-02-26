@@ -66,7 +66,7 @@
 .finish-container .finish-modal .finish-btn {width:100%;height: 50px;margin-top: 20px; background-color: #4c8e06; }
 
 /*블로그 - 메인화면*/
-.posting-area {display: flex;flex-wrap: wrap;}
+.posting-area {margin: 10px 30px; display: flex;flex-wrap: wrap;}
 
 
 /*블로그 - 검색화면*/

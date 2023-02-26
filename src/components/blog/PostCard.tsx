@@ -4,22 +4,20 @@ import {Card,CardHeader,CardMedia,CardContent,CardActions, Avatar, Typography, I
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import '../../assets/postcard.css'
 
+
 interface postType {
-    "categoryID": number;
-    "createDt": string;
-    "hitCnt": number;
-    "htmlContent": string;
-    "id": number;
-    "isCommentAllowed": boolean;
-    "isStarAllowed": boolean;
-    "mdContent": string;
-    "postingStarCount": number;
-    "stateID": number;
-    "thumbnailImageUrl":string;
+    "postingID": number;
+    "homePostingUser": homePostingUserType;
     "title": string;
-    "updateDt": string;
+    "summary": string;
+    "thumbnailImageUrl": string;
+    "createDt": string;
 }
 
+interface homePostingUserType {
+    "userID": number;
+    "nickname": string;
+}
 
 type ChildProps  = {
     postInfo : postType
@@ -27,29 +25,23 @@ type ChildProps  = {
 
 export default function PostCard({postInfo}: ChildProps ) {
     const navigate = useNavigate();
-
+    const sample = 'https://s3.ap-southeast-1.amazonaws.com/we-xpats.com/uploads/article/3824/ko_190_2.jpg'
     return (
-        <Card sx={{maxWidth: 305, display: 'inline-block',margin: '3px'}} >
+        <Card sx={{width: 280, display: 'inline-block',margin: '5px'}} >
             <CardHeader
-                avatar={
-                    <Avatar  aria-label="recipe">
-                        R
-                    </Avatar>
-                }
-                title={`by ${postInfo.categoryID}`}
-                subheader={postInfo.createDt}
+                avatar={<Avatar  aria-label="recipe">{postInfo.homePostingUser.nickname[0]}</Avatar>}
+                title={`by ${postInfo.homePostingUser.nickname}`}
+                subheader={postInfo.createDt.slice(0,10)}
             />
             <CardMedia
-                component="img" height="150" image={postInfo.thumbnailImageUrl} alt="썸네일 사진"
+                component="img" height="150" image={!!postInfo.thumbnailImageUrl? postInfo.thumbnailImageUrl : sample} alt="썸네일 사진"
                 onClick={()=>{navigate('/blogs/:blogID/postings/:postingID')}}/>
             <CardContent className='postcard-contents' sx={{paddingBottom:0,}}>
                 <Typography className='postcard-title' variant="body1" color="text.first">
                     {postInfo.title}
                 </Typography>
                 <Typography className='postcard-summary' variant="body2" color="text.secondary">
-                    This impressive paella is a perfect party dish and a fun meal to cook
-                    together with your guests. Add 1 cup of frozen peas along with the mussels,
-                    if you like.
+                    {postInfo.summary}
                 </Typography>
             </CardContent>
             <CardActions disableSpacing>
