@@ -17,10 +17,12 @@ const BlogMain = () => {
             .catch(err => console.log(err.message))
     }, [])
 
+
     return (
         <>
-            <div className='posting-area'>
-                {posting && posting.map((post:any, idx)=> <PostCard key={idx} postInfo={post}/>)}
+            <div className='inner-container posting-area'>
+                {posting &&
+                    posting.map((post:any, idx)=> <PostCard key={idx} post={post}/>)}
             </div>
         </>
 
