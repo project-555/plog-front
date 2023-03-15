@@ -16,7 +16,7 @@ export interface SignupParams {
     "blogName": string;
     "email": string;
     "firstName": string;
-    "introHtml" :string;
+    "introHTML" :string;
     "lastName": string;
     "nickName": string;
     "password": string;
