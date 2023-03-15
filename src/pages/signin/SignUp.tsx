@@ -95,7 +95,7 @@ export function SignUp(){
             "blogName": blogName,
             "email": account,
             "firstName": firstName,
-            "introHtml" : introHtml,
+            "introHTML" : introHtml,
             "lastName": lastName,
             "nickName": nickName,
             "password": password,
@@ -103,10 +103,10 @@ export function SignUp(){
             "shortIntro": shortIntro,
             "verifyToken" :	verifyToken
         }
+        console.log(params)
 
             axios.post('http://api.plogcareers.com/auth/join', params)
                 .then((res :any)=> {
-                    {/*TODO 백엔드 영역 */}
                     if(res.status === 200){
                         console.log(res.status)
                         setActiveStep(2)
@@ -141,7 +141,6 @@ export function SignUp(){
                     <Typography variant="body2" align="center">
                         <Link href="/sign-in" >이미 계정이 있나요?</Link>
                     </Typography>
-
                 <Box className='stepper-container'>
                     <Stepper activeStep={activeStep} alternativeLabel color='success'>
                         {steps.map((label) => (
@@ -149,14 +148,12 @@ export function SignUp(){
                                   sx={{
                                       '& .MuiStepLabel-root .Mui-completed': {color: '#2e7d32',},
                                       '& .MuiStepLabel-root .Mui-active': {color: '#2e7d32',}
-
                                   }}>
                                 <StepLabel>{label}</StepLabel>
                             </Step>
                         ))}
                     </Stepper>
                 </Box>
-
 
                 {/*회원가입 단계 UI*/}
                 <Box className='step1-container' sx={{ mt: 6 }} style={{display:activeStep === 0 ? 'block' : 'none'}}>
@@ -195,7 +192,8 @@ export function SignUp(){
                     />
                     <Button variant='contained' className='signup-btn-full'
                             onClick={()=>setActiveStep(1)}
-                            disabled={account === '' || verifyCode === '' || password === '' || passwordConfirm === ''}>
+                            // disabled={account === '' || verifyCode === '' || password === '' || passwordConfirm === ''}
+                    >
                         다음 단계 진행하기
                     </Button>
                 </Box>
@@ -209,14 +207,17 @@ export function SignUp(){
                         <input className= 'signup-input' type='text' placeholder='* 이름' onChange={(e)=> setLastName(e.target.value)}/>
                     </div>
                     <div className='signup-inputs'>
-                        <input className='signup-input' type='text' placeholder='* 성별' onChange={(e)=> setSex(e.target.value)}></input>
+                        {/*<input className='signup-input' type='text' placeholder='* 성별' onChange={(e)=> setSex(e.target.value)}></input>*/}
+                        <span>* 성별</span>
+                        <Button variant={sex === 'FEMALE'? 'contained' : 'outlined'} onClick={()=>setSex('FEMALE')}>여자</Button>
+                        <Button variant={sex === 'MALE'? 'contained' : 'outlined'} onClick={()=>setSex('MALE')}>남자</Button>
                     </div>
                     <div className='signup-inputs'>
                         <input className='signup-input' type='text' placeholder='* 생일 (YYYY-MM-DD)' onChange={(e)=> setBirth(e.target.value)}/>
                     </div>
 
                     <div className='signup-inputs'>
-                        <input className= 'signup-input' type='text' placeholder='* 블로그 이름' onChange={(e)=> setBlogName(e.target.value)}/>
+                        <input className= 'signup-input' type='text' placeholder='* 블로그 이름(4자 이상, 소문자, 숫자만)' onChange={(e)=> setBlogName(e.target.value)}/>
                     </div>
                     <div className='signup-inputs'>
                         <input className= 'signup-input' type='text' placeholder='* 닉네임' onChange={(e)=> setNickName(e.target.value)}/>
