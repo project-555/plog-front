@@ -16,11 +16,11 @@ export default function Header (){
             const decoded = jwt_decode(localStorage.getItem('token')||'')
             setUserInfo(decoded||{})
         }
-    }, [])
+    }, [token])
 
 
     return (
-        <div className='header' >
+        <div className='header inner-container' >
             <div><a href='/'><span className='logo'>Plog</span></a></div>
             <div>
                 <NavLink to='/search'>
