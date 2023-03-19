@@ -45,7 +45,11 @@
 
 .step1-container .email-input {width:67%; margin-right:3%;color:#fff; height: 55px;}
 .step1-container .email-chk {width:30%; height: 41px; margin-top: 24px; }
-/*.step1-container .email-chk:hover {background-color: #a5a198;}*/
+.step2-container .signup-inputs span {color:#888; margin-right: 20px;}
+.step2-container .signup-inputs .sex-btn {width: 35%; margin-right: 10px;}
+.step2-container .signup-inputs .birth-input {width: 84%;font-size:15px;float:right;color:#888;border: none; border-bottom: 2px solid #adadad;}
+.step2-container .signup-inputs .birth-input:focus {outline: 0;}
+.step2-container .back-btn,.join-btn {font-size: 17px;}
 
 
 .signup-form .signup-logo {display:block; margin:0 auto; width: 180px;}
@@ -55,10 +59,9 @@
 .signup-form .signup-inputs .email-chk {width: 100px; padding: 0 10px; margin-left: 15px;}
 .signup-form .signup-inputs .signup-input {font-size: 15px;color: #333;line-height: 1.2;border:none; border-bottom: 2px solid #adadad;display: block;width: 100%;height: 45px;background-color: transparent;padding: 0 5px;}
 .signup-form .signup-inputs .signup-input:focus {outline: 0;}
-.signup-form .signup-btn {font-size: 15px;border: none;border-radius: 10px;color: #fff;line-height: 1.2;text-transform: uppercase;display: flex;justify-content: center;align-items: center;width: 100%;height: 50px;background: #333;}
-.MuiButton-root.signup-btn-full {margin-top:15px;font-size:17px;background-color: #2e7d32;line-height: 1.2;justify-content: center;align-items: center;width: 100%;height: 55px;}
-.MuiButton-root.signup-btn-full:hover {background-color: #2e7d32;}
-
+/*.signup-form .signup-btn {font-size: 15px;border: none;border-radius: 10px;color: #fff;line-height: 1.2;text-transform: uppercase;display: flex;justify-content: center;align-items: center;width: 100%;height: 50px;background: #333;}*/
+.MuiButton-root.btn-full {margin-top:15px;font-size:17px;background-color: #2e7d32;line-height: 1.2;justify-content: center;align-items: center;width: 100%;height: 55px; color:#fff}
+.MuiButton-root.btn-full:hover {background-color: #2e7d32;}
 
 
 /*회원가입 완료*/
@@ -81,7 +84,7 @@
 /*포스팅 - 글*/
 .posting-header-area{max-width: 770px; margin: 3rem auto 0 auto;}
 .posting-header-area h1{text-align: left;}
-.posting-header-area .posting-info{text-align: left; margin-top:1.5rem;}
-
+.posting-info{text-align: left; margin-top:1.5rem;}
+.posting-info .bolder{margin-right:10px;}
 .posting-contents-area {max-width: 770px; margin:0 auto}
 
