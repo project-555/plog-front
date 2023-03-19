@@ -24,7 +24,7 @@ type ChildProps  = {
     post : postType
 }
 
-export default function PostCard({post}: ChildProps ) {
+export default function PostCard({post}: ChildProps) {
     const navigate = useNavigate();
     const sample = 'https://s3.ap-southeast-1.amazonaws.com/we-xpats.com/uploads/article/3824/ko_190_2.jpg'
 
@@ -32,7 +32,8 @@ export default function PostCard({post}: ChildProps ) {
         // console.log('post click', post )
         const params = {
             blogID : post.blogID,
-            postingID : post.postingID
+            postingID : post.postingID,
+            nickname : post.homePostingUser.nickname
         }
         navigate(`/blogs/${post.blogID}/postings/${post.postingID}`, {state: params})
     }

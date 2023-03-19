@@ -1,35 +1,39 @@
 import React, {useEffect, useState} from "react";
-import axios from 'axios'
 import {useLocation} from "react-router-dom";
+import axios from 'axios'
+import { Viewer } from '@toast-ui/react-editor';
+import '@toast-ui/editor/dist/toastui-editor-viewer.css';
+
 
 export function PostingDetail (){
-
+    const BASE_URL = process.env.REACT_APP_BASE_API_URL
     const location = useLocation()
     const blogID = location.state.blogID
     const postingID = location.state.postingID
+    const nickname = location.state.nickname
     const [post, setPost] = useState(null);
 
     useEffect(()=> {
-
-        axios.get(`http://api.plogcareers.com/blogs/${blogID}/postings/${postingID}`)
+        axios.get(`${BASE_URL}/blogs/${blogID}/postings/${postingID}`)
             .then(res => setPost(res.data.data))
             .catch(err => console.log(err.message))
     }, [blogID,postingID])
+
 
     return (
         <>
             {
                 post &&
                 <>
-                    <div className='posting-header-area' style={{borderBottom:'1px solid #ddd', height:'200px', textAlign:'center'}}>
+                    <div className='posting-header-area' style={{height:'200px', textAlign:'center'}}>
                         <h1 className='title'>{post['title']}</h1>
                         <div className='posting-info'>
-                            <span className='bolder'>이사라</span>
+                            <span className='bolder'>{nickname}</span>
                             <span className='explain'>{post['updateDt']}</span>
                         </div>
                     </div>
                     <div className='posting-contents-area'>
-                        <p>포스팅 내용들</p>
+                        <Viewer initialValue={post['htmlContent']}/>
                     </div>
                 </>
 
