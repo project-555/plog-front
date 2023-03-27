@@ -17,7 +17,7 @@ export function SignIn() {
 
         plogAxios.post('/auth/login', params)
             .then((res: any) => {
-                sessionStorage.setItem('token', getData(res).token.accessToken)
+                localStorage.setItem('token', getData(res).token.accessToken)
                 window.location.replace('/')
             })
             .catch((err: any) => {
