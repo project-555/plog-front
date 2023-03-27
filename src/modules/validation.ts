@@ -25,7 +25,7 @@ export function required(
     return requiredFields.reduce(
         (fields, field) => ({
             ...fields,
-            ...(isDirty(values[field]) ? undefined : { [field]: 'Required' }),
+            ...(isDirty(values[field]) ? undefined : {[field]: 'Required'}),
         }),
         {},
     );

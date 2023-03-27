@@ -1,0 +1,12 @@
+.file-drop {
+    border: 3px dashed #ccc;
+    padding: 20px;
+    text-align: center;
+    font-size: 18px;
+    margin: 20px;
+}
+
+.file-drop.dragging {
+    background-color: #f8f8f8;
+    border-color: #666;
+}
