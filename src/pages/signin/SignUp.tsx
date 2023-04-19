@@ -1,11 +1,13 @@
 /* eslint-disable */
-import {useState} from 'react'
+import {useState, useEffect} from 'react'
 import {useNavigate} from 'react-router-dom';
 import axios from 'axios'
 import {Box, Button, Stepper, Step, StepLabel, Typography, Link, Grid, TextField, } from '@mui/material';
 import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
 import { email, required } from '../../modules/validation'
 import {CodeParams, SignupParams} from "../../types/UMSType";
+// import {sendVerifyEmailApi, joinApi}  from '../../apis/user_apis'
+export const BASE_URL = process.env.REACT_APP_BASE_API_URL
 
 export function SignUp(){
     const navigate = useNavigate();
@@ -29,9 +31,9 @@ export function SignUp(){
     const [nickName, setNickName] = useState<string>('');
     const [shortIntro, setShortIntro] = useState<string>('');
     const [introHtml, setIntroHtml] = useState<string>('');
-
-
     const [sent, setSent] = useState<boolean>(false);
+
+
 
     const validate = (values: { [index: string]: string }) => {
         const errors = required(['firstName', 'lastName', 'email', 'password'], values);
@@ -54,15 +56,10 @@ export function SignUp(){
         const params = {
             "email": account
         }
-        axios.post(`http://api.plogcareers.com/auth/send-verify-join-email`, params)
-            .then(res => {
-                if(res.status === 200 || res.status === 204){
-                    setSendEmail(true)
-                }
-            })
-            .catch(err => {
-                console.log(err.message)
-            })
+        // sendVerifyEmailApi(params).then(res => setSendEmail(true))
+        axios.post(`${BASE_URL}/auth/send-verify-join-email`, params)
+            .then(res => setSendEmail(true))
+
     }
 
     const codeCheckRequest = (e:any) => {
@@ -103,8 +100,7 @@ export function SignUp(){
             "shortIntro": shortIntro,
             "verifyToken" :	verifyToken
         }
-        console.log(params)
-
+        // joinApi(params).then
             axios.post('http://api.plogcareers.com/auth/join', params)
                 .then((res :any)=> {
                     if(res.status === 200){
@@ -190,7 +186,7 @@ export function SignUp(){
                                helperText={password === passwordConfirm && passwordConfirm.length > 0? '비밀번호가 일치합니다' : ''}
                                required
                     />
-                    <Button variant='contained' className='signup-btn-full'
+                    <Button variant='contained' className='btn-full'
                             onClick={()=>setActiveStep(1)}
                             // disabled={account === '' || verifyCode === '' || password === '' || passwordConfirm === ''}
                     >
@@ -209,11 +205,12 @@ export function SignUp(){
                     <div className='signup-inputs'>
                         {/*<input className='signup-input' type='text' placeholder='* 성별' onChange={(e)=> setSex(e.target.value)}></input>*/}
                         <span>* 성별</span>
-                        <Button variant={sex === 'FEMALE'? 'contained' : 'outlined'} onClick={()=>setSex('FEMALE')}>여자</Button>
-                        <Button variant={sex === 'MALE'? 'contained' : 'outlined'} onClick={()=>setSex('MALE')}>남자</Button>
+                        <Button className='sex-btn' color='success' variant={sex === 'FEMALE'? 'contained' : 'outlined'} onClick={()=>setSex('FEMALE')}>여자</Button>
+                        <Button className='sex-btn' color='success' variant={sex === 'MALE'? 'contained' : 'outlined'} onClick={()=>setSex('MALE')}>남자</Button>
                     </div>
                     <div className='signup-inputs'>
-                        <input className='signup-input' type='text' placeholder='* 생일 (YYYY-MM-DD)' onChange={(e)=> setBirth(e.target.value)}/>
+                        <span>* 생일</span>
+                        <input className='birth-input' type='date' onChange={(e)=> {setBirth(e.target.value)}}/>
                     </div>
 
                     <div className='signup-inputs'>
@@ -225,13 +222,14 @@ export function SignUp(){
                     <div className='signup-inputs'>
                         <input className= 'signup-input' type='text' placeholder='* 본인 소개' onChange={(e)=> setShortIntro(e.target.value)}/>
                     </div>
-                    <Button className='signup-btn-full' onClick={signupRequest}>회원가입</Button>
+                    <Button className='back-btn' variant='outlined' >이전단계로</Button>
+                    <Button className='join-btn' variant='contained' onClick={signupRequest} >회원가입</Button>
                 </div>
 
                 <div className='signup-form'  style={{display:activeStep === 2 ? 'block' : 'none', textAlign:'center'}}>
                     <CheckCircleOutlineIcon sx={{color: '#4c8e06', fontSize: '100px', marginTop:'60px'}}/>
                     <p className='explain'  style={{margin: '60px 0'}}>plog 회원이 되신 것을 환영합니다!</p>
-                    <Button className='signup-btn-full' variant='contained' onClick={()=>  navigate('/sign-in')}>로그인하러가기</Button>
+                    <Button className='btn-full' variant='contained' onClick={()=>  navigate('/sign-in')}>로그인하러가기</Button>
                 </div>
 
 
