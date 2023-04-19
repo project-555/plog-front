@@ -8,9 +8,8 @@ const BlogMain = () => {
 
 
     useEffect(()=> {
-        axios.get('http://api.plogcareers.com/home/recent-postings')
+        axios.get('http://api.plogcareers.com/home/recent-postings?lastCursorId=0&pageSize=10')
             .then(res => {
-                console.log(res.data.data)
                 const postingArr = res.data.data.homePostings
                 setPosting(postingArr)
             })

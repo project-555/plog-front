@@ -3,6 +3,7 @@ import {useLocation} from "react-router-dom";
 import axios from 'axios'
 import { Viewer } from '@toast-ui/react-editor';
 import '@toast-ui/editor/dist/toastui-editor-viewer.css';
+import Comment from '../../components/blog/Comment'
 
 
 export function PostingDetail (){
@@ -21,10 +22,10 @@ export function PostingDetail (){
 
 
     return (
-        <>
+        <div  className='inner-container'>
             {
                 post &&
-                <>
+                <div>
                     <div className='posting-header-area' style={{height:'200px', textAlign:'center'}}>
                         <h1 className='title'>{post['title']}</h1>
                         <div className='posting-info'>
@@ -35,10 +36,11 @@ export function PostingDetail (){
                     <div className='posting-contents-area'>
                         <Viewer initialValue={post['htmlContent']}/>
                     </div>
-                </>
+                    <Comment/>
+                </div>
 
             }
-        </>
+        </div>
 
 
     )
