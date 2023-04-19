@@ -6,9 +6,11 @@
 기본색 : #3C802C
 음영색 : #0F3715
 */
-/* 공통 */
+/* 레이아웃 공용 디자인 */
 .container {width: 100%;}
 .inner-container {max-width: 1760px;  margin: 0 auto;}
+
+/*폰트 공용 디자인*/
 .title{font-weight: bold; font-size: 30px;}
 .explain {color: #777}  /* 서브 설명 문구 */
 .bolder {font-weight: 500;}
@@ -88,3 +90,24 @@
 .posting-info .bolder{margin-right:10px;}
 .posting-contents-area {max-width: 770px; margin:0 auto}
 
+
+
+
+/************ 반응형 **************/
+@media (max-width: 1024px) {
+/*코드 작성 영역*/
+}
+
+
+
+/************ 반응형 - 테블릿 **************/
+@media (max-width: 767px) {
+
+}
+
+
+
+/************ 반응형 - 모바일**************/
+@media (max-width: 480px) {
+
+}
