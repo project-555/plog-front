@@ -44,8 +44,7 @@ export function SignUp(){
                 errors.email = emailError;
             }
         }
-
-        return errors;
+       return errors;
     };
 
     const handleSubmit = () => {
