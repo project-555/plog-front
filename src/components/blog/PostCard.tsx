@@ -28,15 +28,8 @@ export default function PostCard({post}: ChildProps) {
     const navigate = useNavigate();
     const sample = 'https://s3.ap-southeast-1.amazonaws.com/we-xpats.com/uploads/article/3824/ko_190_2.jpg'
 
-    const moveToPost = () => {
-        // console.log('post click', post )
-        const params = {
-            blogID : post.blogID,
-            postingID : post.postingID,
-            nickname : post.homePostingUser.nickname
-        }
-        navigate(`/blogs/${post.blogID}/postings/${post.postingID}`, {state: params})
-    }
+    const moveToPost = () => navigate(`/blogs/${post.blogID}/postings/${post.postingID}`)
+
 
     return (
         <Card sx={{width: 280, display: 'inline-block',margin: '5px'}}>
