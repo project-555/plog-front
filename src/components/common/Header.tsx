@@ -9,7 +9,7 @@ import {plogAuthAxios} from "../../modules/axios";
 
 export default function Header() {
 
-    const token = localStorage.getItem('token')
+    const token = sessionStorage.getItem('token')
     const [userInfo, setUserInfo] = useState<UserInfo>({});
 
     // 토큰 리프레시 남은 시간 (초기는 30분)
