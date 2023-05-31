@@ -7,13 +7,13 @@ import {getData} from "../../config";
 const BlogMain = () => {
 
     const [posting, setPosting] = useState<Object[]>([]);
-    let token = localStorage.getItem('token')
+    let token = sessionStorage.getItem('token')
 
     useEffect(()=> {
         if(token !== null){
             const decoded = jwt_decode(token);
             // @ts-ignore
-            localStorage.setItem('userID',decoded.userID)
+            sessionStorage.setItem('userID',decoded.userID)
         }
 
 

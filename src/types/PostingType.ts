@@ -5,6 +5,7 @@ export interface CommentUser {
 }
 
 export interface CommentInfo {
+    "children"? : CommentInfo[];
     "commentContent" :string;
     "createDt":string;
     "id": number;

@@ -1,5 +1,4 @@
 import React, {useEffect, useState} from "react";
-import {useLocation} from "react-router-dom";
 import axios from 'axios'
 import { Viewer } from '@toast-ui/react-editor';
 import '@toast-ui/editor/dist/toastui-editor-viewer.css';
@@ -8,17 +7,21 @@ import Comment from '../../components/blog/Comment'
 
 export function PostingDetail (){
     const BASE_URL = process.env.REACT_APP_BASE_API_URL
-    const location = useLocation()
-    const blogID = location.state.blogID
-    const postingID = location.state.postingID
-    const nickname = location.state.nickname
+    const pathname = window.location.pathname.split('/')
+    const blogID = pathname[2]
+    const postingID =  pathname[4]
+
+    const [nickname, setNickname] = useState<string>('')
     const [post, setPost] = useState(null);
 
     useEffect(()=> {
         axios.get(`${BASE_URL}/blogs/${blogID}/postings/${postingID}`)
-            .then(res => setPost(res.data.data))
+            .then(res => {
+                setPost(res.data.data)
+                setNickname('주여정test')
+            })
             .catch(err => console.log(err.message))
-    }, [blogID,postingID])
+    }, [])
 
 
     return (
