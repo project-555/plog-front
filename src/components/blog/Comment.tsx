@@ -1,6 +1,5 @@
 import React, {useEffect, useState} from 'react';
 import axios from 'axios'
-import {useNavigate} from "react-router-dom";
 import AddBoxOutlinedIcon from '@mui/icons-material/AddBoxOutlined';
 import {CommentInfo} from '../../types/PostingType';
 // @ts-ignore
@@ -9,20 +8,18 @@ import '../../assets/comment.css'
 
 const Comment = () => {
 
-    const navigate = useNavigate();
     const [path] = useState(window.location.pathname)
+
     const [commentList, setCommentList] = useState<any>([]);// 댓글 목록 불러오기
     const [comment, setComment] = useState<string>(''); // 댓글 등록
+
     const [editable, setEditable] = useState<number>(0)//내가 쓴 댓글 수정, 삭제 여부
     const [editComment, setEditComment] = useState<string>(''); // 수정한 댓글 등록
+
     const [showChildComment, setShowChildComment] = useState<number>(0)//대댓글 컴포넌트 보여주기
     const [childComment, setChildComment] = useState<string>('')// 대댓글 내용
     const [childEditable, setChildEditable] = useState<number>(0)// 내가 쓴 대댓글 수정, 삭제 여부
 
-
-    const moveToBlog = (blogID:number) => {
-        navigate(`/blogs/${blogID}`)
-    }
 
     // 댓글 데이터 조회
     useEffect(()=>{
@@ -75,7 +72,7 @@ const Comment = () => {
 
     //답글 영역 클릭 시 오픈
     const childCommentClick = (id:number,childC:any) => {
-        const users: Set<string> = new Set(childC.map((el:CommentInfo) => el.user.nickname))
+        const users: Set<string> = new Set(childC.map((el:any) => el.user.nickname))
         const deduplicationUser: Array<string> = Array.from(users)
         setShowChildComment(id)
         setUsers(deduplicationUser)
@@ -98,18 +95,6 @@ const Comment = () => {
         id: idx,
         display: user
     }))
-
-    const mentionParser = (mention : any) => {
-        const userRegex = /@{{[ㄱ-ㅎ가-힣a-zA-Z]{2,}}}/;
-        let user = ''
-        let comment = mention.split(' ')
-        if(userRegex.test(mention)){
-            user = mention.match(userRegex)[0].slice(3,-2)
-            comment = comment.slice(1).join(' ')
-        }
-        return [user,comment]
-    }
-
 
 
     return (
@@ -194,11 +179,7 @@ const Comment = () => {
                                                     </div>
 
                                                     {childEditable !== childC.id ?
-                                                        <p>
-                                                            <span className='mention' onClick={()=>{moveToBlog(5)}}>{mentionParser(childC.commentContent)[0]}</span>
-                                                            <span>{mentionParser(childC.commentContent)[1]}</span>
-
-                                                        </p>
+                                                        <p>{childC.commentContent}</p>
                                                         :
                                                         <textarea className='comment-input' value={childC.commentContent} onChange={(e)=>setChildComment(e.target.value)}/>
                                                     }
@@ -209,21 +190,18 @@ const Comment = () => {
                                         <></>
                                     }
 
-                                    <div className='child-comment-input'>
-                                        <MentionsInput className='mentions-input' value={value} onChange={mentionChange} placeholder='댓글을 작성하세요(@로 멘션 가능)'>
-                                            <Mention
-                                                type="user"
-                                                trigger="@"
-                                                data={userMentionData}
-                                                markup="@{{__display__}}"
-                                                className="mentions__mention comment-input"
-                                                onChange={(e:any)=> setChildComment(e.target.value)}
-                                                value={childComment}
-                                            />
-                                        </MentionsInput>
-                                        <button className='comment-btn' onClick={()=>writeChildComment(c.id)}>댓글 작성</button>
-                                    </div>
-
+                                    <MentionsInput className='mentions input-area' value={value} onChange={mentionChange} placeholder='댓글을 작성하세요(@로 멘션 가능)'>
+                                        <Mention
+                                            type="user"
+                                            trigger="@"
+                                            data={userMentionData}
+                                            markup="@{{__display__}}"
+                                            className="mentions__mention comment-input"
+                                            onChange={(e:any)=> setChildComment(e.target.value)}
+                                            value={childComment}
+                                        />
+                                    </MentionsInput>
+                                    <button className='comment-btn' onClick={()=>writeChildComment(c.id)}>댓글 작성</button>
                                 </>
                             }
                         </div>
