@@ -4,7 +4,7 @@ import jwt_decode from "jwt-decode";
 import {Button, IconButton} from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import {UserInfo} from "../../types/UMSType";
-import {plogAuthAxios} from "../../config";
+import {plogAuthAxios} from "../../modules/axios";
 
 
 export default function Header() {
@@ -52,7 +52,7 @@ export default function Header() {
         if (expiredInterval > 600) {
             return;
         }
-        
+
         // 엑세스 토큰 리프레시
         plogAuthAxios.post("/auth/refresh-access-token").then(
             (response: any) => {

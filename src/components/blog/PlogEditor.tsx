@@ -1,11 +1,11 @@
 import {Editor} from "@toast-ui/react-editor";
 import React, {LegacyRef, useState} from "react";
 import Radio from '@mui/material/Radio';
-import {plogAxios} from "../../modules/axios";
 import {PreviewStyle} from "@toast-ui/editor/types/editor";
 import Box from "@mui/material/Box";
 import {VerticalSplit} from "@mui/icons-material";
 import SquareIcon from '@mui/icons-material/Square';
+import {plogAuthAxios} from "../../modules/axios";
 
 
 interface PlogEditorProps {
@@ -55,7 +55,7 @@ export const PlogEditor = React.forwardRef((props: PlogEditorProps, ref: LegacyR
                         reader.readAsDataURL(blob);
                         reader.onload = () => {
                             const base64 = reader.result?.toString().split(',')[1];
-                            plogAxios.post('/upload-file', {
+                            plogAuthAxios.post('/upload-file', {
                                 fileBase64: base64
                             }).then((res) => {
                                 const data = res.data.data

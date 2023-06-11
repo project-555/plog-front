@@ -15,7 +15,7 @@ import {
 } from "@mui/material";
 import Select, {SelectChangeEvent} from '@mui/material/Select';
 import {Send} from "@mui/icons-material";
-import {plogAxios} from "../../modules/axios";
+import {plogAuthAxios, plogAxios} from "../../modules/axios";
 import React, {RefObject, useEffect, useRef, useState} from "react";
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Switch from '@mui/material/Switch';
@@ -83,7 +83,7 @@ export function PostingWrite() {
         const reader = new FileReader();
 
         reader.onload = () => {
-            plogAxios.post('/upload-file', {
+            plogAuthAxios.post('/upload-file', {
                 fileBase64: reader.result?.toString().split(',')[1]
             }).then((res) => {
                 setThumbnailURL(res.data.data.uploadedFileURL);
@@ -172,7 +172,7 @@ export function PostingWrite() {
                 setInputTag(tag)
             } else {
                 // 없으면 새로운 태그 생성
-                plogAxios.post(
+                plogAuthAxios.post(
                     `blogs/${blogID}/tags`,
                     {tagName: newValue}
                 ).then((response) => {
@@ -187,7 +187,7 @@ export function PostingWrite() {
         }
         // 사용자가 Add: 을 눌렀을 경우
         else if (newValue && newValue.tagName && newValue.tagID === undefined) {
-            plogAxios.post(
+            plogAuthAxios.post(
                 `blogs/${blogID}/tags`,
                 {tagName: newValue.inputValue}
             ).then((response) => {
@@ -262,7 +262,7 @@ export function PostingWrite() {
         }
 
         if (CreatePostingRequestValidate(request)) {
-            plogAxios.post(`/blogs/${blogID}/postings`, request).then((response) => {
+            plogAuthAxios.post(`/blogs/${blogID}/postings`, request).then((response) => {
                 setIsPosted(true);
                 navigate(`/blogs/${blogID}/postings/${response.data.data}`)
             }).catch((error) => {
