@@ -75,7 +75,7 @@ const Comment = () => {
 
     //답글 영역 클릭 시 오픈
     const childCommentClick = (id:number,childC:any) => {
-        const users: Set<string> = new Set(childC.map((el:any) => el.user.nickname))
+        const users: Set<string> = new Set(childC.map((el:CommentInfo) => el.user.nickname))
         const deduplicationUser: Array<string> = Array.from(users)
         setShowChildComment(id)
         setUsers(deduplicationUser)
@@ -100,19 +100,18 @@ const Comment = () => {
     }))
 
     const mentionParser = (mention : any) => {
-        const userReg = /@{{[ㄱ-ㅎ가-힣a-zA-Z]{2,}}}/;
+        const userRegex = /@{{[ㄱ-ㅎ가-힣a-zA-Z]{2,}}}/;
         let user = ''
         let comment = mention.split(' ')
-        console.log(comment)
-        if(userReg.test(mention)){
-            user = mention.match(userReg)[0].slice(3,-2)
+        if(userRegex.test(mention)){
+            user = mention.match(userRegex)[0].slice(3,-2)
             comment = comment.slice(1).join(' ')
         }
         return [user,comment]
     }
 
 
-    // @ts-ignore
+
     return (
         <div className='posting-comment-area '>
 
