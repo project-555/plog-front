@@ -1,5 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import axios from 'axios'
+import {useNavigate} from "react-router-dom";
 import AddBoxOutlinedIcon from '@mui/icons-material/AddBoxOutlined';
 import {CommentInfo} from '../../types/PostingType';
 // @ts-ignore
@@ -8,18 +9,20 @@ import '../../assets/comment.css'
 
 const Comment = () => {
 
+    const navigate = useNavigate();
     const [path] = useState(window.location.pathname)
-
     const [commentList, setCommentList] = useState<any>([]);// 댓글 목록 불러오기
     const [comment, setComment] = useState<string>(''); // 댓글 등록
-
     const [editable, setEditable] = useState<number>(0)//내가 쓴 댓글 수정, 삭제 여부
     const [editComment, setEditComment] = useState<string>(''); // 수정한 댓글 등록
-
     const [showChildComment, setShowChildComment] = useState<number>(0)//대댓글 컴포넌트 보여주기
     const [childComment, setChildComment] = useState<string>('')// 대댓글 내용
     const [childEditable, setChildEditable] = useState<number>(0)// 내가 쓴 대댓글 수정, 삭제 여부
 
+
+    const moveToBlog = (blogID:number) => {
+        navigate(`/blogs/${blogID}`)
+    }
 
     // 댓글 데이터 조회
     useEffect(()=>{
@@ -96,7 +99,20 @@ const Comment = () => {
         display: user
     }))
 
+    const mentionParser = (mention : any) => {
+        const userReg = /@{{[ㄱ-ㅎ가-힣a-zA-Z]{2,}}}/;
+        let user = ''
+        let comment = mention.split(' ')
+        console.log(comment)
+        if(userReg.test(mention)){
+            user = mention.match(userReg)[0].slice(3,-2)
+            comment = comment.slice(1).join(' ')
+        }
+        return [user,comment]
+    }
 
+
+    // @ts-ignore
     return (
         <div className='posting-comment-area '>
 
@@ -179,7 +195,11 @@ const Comment = () => {
                                                     </div>
 
                                                     {childEditable !== childC.id ?
-                                                        <p>{childC.commentContent}</p>
+                                                        <p>
+                                                            <span className='mention' onClick={()=>{moveToBlog(5)}}>{mentionParser(childC.commentContent)[0]}</span>
+                                                            <span>{mentionParser(childC.commentContent)[1]}</span>
+
+                                                        </p>
                                                         :
                                                         <textarea className='comment-input' value={childC.commentContent} onChange={(e)=>setChildComment(e.target.value)}/>
                                                     }

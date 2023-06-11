@@ -113,7 +113,8 @@
 
 .comment-area .child-comment-container{margin-top:10px;padding: 20px; background-color:rgba(0, 0, 0, 0.016); border-radius: 4px;}
 .comment-area .child-comment-container p{margin-top: 15px;}
-
+.comment-area .child-comment-container p span.mention{margin-right:5px; font-weight: bold; cursor: default}
+.comment-area .child-comment-container p span.mention:hover{text-decoration: underline;}
 
 
 /************ 반응형 **************/
