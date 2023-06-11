@@ -209,18 +209,21 @@ const Comment = () => {
                                         <></>
                                     }
 
-                                    <MentionsInput className='mentions input-area' value={value} onChange={mentionChange} placeholder='댓글을 작성하세요(@로 멘션 가능)'>
-                                        <Mention
-                                            type="user"
-                                            trigger="@"
-                                            data={userMentionData}
-                                            markup="@{{__display__}}"
-                                            className="mentions__mention comment-input"
-                                            onChange={(e:any)=> setChildComment(e.target.value)}
-                                            value={childComment}
-                                        />
-                                    </MentionsInput>
-                                    <button className='comment-btn' onClick={()=>writeChildComment(c.id)}>댓글 작성</button>
+                                    <div className='child-comment-input'>
+                                        <MentionsInput className='mentions-input' value={value} onChange={mentionChange} placeholder='댓글을 작성하세요(@로 멘션 가능)'>
+                                            <Mention
+                                                type="user"
+                                                trigger="@"
+                                                data={userMentionData}
+                                                markup="@{{__display__}}"
+                                                className="mentions__mention comment-input"
+                                                onChange={(e:any)=> setChildComment(e.target.value)}
+                                                value={childComment}
+                                            />
+                                        </MentionsInput>
+                                        <button className='comment-btn' onClick={()=>writeChildComment(c.id)}>댓글 작성</button>
+                                    </div>
+
                                 </>
                             }
                         </div>
