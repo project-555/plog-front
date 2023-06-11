@@ -4,7 +4,14 @@ export const plogAxios = axios.create({
     baseURL: process.env.REACT_APP_BASE_API_URL,
     headers: {
         'Content-Type': 'application/json',
-        'X-AUTH-TOKEN': localStorage.getItem('token')
+    }
+})
+
+export const plogAuthAxios = axios.create({
+    baseURL: process.env.REACT_APP_BASE_API_URL,
+    headers: {
+        'Content-Type': 'application/json',
+        'Authorization': "Bearer " + localStorage.getItem('token')
     }
 })
 
