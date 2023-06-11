@@ -23,7 +23,6 @@ export function PostingDetail (){
             .catch(err => console.log(err.message))
     }, [])
 
-
     return (
         <div  className='inner-container'>
             {
