@@ -96,7 +96,7 @@
 .comment-input:focus {outline: none;}
 .comment-btn{float:right;height:30px;border:none;border-radius:4px;color:#fff;background-color: #12B886;}
 .comment-area {margin-top:100px;}
-.comment-area .comment-container{margin:45px 0; border-bottom: 1px solid #eee;}
+.comment-area .comment-container{margin: 20px 0;padding: 15px 0;border-bottom: 1px solid #eee;}
 .comment-area .profile-container{display: flex; justify-content: space-between;}
 .comment-area .profile-container .profile{display: flex;}
 .comment-area .profile-container img{width: 45px;margin-right: 5px;}
@@ -115,6 +115,8 @@
 .comment-area .child-comment-container p{margin-top: 15px;}
 .comment-area .child-comment-container p span.mention{margin-right:5px; font-weight: bold; cursor: default}
 .comment-area .child-comment-container p span.mention:hover{text-decoration: underline;}
+.comment-area .child-comment-input{margin:10px 0; padding: 20px 0;}
+.comment-area .child-comment-input .mentions-input{position: relative;height: 3.5rem;margin-bottom: 10px;}
 
 
 /************ 반응형 **************/
