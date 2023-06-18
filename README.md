@@ -1,46 +1,34 @@
-# Getting Started with Create React App
+# Hello Plog Frontend! 👋
+해당 레포지토리는 개발자 커리어 관리 플랫폼 Plog의 Frontend 파트의 형상 관리를 위해 만들어졌습니다.
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## Stacks
+- Plog Front 에서는 프론트엔드 프레임워크로 React를 사용하고 있습니다. 
+  - [React](https://reactjs.org/)
+- Plog Server은 Oracle Cloud의 컴퓨팅 인스턴스 서비스에서 구동되며, Nginx 환경에서 구동되고 있습니다.
 
-## Available Scripts
+## Install
+해당 섹션에서는 Plog Frontend를 구동할 수 있는 가이드를 제공합니다. 
+### 1. Clone Repository
+- 해당 레포지토리를 클론합니다.
+   ```bash
+     $ git clone git@github.com:project-565/plog-front.git
+   ```
+  - Private 레포지토리이므로 대상자는 Collaborator 로 등록되어있어야 하며, 대상자의 SSH 키를 Github에 등록되어 있다고 가정합니다.
 
-In the project directory, you can run:
-
-### `npm start`
-
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
-
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
-
-### `npm test`
-
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
-
-### `npm run build`
-
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
-
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
+### 2. Docker
+- Plog는 운영체제의 영향을 최소화하기 위해 로컬의 개발 환경을  Docker 컨테이너 환경으로 구성하였습니다. 
+- 따라서 안정적인 로컬 환경 구동을 위해서는 Docker를 설치해야 합니다.
+  - [Docker 설치](https://docs.docker.com/get-docker/)
+  - [Docker Compose 설치](https://docs.docker.com/compose/install/)
+### 3. Docker Compose
+- Plog Frontend를 구동하기 위해 Docker Compose를 사용합니다.
+- Docker Compose를 사용하여 Plog Frontend를 구동하기 위해서는 아래의 명령어를 입력합니다.
+  ```bash
+  $ docker compose up
+  ```
+### 4. 로컬 환경 접속
+- Plog Frontend는 기본적으로 3000번 포트를 사용합니다.
+- 따라서 로컬 환경에서 Plog Frontend에 접속하기 위해서는 아래의 주소로 접속합니다.
+  ```
+  http://localhost:3000
+  ```
