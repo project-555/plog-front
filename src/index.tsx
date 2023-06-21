@@ -13,7 +13,7 @@ const root = ReactDOM.createRoot(
 
 axios.defaults.baseURL = process.env.REACT_APP_API_URL;
 axios.defaults.headers.common = {
-    'X-AUTH-TOKEN': sessionStorage.getItem('token')? sessionStorage.getItem('token') : ''
+    'X-AUTH-TOKEN': localStorage.getItem('token')? localStorage.getItem('token') : ''
 }
 
 
