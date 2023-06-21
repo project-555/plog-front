@@ -1,13 +1,16 @@
 import React, {useEffect, useState} from 'react';
-import axios from 'axios'
 import AddBoxOutlinedIcon from '@mui/icons-material/AddBoxOutlined';
+import {useNavigate} from "react-router-dom";
 import {CommentInfo} from '../../types/PostingType';
 // @ts-ignore
 import {Mention, MentionsInput} from 'react-mentions';
 import '../../assets/comment.css'
+import {plogAuthAxios, plogAxios} from "../../modules/axios";
 
 const Comment = () => {
 
+
+    const navigate = useNavigate();
     const [path] = useState(window.location.pathname)
 
     const [commentList, setCommentList] = useState<any>([]);// 댓글 목록 불러오기
@@ -20,10 +23,13 @@ const Comment = () => {
     const [childComment, setChildComment] = useState<string>('')// 대댓글 내용
     const [childEditable, setChildEditable] = useState<number>(0)// 내가 쓴 대댓글 수정, 삭제 여부
 
+    const moveToBlog = (blogID:number) => {
+        navigate(`/blogs/${blogID}`)
+    }
 
     // 댓글 데이터 조회
     useEffect(()=>{
-        axios.get(`http://api.plogcareers.com${path}/comments`)
+        plogAxios.get(`http://api.plogcareers.com${path}/comments`)
             .then(res => setCommentList(res.data.data.comments))
     },[path])
 
@@ -36,9 +42,12 @@ const Comment = () => {
             "isSecret": false,
             "parentCommentID": null //대댓글인 경우 부모 댓글 아이디
         }
-        
-        axios.post(`http://api.plogcareers.com${path}/comment`, params)
-            .then(res => setComment(''))
+
+        plogAuthAxios.post(`${path}/comment`, params)
+            .then(res => {
+                setComment('')
+                window.location.reload()
+            })
     }
 
     //댓글 삭제
@@ -52,8 +61,8 @@ const Comment = () => {
             "postingID": postingID
         }
 
-        axios.delete(`http://api.plogcareers.com${path}/comments/${c.id}`, {params: params})
-            .then(res => console.log('res', res))
+        plogAuthAxios.delete(`${path}/comments/${c.id}`, {params: params})
+            .then(res => window.location.reload())
     }
 
 
@@ -66,13 +75,16 @@ const Comment = () => {
             "parentCommentID": id
         }
 
-        axios.post(`http://api.plogcareers.com${path}/comment`, params)
-            .then(res => setChildComment(''))
+        plogAuthAxios.post(`${path}/comment`, params)
+            .then(res => {
+                setChildComment('')
+                window.location.reload()
+            })
     }
 
     //답글 영역 클릭 시 오픈
     const childCommentClick = (id:number,childC:any) => {
-        const users: Set<string> = new Set(childC.map((el:any) => el.user.nickname))
+        const users: Set<string> = new Set(childC.filter((el:CommentInfo) => !el.isSecret).map((el:CommentInfo) => el.user.nickname))
         const deduplicationUser: Array<string> = Array.from(users)
         setShowChildComment(id)
         setUsers(deduplicationUser)
@@ -96,7 +108,18 @@ const Comment = () => {
         display: user
     }))
 
+    const mentionParser = (mention : any) => {
+        const userReg = /@{{[ㄱ-ㅎ가-힣a-zA-Z]{2,}}}/;
+        let user = ''
+        let comment = mention.split(' ')
+        if(userReg.test(mention)){
+            user = mention.match(userReg)[0].slice(3,-2)
+            comment = comment.slice(1).join(' ')
+        }
+        return [user,comment]
+    }
 
+    // @ts-ignore
     return (
         <div className='posting-comment-area '>
 
@@ -124,7 +147,7 @@ const Comment = () => {
                                 </div>
 
                                 {
-                                    String(c.user.userID) === sessionStorage.getItem('userID') &&
+                                    String(c.user.userID) === localStorage.getItem('userID') &&
                                     <div className="edit-btns">
                                         <span className='edit' onClick={()=>setEditable(c.id)}>수정</span>
                                         <span className='del' onClick={()=> delComment(c)}>삭제</span>
@@ -170,7 +193,7 @@ const Comment = () => {
                                                         </div>
 
                                                         {
-                                                            String(childC.user.userID) === sessionStorage.getItem('userID') &&
+                                                            String(childC.user.userID) === localStorage.getItem('userID') &&
                                                             <div className="edit-btns">
                                                                 <span className='edit' onClick={()=>setChildEditable(childC.id)}>수정</span>
                                                                 <span className='del' onClick={()=> delComment(childC)}>삭제</span>
@@ -179,7 +202,10 @@ const Comment = () => {
                                                     </div>
 
                                                     {childEditable !== childC.id ?
-                                                        <p>{childC.commentContent}</p>
+                                                        <p>
+                                                            <span className='mention' onClick={()=>{moveToBlog(5)}}>{mentionParser(childC.commentContent)[0]}</span>
+                                                            <span>{mentionParser(childC.commentContent)[1]}</span>
+                                                        </p>
                                                         :
                                                         <textarea className='comment-input' value={childC.commentContent} onChange={(e)=>setChildComment(e.target.value)}/>
                                                     }
