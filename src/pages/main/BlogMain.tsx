@@ -1,5 +1,5 @@
 import {useState, useEffect} from 'react';
-import axios from 'axios'
+import {plogAxios} from "../../modules/axios";
 import PostCard from '../../components/blog/PostCard';
 import jwt_decode from "jwt-decode";
 
@@ -17,7 +17,7 @@ const BlogMain = () => {
         }
 
 
-        axios.get('http://api.plogcareers.com/home/recent-postings?lastCursorId=0&pageSize=10')
+        plogAxios.get('/home/recent-postings?lastCursorId=0&pageSize=10')
             .then(res => {
                 const postingArr = res.data.data.homePostings
                 setPosting(postingArr)
