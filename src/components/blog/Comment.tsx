@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import AddBoxOutlinedIcon from '@mui/icons-material/AddBoxOutlined';
-import {useNavigate} from "react-router-dom";
+import {useNavigate, useParams} from "react-router-dom";
 import {CommentInfo} from '../../types/PostingType';
 // @ts-ignore
 import {Mention, MentionsInput} from 'react-mentions';
@@ -11,8 +11,7 @@ const Comment = () => {
 
 
     const navigate = useNavigate();
-    const [path] = useState(window.location.pathname)
-
+    const {blogID, postingID}  = useParams();
     const [commentList, setCommentList] = useState<any>([]);// 댓글 목록 불러오기
     const [comment, setComment] = useState<string>(''); // 댓글 등록
 
@@ -29,9 +28,9 @@ const Comment = () => {
 
     // 댓글 데이터 조회
     useEffect(()=>{
-        plogAxios.get(`http://api.plogcareers.com${path}/comments`)
+        plogAxios.get(`blogs/${blogID}/postings/${postingID}/comments`)
             .then(res => setCommentList(res.data.data.comments))
-    },[path])
+    },[blogID, postingID])
 
 
 
@@ -43,7 +42,7 @@ const Comment = () => {
             "parentCommentID": null //대댓글인 경우 부모 댓글 아이디
         }
 
-        plogAuthAxios.post(`${path}/comment`, params)
+        plogAuthAxios.post(`/blogs/${blogID}/postings/${postingID}/comment`, params)
             .then(res => {
                 setComment('')
                 window.location.reload()
@@ -52,16 +51,14 @@ const Comment = () => {
 
     //댓글 삭제
     const delComment = (c:CommentInfo) => {
-        const blogID = Number(path.split('/')[2])
-        const postingID = Number(path.split('/')[4])
 
         const params = {
-            "blogID": blogID,
+            "blogID": Number(blogID),
             "commentID": c.id,
-            "postingID": postingID
+            "postingID": Number(postingID)
         }
 
-        plogAuthAxios.delete(`${path}/comments/${c.id}`, {params: params})
+        plogAuthAxios.delete(`/blogs/${blogID}/postings/${postingID}/comments/${c.id}`, {params: params})
             .then(res => window.location.reload())
     }
 
@@ -75,7 +72,7 @@ const Comment = () => {
             "parentCommentID": id
         }
 
-        plogAuthAxios.post(`${path}/comment`, params)
+        plogAuthAxios.post(`/blogs/${blogID}/postings/${postingID}/comment`, params)
             .then(res => {
                 setChildComment('')
                 window.location.reload()
@@ -93,7 +90,7 @@ const Comment = () => {
 
     //대댓글 멘션 관련 코드
     const [value, setValue] = useState<string>('')
-    const [mention, setMention] = useState(null) //멘션 데이터?
+    const [mention, setMention] = useState<string|null>(null) //멘션 데이터?
     const [users, setUsers] = useState<string[]>([]) //멘션 유저 목록
 
     const mentionChange = (e:any, newValue:any, newPlainTextValue:any, mentions:any) => {
@@ -119,7 +116,7 @@ const Comment = () => {
         return [user,comment]
     }
 
-    // @ts-ignore
+
     return (
         <div className='posting-comment-area '>
 
@@ -130,7 +127,6 @@ const Comment = () => {
                        onChange={(e)=>setComment(e.target.value)}/>
                 <button className='comment-btn' onClick={writeComment}>댓글 작성</button>
             </div>
-
 
             <div className='comment-area'>
                 {commentList && commentList.map((c:CommentInfo) =>
@@ -218,13 +214,10 @@ const Comment = () => {
 
                                     <MentionsInput className='mentions input-area' value={value} onChange={mentionChange} placeholder='댓글을 작성하세요(@로 멘션 가능)'>
                                         <Mention
-                                            type="user"
                                             trigger="@"
                                             data={userMentionData}
                                             markup="@{{__display__}}"
                                             className="mentions__mention comment-input"
-                                            onChange={(e:any)=> setChildComment(e.target.value)}
-                                            value={childComment}
                                         />
                                     </MentionsInput>
                                     <button className='comment-btn' onClick={()=>writeChildComment(c.id)}>댓글 작성</button>
@@ -232,7 +225,6 @@ const Comment = () => {
                             }
                         </div>
                 )}
-
             </div>
         </div>
     );

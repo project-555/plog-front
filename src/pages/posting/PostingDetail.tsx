@@ -1,21 +1,20 @@
 import React, {useEffect, useState} from "react";
-import axios from 'axios'
+import {useParams} from 'react-router-dom'
+import {plogAxios} from "../../modules/axios";
 import { Viewer } from '@toast-ui/react-editor';
 import '@toast-ui/editor/dist/toastui-editor-viewer.css';
 import Comment from '../../components/blog/Comment'
 
 
 export function PostingDetail (){
-    const BASE_URL = process.env.REACT_APP_BASE_API_URL
-    const pathname = window.location.pathname.split('/')
-    const blogID = pathname[2]
-    const postingID =  pathname[4]
+
+    const {blogID, postingID}  = useParams();
 
     const [nickname, setNickname] = useState<string>('')
     const [post, setPost] = useState(null);
 
     useEffect(()=> {
-        axios.get(`${BASE_URL}/blogs/${blogID}/postings/${postingID}`)
+        plogAxios.get(`/blogs/${blogID}/postings/${postingID}`)
             .then(res => {
                 setPost(res.data.data)
                 setNickname('주여정test')
