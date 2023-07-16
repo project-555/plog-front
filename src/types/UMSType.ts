@@ -45,3 +45,12 @@ export interface User {
     shortIntro?: string;
     introHTML?: string;
 }
+
+//마이페이지 유저 정보
+export interface MyPageInfo {
+    "profileImageURL"?: string;
+    "nickname"?: string;
+    "email"?: string;
+    "blogName"?: string;
+    "shortIntro"?: string;
+}
