@@ -1,7 +1,7 @@
 import {useEffect, useState} from "react";
 import {NavLink} from "react-router-dom";
 import jwt_decode from "jwt-decode";
-import {Button, IconButton} from '@mui/material';
+import {Button, IconButton, Menu, MenuItem} from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import {UserInfo} from "../../types/UMSType";
 import {plogAuthAxios} from "../../modules/axios";
@@ -61,9 +61,26 @@ export default function Header() {
         )
     }, [expiredInterval])
 
+    const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+    const open = Boolean(anchorEl);
+    const openMenu = (event: React.MouseEvent<HTMLButtonElement>) => {
+        setAnchorEl(event.currentTarget);
+    };
+    const closeMenu = () => {
+        setAnchorEl(null);
+    };
+
+
+    const logoutClick = () => {
+        setAnchorEl(null)
+        localStorage.clear()
+        window.location.reload()
+    }
+
+
     return (
         <div className='header inner-container'>
-            <div><a href='/'><span className='logo'>Plog</span></a></div>
+            <div><a href='/'><span className='logo'>plog</span></a></div>
             <div>
                 <NavLink to='/search'>
                     <IconButton aria-label="search" disabled color="primary">
@@ -73,7 +90,13 @@ export default function Header() {
                 {
                     !!userInfo.nickname ?
                         <NavLink to='/'>
-                            <Button className='login-btn' variant="contained">{userInfo.nickname}</Button>
+                            <Button className='login-btn' variant="contained" onClick={openMenu}>{userInfo.nickname}</Button>
+                            <Menu anchorEl={anchorEl} open={open} onClose={closeMenu} MenuListProps={{'aria-labelledby': 'basic-button',}}>
+                                <MenuItem onClick={logoutClick}>로그아웃</MenuItem>
+                                <MenuItem onClick={closeMenu}>
+                                    <NavLink to='/mypage'>마이페이지</NavLink>
+                                </MenuItem>
+                            </Menu>
                         </NavLink>
                         :
                         <NavLink to='/sign-in'>
