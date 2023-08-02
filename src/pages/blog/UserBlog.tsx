@@ -1,13 +1,25 @@
 import Box from "@mui/material/Box";
 import {useParams} from "react-router-dom";
-import {Card, CardContent, Chip, List, ListItem, Stack, Typography} from "@mui/material";
+import {
+    Card,
+    CardContent,
+    Chip,
+    IconButton,
+    InputAdornment,
+    List,
+    ListItem,
+    Stack,
+    TextField,
+    Typography
+} from "@mui/material";
 import Thumbnail from "../../components/common/Thumbnail";
 import TimeAgo from "../../components/common/TimeAgo";
-import {Blog, Posting} from "../../types/BlogType";
+import SearchIcon from '@mui/icons-material/Search';
+import {Blog, ListBlogPostingRequest, Posting, PostingTag} from "../../types/BlogType";
 import {useEffect, useState} from "react";
-import {plogAxios} from "../../modules/axios";
-import {AxiosResponse} from "axios";
-
+import {plogAuthAxios, plogAxios} from "../../modules/axios";
+import {AxiosError, AxiosResponse} from "axios";
+import {repeatQuerySerializer} from "../../modules/serialize";
 
 function extractContent(htmlString: string) {
     const parser = new DOMParser();
@@ -18,8 +30,16 @@ function extractContent(htmlString: string) {
 export function UserBlog() {
     const params = useParams<{ blogID: string }>()
 
+    const initialListBlogPostingRequest: ListBlogPostingRequest = {
+        blogID: Number(params.blogID),
+        pageSize: 10,
+        tagIDs: []
+    }
+
+    const [listBlogPostingRequest, setListBlogPostingRequest] = useState<ListBlogPostingRequest>(initialListBlogPostingRequest)
     const [blog, setBlog] = useState<Blog>()
-    // const [postings, SetPostings] = useState<Pos>([])
+    const [searchTerm, setSearchTerm] = useState<string>("")
+
     useEffect(() => {
         plogAxios.get(`/blogs/${params.blogID}`).then(
             (response: AxiosResponse) => {
@@ -33,42 +53,101 @@ export function UserBlog() {
 
     const [postings, setPostings] = useState<Posting[]>([])
 
+    const handleToggleTagID = (tagID: number) => {
+        setListBlogPostingRequest((prevRequest) => {
+            let newTagIDs = [...(prevRequest.tagIDs || [])];
+            if (newTagIDs.includes(tagID)) {
+                newTagIDs = newTagIDs.filter((id) => id !== tagID);
+            } else {
+                newTagIDs.push(tagID);
+            }
+            return {
+                ...prevRequest,
+                tagIDs: newTagIDs
+            };
+        });
+    };
+
+    const handleSearch = () => {
+        setListBlogPostingRequest((prevRequest) => {
+            return {...prevRequest, search: searchTerm}
+        });
+    };
 
     useEffect(() => {
-        plogAxios.get(`/blogs/${params.blogID}/postings`).then(
+        plogAuthAxios.get(`/blogs/${params.blogID}/postings`, {
+            params: listBlogPostingRequest,
+            paramsSerializer: repeatQuerySerializer
+        }).then(
             (response: AxiosResponse) => {
                 setPostings(response.data.data.postings as Posting[])
             }
         ).catch(
-            (error) => {
+            (error: AxiosError) => {
                 console.log(error)
             }
         )
-    }, [params])
+    }, [params, listBlogPostingRequest])
 
     return (
         <Box className="inner-container">
+            <Box
+                sx={{mt: 2, mb: 2, display: 'flex', alignItems: 'flex-end', justifyContent: 'flex-end', width: '100%'}}>
+                <TextField
+                    label="Search"
+                    variant="outlined"
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    onKeyDown={(ev) => {
+                        if (ev.key === 'Enter') {
+                            ev.preventDefault();
+                            handleSearch();
+                        }
+                    }}
+                    InputProps={{
+                        endAdornment: (
+                            <InputAdornment position="end">
+                                <IconButton onClick={handleSearch}>
+                                    <SearchIcon/>
+                                </IconButton>
+                            </InputAdornment>
+                        )
+                    }}
+                    sx={{width: '30%'}}
+                />
+            </Box>
 
             <List>
-                {postings.map((posting) => (
+                {postings.map((posting: Posting) => (
                     <ListItem key={posting.id}>
                         <Card sx={{width: "100%"}}>
                             <CardContent>
-                                {posting.thumbnailImageURL && (
-                                    <Thumbnail
-                                        src={posting.thumbnailImageURL}
-                                        alt={"alt"}
-                                        height={"500px"}
-                                        sx={{mb: 1.5}}/>
-                                )}
+                                {
+                                    posting.thumbnailImageURL && (
+                                        <Thumbnail
+                                            src={posting.thumbnailImageURL}
+                                            alt={"alt"}
+                                            height={"500px"}
+                                            sx={{mb: 1.5}}/>
+                                    )}
                                 <Typography variant="h4">
                                     {posting.title}
                                 </Typography>
                                 <Typography variant={"subtitle2"} color="text.secondary" sx={{mb: 1}}>
                                     <TimeAgo timestamp={posting.createDt}/>
                                 </Typography>
-                                <Stack>
+                                <Stack direction="row" spacing={1} sx={{mb: 2}}>
+                                    {
+                                        posting.postingTags.map((postingTag: PostingTag) => (
+                                            <Chip
+                                                onClick={() => handleToggleTagID(postingTag.tagID)}
+                                                label={postingTag.tagName}
+                                                color={listBlogPostingRequest.tagIDs?.includes(postingTag.tagID) ? "primary" : "default"}
+                                            />
+                                        ))
+                                    }
                                 </Stack>
+
                                 <Typography variant="body2">
                                     {
                                         extractContent(posting.htmlContent).slice(0, 100)
@@ -78,36 +157,7 @@ export function UserBlog() {
                         </Card>
                     </ListItem>
                 ))}
-                <ListItem>
-                    <Card sx={{width: "100%"}}>
-                        <CardContent>
-                            <Thumbnail
-                                src={"https://images.mypetlife.co.kr/content/uploads/2023/02/06162551/AdobeStock_88815129-scaled.jpeg"}
-                                alt={"alt"}
-                                height={"500px"}
-                                sx={{mb: 1.5}}/>
-                            <Typography variant="h4">
-                                타이틀
-                            </Typography>
-                            <Typography variant={"subtitle2"} color="text.secondary" sx={{mb: 1}}>
-                                <TimeAgo timestamp="2023-07-02T15:30:00+09:00"/>
-                            </Typography>
-                            <Stack direction="row" spacing={1} sx={{mb: 2}}>
-                                <Chip label={"태그1"}/>
-                                <Chip label={"태그2"}/>
-                                <Chip label={"태그3"}/>
-                            </Stack>
-                            <Typography variant="body2">
-                                콘텐츠 요약입니당. 콘텐츠 요약입니당.콘텐츠 요약입니당.콘텐츠 요약입니당.콘텐츠 요약입니당.콘텐츠 요약입니당.콘텐츠 요약입니당.콘텐츠 요약입니당.콘텐츠
-                                요약입니당.콘텐츠 요약입니당.콘텐츠 요약입니당.콘텐츠 요약입니당. 콘텐츠 요약입니당.콘텐츠 요약입니당.콘텐츠 요약입니당.콘텐츠 요약입니당.콘텐츠
-                                요약입니당.콘텐츠 요약입니당.콘텐츠 요약입니당.콘텐츠 요약입니당. 콘텐츠 요약입니당.콘텐츠 요약입니당.
-                            </Typography>
-                        </CardContent>
-                    </Card>
-                </ListItem>
-
             </List>
-
         </Box>
     )
 }
