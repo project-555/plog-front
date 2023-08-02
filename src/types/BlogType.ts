@@ -12,6 +12,11 @@ export interface Blog {
 
 }
 
+export interface PostingTag {
+    tagID: number
+    tagName: string
+}
+
 export interface Posting {
     id: number
     createDt: string
@@ -24,4 +29,14 @@ export interface Posting {
     stateID: number
     thumbnailImageURL: string
     title: string
+    postingTags: PostingTag[]
+}
+
+export interface ListBlogPostingRequest {
+    blogID: number
+    categoryID?: number
+    lastCursorID?: number
+    pageSize: number
+    search?: string
+    tagIDs?: number[]
 }
