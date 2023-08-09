@@ -2,7 +2,7 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import {Card,CardHeader,CardMedia,CardContent,CardActions, Avatar, Typography, IconButton} from '@mui/material';
 import FavoriteIcon from '@mui/icons-material/Favorite';
-import '../../assets/postcard.css'
+
 
 
 interface postType {
@@ -32,7 +32,9 @@ export default function PostCard({post}: ChildProps) {
 
 
     return (
-        <Card sx={{width: 280, display: 'inline-block',margin: '5px'}}>
+        <Card sx={{
+            width: 280, display: 'inline-block',margin: '1rem',boxShadow:'rgba(0, 0, 0, 0.04) 0px 4px 16px 0px',
+        }}>
             <CardHeader
                 avatar={<Avatar  aria-label="recipe">{post.homePostingUser.nickname[0]}</Avatar>}
                 title={`by ${post.homePostingUser.nickname}`}
@@ -41,11 +43,11 @@ export default function PostCard({post}: ChildProps) {
             <CardMedia
                 component="img" height="150" image={!!post.thumbnailImageUrl? post.thumbnailImageUrl : sample} alt="썸네일 사진"
                 onClick={moveToPost}/>
-            <CardContent className='postcard-contents' sx={{paddingBottom:0,}}>
-                <Typography className='postcard-title' variant="body1" color="text.first">
+            <CardContent sx={{paddingBottom:0,}}>
+                <Typography variant="body1" color="text.first">
                     {post.title}
                 </Typography>
-                <Typography className='postcard-summary' variant="body2" color="text.secondary">
+                <Typography variant="body2" color="text.secondary">
                     {post.summary}
                 </Typography>
             </CardContent>
