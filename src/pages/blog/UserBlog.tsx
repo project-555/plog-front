@@ -15,11 +15,12 @@ import {
 import Thumbnail from "../../components/common/Thumbnail";
 import TimeAgo from "../../components/common/TimeAgo";
 import SearchIcon from '@mui/icons-material/Search';
-import {Blog, ListBlogPostingRequest, Posting, PostingTag} from "../../types/BlogType";
+import {Blog, ListBlogPostingsRequest, Posting, PostingTag} from "../../types/BlogType";
 import {useEffect, useState} from "react";
 import {plogAuthAxios, plogAxios} from "../../modules/axios";
 import {AxiosError, AxiosResponse} from "axios";
 import {repeatQuerySerializer} from "../../modules/serialize";
+import {useInView} from 'react-intersection-observer';
 
 function extractContent(htmlString: string) {
     const parser = new DOMParser();
@@ -30,16 +31,16 @@ function extractContent(htmlString: string) {
 export function UserBlog() {
     const params = useParams<{ blogID: string }>()
 
-    const initialListBlogPostingRequest: ListBlogPostingRequest = {
+    const [listBlogPostingsRequest, setListBlogPostingsRequest] = useState<ListBlogPostingsRequest>(() => ({
         blogID: Number(params.blogID),
-        pageSize: 10,
+        pageSize: 5,
         tagIDs: []
-    }
-
-    const [listBlogPostingRequest, setListBlogPostingRequest] = useState<ListBlogPostingRequest>(initialListBlogPostingRequest)
+    }));
     const [blog, setBlog] = useState<Blog>()
     const [searchTerm, setSearchTerm] = useState<string>("")
-
+    const [postings, setPostings] = useState<Posting[]>([])
+    const [hasMore, setHasMore] = useState<boolean>(true)
+    const [ref, inView] = useInView({threshold: 0.1});
     useEffect(() => {
         plogAxios.get(`/blogs/${params.blogID}`).then(
             (response: AxiosResponse) => {
@@ -51,10 +52,42 @@ export function UserBlog() {
         )
     }, [params])
 
-    const [postings, setPostings] = useState<Posting[]>([])
+
+    useEffect(() => {
+        if (inView && postings.length > 0) {
+            const lastPostingID = postings[postings.length - 1].id;
+            setListBlogPostingsRequest((prevRequest) => ({
+                ...prevRequest,
+                lastCursorID: lastPostingID
+            }));
+        }
+    }, [postings, inView]);
+
+    useEffect(() => {
+        console.log(listBlogPostingsRequest)
+        if (!hasMore) return;
+
+        plogAuthAxios.get(`/blogs/${params.blogID}/postings`, {
+            params: listBlogPostingsRequest,
+            paramsSerializer: repeatQuerySerializer
+        }).then(
+            (response: AxiosResponse) => {
+                let newPostings = response.data.data.postings as Posting[]
+                if (newPostings.length < listBlogPostingsRequest.pageSize) {
+                    setHasMore(false)
+                }
+                setPostings((prevPostings: Posting[]) => [...prevPostings, ...newPostings])
+            }
+        ).catch(
+            (error: AxiosError) => {
+                console.log(error)
+            }
+        )
+    }, [listBlogPostingsRequest, hasMore])
+
 
     const handleToggleTagID = (tagID: number) => {
-        setListBlogPostingRequest((prevRequest) => {
+        setListBlogPostingsRequest((prevRequest) => {
             let newTagIDs = [...(prevRequest.tagIDs || [])];
             if (newTagIDs.includes(tagID)) {
                 newTagIDs = newTagIDs.filter((id) => id !== tagID);
@@ -63,31 +96,22 @@ export function UserBlog() {
             }
             return {
                 ...prevRequest,
-                tagIDs: newTagIDs
+                tagIDs: newTagIDs,
+                lastCursorID: undefined
             };
         });
+        setPostings([])
+        setHasMore(true)
     };
 
     const handleSearch = () => {
-        setListBlogPostingRequest((prevRequest) => {
-            return {...prevRequest, search: searchTerm}
+        setListBlogPostingsRequest((prevRequest) => {
+            return {...prevRequest, search: searchTerm, lastCursorID: undefined}
         });
+        setPostings([])
+        setHasMore(true)
     };
 
-    useEffect(() => {
-        plogAuthAxios.get(`/blogs/${params.blogID}/postings`, {
-            params: listBlogPostingRequest,
-            paramsSerializer: repeatQuerySerializer
-        }).then(
-            (response: AxiosResponse) => {
-                setPostings(response.data.data.postings as Posting[])
-            }
-        ).catch(
-            (error: AxiosError) => {
-                console.log(error)
-            }
-        )
-    }, [params, listBlogPostingRequest])
 
     return (
         <Box className="inner-container">
@@ -142,7 +166,7 @@ export function UserBlog() {
                                             <Chip
                                                 onClick={() => handleToggleTagID(postingTag.tagID)}
                                                 label={postingTag.tagName}
-                                                color={listBlogPostingRequest.tagIDs?.includes(postingTag.tagID) ? "primary" : "default"}
+                                                color={listBlogPostingsRequest.tagIDs?.includes(postingTag.tagID) ? "primary" : "default"}
                                             />
                                         ))
                                     }
@@ -157,6 +181,13 @@ export function UserBlog() {
                         </Card>
                     </ListItem>
                 ))}
+                {
+                    hasMore && (
+                        <div className="loading" ref={ref}>
+                            Loading...
+                        </div>
+                    )
+                }
             </List>
         </Box>
     )
