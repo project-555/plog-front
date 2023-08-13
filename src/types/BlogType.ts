@@ -32,7 +32,7 @@ export interface Posting {
     postingTags: PostingTag[]
 }
 
-export interface ListBlogPostingRequest {
+export interface ListBlogPostingsRequest {
     blogID: number
     categoryID?: number
     lastCursorID?: number
