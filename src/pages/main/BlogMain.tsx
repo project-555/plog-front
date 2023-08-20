@@ -1,8 +1,9 @@
-import {useState, useEffect} from 'react';
+import React, {useState, useEffect} from 'react';
 import {plogAxios} from "../../modules/axios";
 import PostCard from '../../components/blog/PostCard';
 import jwt_decode from "jwt-decode";
-
+import Skeleton from '@mui/material/Skeleton';
+import {Card, CardContent, CardHeader} from "@mui/material";
 
 const BlogMain = () => {
     let token = localStorage.getItem('token')
@@ -10,7 +11,7 @@ const BlogMain = () => {
     const [posting, setPosting] = useState<Object[]>([]);
     const [lastCursorID, setLastCursorID] = useState<number | null>(null)
     const [pageSize] = useState<number>(15);
-    const [isFetching, setIsFetching] = useState<boolean>(false);
+    const [isLoading, setIsLoading] = useState<boolean>(false);
 
     useEffect(()=> {
         if(token !== null){
@@ -29,8 +30,8 @@ const BlogMain = () => {
     });
 
     const getPosting = async () => {
-        if (isFetching) return;
-        setIsFetching(true);
+        if (isLoading) return;
+        setIsLoading(true);
 
         try{
             let res;
@@ -48,13 +49,12 @@ const BlogMain = () => {
             } else {
                 setPosting([...posting, ...postingArr]);
             }
-
             setLastCursorID(cursor);
         } catch (err) {
             console.log(err);
         }
 
-        setIsFetching(false);
+        setIsLoading(false);
     }
 
 
@@ -70,13 +70,40 @@ const BlogMain = () => {
 
     };
 
+
+    const SkeletonCard = () => {
+        const numbers = Array.from({ length: 3 }, (_, index) => index);
+
+        return (
+            <>
+                {numbers.map(number => (
+                    <Card key={number}
+                          sx={{width: 280, display: 'inline-block',margin: '1rem',boxShadow:'rgba(0, 0, 0, 0.04) 0px 4px 16px 0px',}}>
+                    <CardHeader
+                    avatar={<Skeleton animation="wave" variant="circular" width={40} height={40} />}
+                    title={<Skeleton animation="wave" height={10} width="80%" style={{ marginBottom: 6 }}/>}
+                    subheader={<Skeleton animation="wave" height={10} width="40%" />}/>
+                    <Skeleton sx={{ height: 150 }} animation="wave" variant="rectangular" />
+                    <CardContent sx={{paddingBottom:0,}}>
+                    <Skeleton animation="wave" height={10} style={{ marginBottom: 6 }} />
+                    <Skeleton animation="wave" height={10} width="80%" style={{ marginBottom: 6 }} />
+                    </CardContent>
+                    </Card>
+                ))}
+            </>
+        )
+    }
+
     return (
         <div className='posting-container'>
             <div className='postcard-wrapper inner-container'>
                 {posting && posting.map((post:any, idx)=> <PostCard key={idx} post={post}/>)}
+                {isLoading && <SkeletonCard/>}
             </div>
         </div>
     )
 };
 
 export default BlogMain;
+
+
