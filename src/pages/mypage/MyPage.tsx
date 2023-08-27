@@ -1,45 +1,71 @@
 import jwt_decode from "jwt-decode";
-import React, {ChangeEvent, useEffect, useRef, useState} from 'react';
-import {plogAuthAxios} from "../../modules/axios";
+import {Editor, Viewer} from "@toast-ui/react-editor";
+import {useNavigate} from "react-router-dom";
+import React, {ChangeEvent, useEffect, useState, useRef, RefObject} from 'react';
+import {plogAuthAxios, plogAxios} from "../../modules/axios";
+import {PlogEditor} from "../../components/blog/PlogEditor";
 import {MyPageInfo, UserInfo} from '../../types/UMSType';
-import Avatar from '@mui/material/Avatar';
-import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
-import Divider from '@mui/material/Divider';
-import TextField from '@mui/material/TextField';
-import Typography from '@mui/material/Typography';
+import {Avatar, Box, Button, Divider, TextField, Typography} from '@mui/material';
+import {Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Snackbar} from '@mui/material';
 
+type updateBlogRequest = {
+    introHTML?: string
+    introMd?: string
+    shortIntro?: string
+}
+
+type updateUserRequest = {
+    nickName: string
+    profileImageURL: string
+    userID: number
+}
 
 export function MyPage() {
+    const BASE_URL = process.env.REACT_APP_BASE_API_URL
+    const navigate = useNavigate();
     const token = localStorage.getItem('token')
     const [userID, setUserID] = useState(0);
+    const [blogID, setBlogID] = useState(0);
     const [myPageInfo, setMyPageInfo] = useState<MyPageInfo>({});
-    const [selectedFile, setSelectedFile] = useState<File | null>(null);
-    const [isNicknameEditMode, setIsNicknameEditMode] = useState(false);
-    const [isIntroEditMode, setIsIntroEditMode] = useState(false);
     const fileRef = useRef<HTMLInputElement | null>(null)
+    const editorRef = useRef<Editor>(null) as RefObject<Editor>;
+    const [isNicknameEditMode, setIsNicknameEditMode] = useState(false);
+    const [isShortIntroEditMode, setIsShortIntroEditMode] = useState(false);
+    const [introSnackbarOpen, setIntroSnackbarOpen] = useState(false);
+    const [withdrawalDialogOpen, setWithdrawalDialogOpen] = useState(false);
+
     useEffect(() => {
         if (token) {
             const decoded = jwt_decode(localStorage.getItem('token') || '') as UserInfo
             if (decoded) {
+                console.log(decoded)
                 setUserID(decoded.userID ? decoded.userID : 0)
+                setBlogID(decoded.blogID ? decoded.blogID : 0)
             }
         }
     }, [token])
 
     useEffect(() => {
         if (userID) {
-            plogAuthAxios.get(`http://api.plogcareers.com/users/${userID}`)
+            plogAuthAxios.get(`${BASE_URL}/users/${userID}`)
                 .then(res => {
-                    console.log(res.data.data)
                     setMyPageInfo(res.data.data)
                 })
         }
-    }, [])
+    }, [userID])
 
     const removeProfileImage = () => {
-        plogAuthAxios.put('http://api.plogcareers.com/auth/edit-profile', {nickName: myPageInfo.nickname, profileImageURL: null, userID: userID})
-            .then(res => console.log(res.data))
+        plogAuthAxios.put(`${BASE_URL}/auth/edit-profile`, {nickName: myPageInfo.nickname, profileImageURL: null, userID: userID})
+            .then(res => {
+                if (res.status === 204) {
+                    setMyPageInfo(prevState => ({
+                    ...prevState,
+                    profileImageURL: ""
+                }))
+                }
+                
+            })
+            .catch(err => console.log(err))
     }
 
     const uploadProfileImage = (event: ChangeEvent<HTMLInputElement>) => {
@@ -49,15 +75,13 @@ export function MyPage() {
             reader.readAsDataURL(file)
             reader.onload = () => {
                 const base64 = reader.result?.toString().split(',')[1];
-                console.log(base64)
-                plogAuthAxios.post('/upload-file', {fileBase64: base64})
+                plogAuthAxios.post(`${BASE_URL}/upload-file`, {fileBase64: base64})
                     .then((res) => {
-                        console.log(res.data.data.uploadedFileURL)
                         setMyPageInfo(prevState => ({
                             ...prevState,
                             profileImageURL: res.data.data.uploadedFileURL
                         }))
-                        plogAuthAxios.put('http://api.plogcareers.com/auth/edit-profile', {nickName: myPageInfo.nickname, profileImageURL: res.data.data.uploadedFileURL, userID: userID})
+                        plogAuthAxios.put(`${BASE_URL}/auth/edit-profile`, {nickName: myPageInfo.nickname, profileImageURL: res.data.data.uploadedFileURL, userID: userID})
                         .then(res => console.log(res.data))
                     })
                     .catch((err) => {
@@ -65,6 +89,51 @@ export function MyPage() {
                     });
             }
         }
+    }
+
+    const updateUserNickname = () => {
+        let params: updateUserRequest = {
+            nickName: myPageInfo.nickname as string,
+            profileImageURL: myPageInfo.profileImageURL as string,
+            userID: userID
+        }
+        console.log(`${BASE_URL}/auth/edit-profile`)
+        plogAxios.put(`${BASE_URL}/auth/edit-profile`, params)
+        setIsNicknameEditMode(false)
+    }
+
+    const updateUserShortIntro = () => {
+        let params: updateBlogRequest = {
+            shortIntro: myPageInfo.shortIntro as string
+        }
+        console.log(params)
+        plogAxios.patch(`${BASE_URL}/blogs/${blogID}`, params)
+        setIsShortIntroEditMode(false)
+    }
+
+    const updateUserIntro = () => {
+        let params: updateBlogRequest = {
+            introHTML: editorRef.current?.getInstance().getHTML() as string,
+            introMd: editorRef.current?.getInstance().getMarkdown() as string
+        }
+        console.log(params)
+        plogAxios.patch(`${BASE_URL}/blogs/${blogID}`, params)
+        setIntroSnackbarOpen(true)
+    }
+
+    const handleUserWithdrawal = () => {
+        const params = {
+            userID: userID
+        }
+        plogAuthAxios.post(`${BASE_URL}/auth/exit-user`, params)
+            .then(res => {
+                if (res.status === 201) {
+                    navigate('/')
+                } else {
+                    console.log(res.status)
+                }
+            })
+        setWithdrawalDialogOpen(false)
     }
 
     const handleNicknameChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -137,7 +206,7 @@ export function MyPage() {
                                     />
                                     <Button
                                         style={{color: '#6CAC23'}}
-                                        onClick={(event) => setIsNicknameEditMode(false)}
+                                        onClick={(event) => updateUserNickname()}
                                     >
                                         <u>저장</u>
                                     </Button>
@@ -160,7 +229,7 @@ export function MyPage() {
                         </Box>
                         <Box sx={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%', marginTop: '3px', marginBottom: '3px'}}
                         >
-                            {isIntroEditMode ? (
+                            {isShortIntroEditMode ? (
                                 <>
                                     <TextField
                                         InputProps={{style: {padding: '4px'}}}
@@ -173,7 +242,7 @@ export function MyPage() {
                                     />
                                     <Button
                                         style={{color: '#6CAC23'}}
-                                        onClick={(event) => setIsIntroEditMode(false)}
+                                        onClick={(event) => updateUserShortIntro()}
                                     >
                                         <u>저장</u>
                                     </Button>
@@ -187,7 +256,7 @@ export function MyPage() {
                                     </Typography>
                                     <Button
                                         style={{color: '#6CAC23'}}
-                                        onClick={(event) => setIsIntroEditMode(true)}
+                                        onClick={(event) => setIsShortIntroEditMode(true)}
                                     >
                                         <u>수정</u>
                                     </Button>
@@ -239,12 +308,66 @@ export function MyPage() {
                     <Box sx={{width: '648px'}}>
                         <Button
                             style={{backgroundColor: '#FF6F77', color: 'white'}}
+                            onClick={event => setWithdrawalDialogOpen(true)}
                         >
                             회원 탈퇴
                         </Button>
+                        <Dialog open={withdrawalDialogOpen} onClose={event => setWithdrawalDialogOpen(false)}>
+                            <DialogTitle><b>회원 탈퇴</b></DialogTitle>
+                            <DialogContent>
+                                <DialogContentText>
+                                    탈퇴 시 작성하신 포스트 및 댓글이 모두 삭제되며 복구되지 않습니다.<br />
+                                    정말로 탈퇴하시겠습니까?
+                                </DialogContentText>
+                            </DialogContent>
+                            <DialogActions>
+                                <Button 
+                                    sx={{color: '#000000', borderColor: '#6CAC23', borderWidth: '1px'}}
+                                    onClick={event => setWithdrawalDialogOpen(false)}
+                                >
+                                    취소
+                                </Button>
+                                <Button 
+                                    sx={{color: '#FFFFFF', backgroundColor: '#6CAC23', borderColor: '#6CAC23', borderWidth: '1px'}}
+                                    onClick={event => {handleUserWithdrawal()}}
+                                >
+                                    탈퇴
+                                </Button>
+                            </DialogActions>
+                        </Dialog>
+                    </Box>
+                </Box>
+                <Box sx={{display: 'flex', alignItems: 'center', padding: '16px'}}>
+                    <Box sx={{width: '120px'}}>
+                        <Typography 
+                            sx={{fontSize: '18px'}}
+                        >
+                            <b>자기소개</b>
+                        </Typography>
+                    </Box>
+                    <Box sx={{width: '648px', display: 'flex', justifyContent: 'flex-end'}}>
+                        <Button
+                            style={{color: '#6CAC23'}}
+                            onClick={(event) => updateUserIntro()}
+                        >
+                            <u>저장</u>
+                        </Button>
+                        <Snackbar
+                            anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+                            autoHideDuration={800}
+                            open={introSnackbarOpen}
+                            onClose={event => setIntroSnackbarOpen(false)}
+                            message="자기소개가 저장되었습니다."
+                        />
+                    </Box>
+                </Box>
+                <Box className="intro-container">
+                    <Box sx={{width: '766px'}}>
+                        <PlogEditor height={"600px"} initialValue={myPageInfo.introMd? myPageInfo.introMd : ""} ref={editorRef}/>
                     </Box>
                 </Box>
             </Box>
+            
         </Box>
     )
 }

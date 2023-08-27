@@ -53,4 +53,6 @@ export interface MyPageInfo {
     "email"?: string;
     "blogName"?: string;
     "shortIntro"?: string;
+    "introHTML"?: string;
+    "introMd"?: string;
 }

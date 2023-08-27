@@ -85,7 +85,8 @@ body{font-family: 'Noto Sans KR', 'sans-serif', -apple-system}
 .input-wrapper input {font-size: 1.5rem;line-height: 1rem;height: 2rem; border: none;}
 
 /*블로그 - 마이페이지*/
-.profile-container {display: flex; flex-direction: column; align-items: center; width: 768px; margin-top: 40px; margin-right: auto; margin-left: auto;}
+.profile-container {display: flex; flex-direction: column; align-items: center; width: 768px; margin-top: 40px; margin-bottom: 40px; margin-right: auto; margin-left: auto;}
+.intro-container {display: flex; align-items: center; width: 768px;}
 
 /*포스팅 - 글*/
 .posting-header-area{max-width: 770px; margin: 3rem auto 0 auto;}
