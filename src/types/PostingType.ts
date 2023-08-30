@@ -14,3 +14,20 @@ export interface CommentInfo {
     "user":CommentUser;
 }
 
+
+export interface postType {
+    "postingID": number;
+    "blogID": number;
+    "homePostingUser": homePostingUserType;
+    "title": string;
+    "starCnt": number;
+    "summary": string;
+    "thumbnailImageUrl": string;
+    "createDt": string;
+}
+
+export interface homePostingUserType {
+    "userID": number;
+    "nickname": string;
+}
+

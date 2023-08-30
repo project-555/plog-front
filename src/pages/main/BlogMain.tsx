@@ -4,11 +4,12 @@ import PostCard from '../../components/blog/PostCard';
 import jwt_decode from "jwt-decode";
 import Skeleton from '@mui/material/Skeleton';
 import {Card, CardContent, CardHeader} from "@mui/material";
+import {postType} from "../../types/PostingType";
 
 const BlogMain = () => {
     let token = localStorage.getItem('token')
 
-    const [posting, setPosting] = useState<Object[]>([]);
+    const [posting, setPosting] = useState<postType[]>([]);
     const [lastCursorID, setLastCursorID] = useState<number | null>(null)
     const [pageSize] = useState<number>(15);
     const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -97,7 +98,7 @@ const BlogMain = () => {
     return (
         <div className='posting-container'>
             <div className='postcard-wrapper inner-container'>
-                {posting && posting.map((post:any, idx)=> <PostCard key={idx} post={post}/>)}
+                {posting.length && posting.map((post: postType) => <PostCard key={post.postingID} post={post}/>)}
                 {isLoading && <SkeletonCard/>}
             </div>
         </div>

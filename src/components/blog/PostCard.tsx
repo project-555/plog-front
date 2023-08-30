@@ -2,28 +2,13 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import {Card,CardHeader,CardMedia,CardContent,CardActions, Avatar, Typography, IconButton} from '@mui/material';
 import FavoriteIcon from '@mui/icons-material/Favorite';
-
-interface postType {
-    "postingID": number;
-    "blogID": number;
-    "homePostingUser": homePostingUserType;
-    "title": string;
-    "starCnt": number;
-    "summary": string;
-    "thumbnailImageUrl": string;
-    "createDt": string;
-}
-
-interface homePostingUserType {
-    "userID": number;
-    "nickname": string;
-}
+import {postType} from "../../types/PostingType";
 
 type ChildProps  = {
     post : postType
 }
 
-export default function PostCard({post}: ChildProps) {
+const PostCard: React.FC<ChildProps> = ({ post }) => {
     const navigate = useNavigate();
     const sample = 'https://s3.ap-southeast-1.amazonaws.com/we-xpats.com/uploads/article/3824/ko_190_2.jpg'
 
@@ -65,3 +50,6 @@ export default function PostCard({post}: ChildProps) {
         </Card>
     );
 }
+
+
+export default PostCard;
