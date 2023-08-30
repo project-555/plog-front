@@ -38,7 +38,6 @@ export function MyPage() {
         if (token) {
             const decoded = jwt_decode(localStorage.getItem('token') || '') as UserInfo
             if (decoded) {
-                console.log(decoded)
                 setUserID(decoded.userID ? decoded.userID : 0)
                 setBlogID(decoded.blogID ? decoded.blogID : 0)
             }
@@ -49,7 +48,7 @@ export function MyPage() {
         if (userID) {
             plogAuthAxios.get(`${BASE_URL}/users/${userID}`)
                 .then(res => {
-                    setMyPageInfo(res.data.data)
+                    setMyPageInfo(res.data.data as MyPageInfo)
                 })
         }
     }, [userID])
@@ -63,7 +62,6 @@ export function MyPage() {
                     profileImageURL: ""
                 }))
                 }
-                
             })
             .catch(err => console.log(err))
     }
@@ -97,8 +95,7 @@ export function MyPage() {
             profileImageURL: myPageInfo.profileImageURL as string,
             userID: userID
         }
-        console.log(`${BASE_URL}/auth/edit-profile`)
-        plogAxios.put(`${BASE_URL}/auth/edit-profile`, params)
+        plogAuthAxios.put(`${BASE_URL}/auth/edit-profile`, params)
         setIsNicknameEditMode(false)
     }
 
@@ -106,8 +103,7 @@ export function MyPage() {
         let params: updateBlogRequest = {
             shortIntro: myPageInfo.shortIntro as string
         }
-        console.log(params)
-        plogAxios.patch(`${BASE_URL}/blogs/${blogID}`, params)
+        plogAuthAxios.patch(`${BASE_URL}/blogs/${blogID}`, params)
         setIsShortIntroEditMode(false)
     }
 
@@ -116,8 +112,7 @@ export function MyPage() {
             introHTML: editorRef.current?.getInstance().getHTML() as string,
             introMd: editorRef.current?.getInstance().getMarkdown() as string
         }
-        console.log(params)
-        plogAxios.patch(`${BASE_URL}/blogs/${blogID}`, params)
+        plogAuthAxios.patch(`${BASE_URL}/blogs/${blogID}`, params)
         setIntroSnackbarOpen(true)
     }
 
@@ -363,11 +358,10 @@ export function MyPage() {
                 </Box>
                 <Box className="intro-container">
                     <Box sx={{width: '766px'}}>
-                        <PlogEditor height={"600px"} initialValue={myPageInfo.introMd? myPageInfo.introMd : ""} ref={editorRef}/>
+                        {myPageInfo.introMd && <PlogEditor height={"600px"} initialValue={myPageInfo.introMd ? myPageInfo.introMd : ""} ref={editorRef}/>}
                     </Box>
                 </Box>
             </Box>
-            
         </Box>
     )
 }
