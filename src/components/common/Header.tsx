@@ -3,14 +3,14 @@ import {NavLink} from "react-router-dom";
 import jwt_decode from "jwt-decode";
 import {Button, IconButton, Menu, MenuItem} from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
-import {UserInfo} from "../../types/UMSType";
+import {LoginTokenPayload} from "../../types/UMSType";
 import {plogAuthAxios} from "../../modules/axios";
 
 
 export default function Header() {
 
     const token = localStorage.getItem('token')
-    const [userInfo, setUserInfo] = useState<UserInfo>({});
+    const [userInfo, setUserInfo] = useState<LoginTokenPayload>({});
 
     // 토큰 리프레시 남은 시간 (초기는 30분)
     const [expiredInterval, setExpiredInterval] = useState<number>(1800);
@@ -19,7 +19,7 @@ export default function Header() {
         if (!token) return;
 
         try {
-            const decoded = jwt_decode(token) as UserInfo
+            const decoded = jwt_decode(token) as LoginTokenPayload
             if (!decoded) return;
             // 만료 시간이 지난 토큰인 경우 로그아웃
             if ((decoded.exp ? decoded.exp : 0) < (new Date().getTime() / 1000 as number)) {
@@ -28,7 +28,7 @@ export default function Header() {
             }
             setUserInfo(decoded)
         } catch (error) {
-            console.log("Invalid Token Spectified: ", error)
+            console.log("Invalid Token Specified: ", error)
         }
 
     }, [token])
@@ -90,8 +90,10 @@ export default function Header() {
                 {
                     !!userInfo.nickname ?
                         <NavLink to='/'>
-                            <Button className='login-btn' variant="contained" onClick={openMenu}>{userInfo.nickname}</Button>
-                            <Menu anchorEl={anchorEl} open={open} onClose={closeMenu} MenuListProps={{'aria-labelledby': 'basic-button',}}>
+                            <Button className='login-btn' variant="contained"
+                                    onClick={openMenu}>{userInfo.nickname}</Button>
+                            <Menu anchorEl={anchorEl} open={open} onClose={closeMenu}
+                                  MenuListProps={{'aria-labelledby': 'basic-button',}}>
                                 <MenuItem onClick={logoutClick}>로그아웃</MenuItem>
                                 <MenuItem onClick={closeMenu}>
                                     <NavLink to='/mypage'>마이페이지</NavLink>
