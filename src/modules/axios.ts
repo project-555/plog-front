@@ -15,6 +15,13 @@ export const plogAuthAxios = axios.create({
     }
 })
 
+export function getPlogAxios() {
+    if (localStorage.getItem('token') === null) {
+        return plogAxios;
+    }
+    return plogAuthAxios;
+}
+
 export function getData(response: any) {
     return response.data.data;
 }
