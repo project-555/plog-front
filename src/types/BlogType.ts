@@ -7,7 +7,8 @@ export interface BlogUser {
 export interface Blog {
     blogID: number
     blogName: string
-    introHtml: string
+    introHTML: string
+    shortIntro: string
     blogUser: BlogUser
 
 }
@@ -39,4 +40,15 @@ export interface ListBlogPostingsRequest {
     pageSize: number
     search?: string
     tagIDs?: number[]
+}
+
+export interface CreateCategoryRequest {
+    categoryName: string
+    categoryDesc: string
+}
+
+export interface Category {
+    categoryID: number
+    categoryName: string
+    categoryDesc: string
 }

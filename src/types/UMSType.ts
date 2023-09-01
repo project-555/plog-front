@@ -16,17 +16,17 @@ export interface SignupParams {
     "blogName": string;
     "email": string;
     "firstName": string;
-    "introHTML" :string;
+    "introHTML": string;
     "lastName": string;
     "nickName": string;
     "password": string;
     "sex": string;
     "shortIntro": string;
-    "verifyToken" :	string;
+    "verifyToken": string;
 }
 
-//로그인 후 유저 정보
-export interface UserInfo {
+//로그인 토큰 페이로드
+export interface LoginTokenPayload {
     "sub"?: string;
     "roles"?: string[];
     "userID"?: number;
@@ -34,4 +34,14 @@ export interface UserInfo {
     "blogID"?: number;
     "iat"?: number;
     "exp"?: number;
+}
+
+// 유저 정보
+export interface User {
+    email: string;
+    nickname: string;
+    profileImageURL?: string;
+    blogName: string;
+    shortIntro?: string;
+    introHTML?: string;
 }
