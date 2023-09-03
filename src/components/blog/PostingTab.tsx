@@ -163,7 +163,6 @@ export function PostingTab(props: PostingTabProps) {
                     width: '100%'
                 }}>
                 <Box sx={{ml: 1}}>
-                    {/*포스팅 추가 버튼이 들어갈 자리*/}
                     {isBlogOwner && <Button variant="outlined"
                                             sx={{
                                                 color: "black",
