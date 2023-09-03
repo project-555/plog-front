@@ -4,24 +4,12 @@ import {useNavigate} from "react-router-dom";
 import React, {ChangeEvent, useEffect, useState, useRef, RefObject} from 'react';
 import {plogAuthAxios, plogAxios} from "../../modules/axios";
 import {PlogEditor} from "../../components/blog/PlogEditor";
-import {MyPageInfo, UserInfo} from '../../types/UMSType';
+import {LoginTokenPayload, MyPageInfo, UpdateUserRequest} from '../../types/UMSType';
+import { UpdateBlogRequest} from "../../types/BlogType";
 import {Avatar, Box, Button, Divider, TextField, Typography} from '@mui/material';
 import {Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Snackbar} from '@mui/material';
 
-type updateBlogRequest = {
-    introHTML?: string
-    introMd?: string
-    shortIntro?: string
-}
-
-type updateUserRequest = {
-    nickName: string
-    profileImageURL: string
-    userID: number
-}
-
 export function MyPage() {
-    const BASE_URL = process.env.REACT_APP_BASE_API_URL
     const navigate = useNavigate();
     const token = localStorage.getItem('token')
     const [userID, setUserID] = useState(0);
@@ -36,7 +24,7 @@ export function MyPage() {
 
     useEffect(() => {
         if (token) {
-            const decoded = jwt_decode(localStorage.getItem('token') || '') as UserInfo
+            const decoded = jwt_decode(localStorage.getItem('token') || '') as LoginTokenPayload
             if (decoded) {
                 setUserID(decoded.userID ? decoded.userID : 0)
                 setBlogID(decoded.blogID ? decoded.blogID : 0)
@@ -46,7 +34,7 @@ export function MyPage() {
 
     useEffect(() => {
         if (userID) {
-            plogAuthAxios.get(`${BASE_URL}/users/${userID}`)
+            plogAuthAxios.get(`/users/${userID}`)
                 .then(res => {
                     setMyPageInfo(res.data.data as MyPageInfo)
                 })
@@ -54,7 +42,7 @@ export function MyPage() {
     }, [userID])
 
     const removeProfileImage = () => {
-        plogAuthAxios.put(`${BASE_URL}/auth/edit-profile`, {nickName: myPageInfo.nickname, profileImageURL: null, userID: userID})
+        plogAuthAxios.put('/auth/edit-profile', {nickName: myPageInfo.nickname, profileImageURL: null, userID: userID})
             .then(res => {
                 if (res.status === 204) {
                     setMyPageInfo(prevState => ({
@@ -73,14 +61,13 @@ export function MyPage() {
             reader.readAsDataURL(file)
             reader.onload = () => {
                 const base64 = reader.result?.toString().split(',')[1];
-                plogAuthAxios.post(`${BASE_URL}/upload-file`, {fileBase64: base64})
+                plogAuthAxios.post('/upload-file', {fileBase64: base64})
                     .then((res) => {
                         setMyPageInfo(prevState => ({
                             ...prevState,
                             profileImageURL: res.data.data.uploadedFileURL
                         }))
-                        plogAuthAxios.put(`${BASE_URL}/auth/edit-profile`, {nickName: myPageInfo.nickname, profileImageURL: res.data.data.uploadedFileURL, userID: userID})
-                        .then(res => console.log(res.data))
+                        plogAuthAxios.put('/auth/edit-profile', {nickName: myPageInfo.nickname, profileImageURL: res.data.data.uploadedFileURL, userID: userID})
                     })
                     .catch((err) => {
                         console.log(err);
@@ -90,29 +77,29 @@ export function MyPage() {
     }
 
     const updateUserNickname = () => {
-        let params: updateUserRequest = {
+        let params: UpdateUserRequest = {
             nickName: myPageInfo.nickname as string,
             profileImageURL: myPageInfo.profileImageURL as string,
             userID: userID
         }
-        plogAuthAxios.put(`${BASE_URL}/auth/edit-profile`, params)
+        plogAuthAxios.put('/auth/edit-profile', params)
         setIsNicknameEditMode(false)
     }
 
     const updateUserShortIntro = () => {
-        let params: updateBlogRequest = {
+        let params: UpdateBlogRequest = {
             shortIntro: myPageInfo.shortIntro as string
         }
-        plogAuthAxios.patch(`${BASE_URL}/blogs/${blogID}`, params)
+        plogAuthAxios.patch(`/blogs/${blogID}`, params)
         setIsShortIntroEditMode(false)
     }
 
     const updateUserIntro = () => {
-        let params: updateBlogRequest = {
+        let params: UpdateBlogRequest = {
             introHTML: editorRef.current?.getInstance().getHTML() as string,
             introMd: editorRef.current?.getInstance().getMarkdown() as string
         }
-        plogAuthAxios.patch(`${BASE_URL}/blogs/${blogID}`, params)
+        plogAuthAxios.patch(`/blogs/${blogID}`, params)
         setIntroSnackbarOpen(true)
     }
 
@@ -120,14 +107,14 @@ export function MyPage() {
         const params = {
             userID: userID
         }
-        plogAuthAxios.post(`${BASE_URL}/auth/exit-user`, params)
+        plogAuthAxios.post('/auth/exit-user', params)
             .then(res => {
-                if (res.status === 201) {
-                    navigate('/')
-                } else {
-                    console.log(res.status)
-                }
+                localStorage.clear()
+                navigate('/')
             })
+            .catch((err) => {
+                console.log(err);
+            });
         setWithdrawalDialogOpen(false)
     }
 

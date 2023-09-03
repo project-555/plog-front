@@ -48,11 +48,17 @@ export interface User {
 
 //마이페이지 유저 정보
 export interface MyPageInfo {
-    "profileImageURL"?: string;
-    "nickname"?: string;
-    "email"?: string;
-    "blogName"?: string;
-    "shortIntro"?: string;
-    "introHTML"?: string;
-    "introMd"?: string;
+    profileImageURL?: string;
+    nickname?: string;
+    email?: string;
+    blogName?: string;
+    shortIntro?: string;
+    introHTML?: string;
+    introMd?: string;
+}
+
+export interface UpdateUserRequest {
+    nickName: string
+    profileImageURL: string
+    userID: number
 }
