@@ -11,7 +11,7 @@ import {
     ListItemText,
     TextField
 } from "@mui/material";
-import React, {useEffect} from "react";
+import React, {useEffect, useState} from "react";
 import {Category} from "../../types/BlogType";
 import {getPlogAxios} from "../../modules/axios";
 import AddIcon from "@mui/icons-material/Add";
@@ -28,12 +28,12 @@ type CategoryListProps = {
 }
 
 export function CategoryList(props: CategoryListProps) {
-    const [categories, setCategories] = React.useState<Category[]>([]);
-    const [needRefresh, setNeedRefresh] = React.useState<boolean>(true);
-    const [addCategoryBtnClicked, setAddCategoryBtnClicked] = React.useState<boolean>(false);
-    const [categoryName, setCategoryName] = React.useState<string>("" as string);
-    const [editCategoryID, setEditCategoryID] = React.useState<number | null>(null);
-    const [postingCount, setPostingCount] = React.useState<number>(0);
+    const [categories, setCategories] = useState<Category[]>([]);
+    const [needRefresh, setNeedRefresh] = useState<boolean>(true);
+    const [addCategoryBtnClicked, setAddCategoryBtnClicked] = useState<boolean>(false);
+    const [categoryName, setCategoryName] = useState<string>("" as string);
+    const [editCategoryID, setEditCategoryID] = useState<number | null>(null);
+    const [postingCount, setPostingCount] = useState<number>(0);
     useEffect(() => {
         if (!needRefresh) return;
 
