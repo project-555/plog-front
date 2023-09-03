@@ -52,3 +52,10 @@ export interface Category {
     categoryName: string
     categoryDesc: string
 }
+
+export interface UpdateBlogRequest {
+    introHTML?: string
+    introMd?: string
+    shortIntro?: string
+}
+
