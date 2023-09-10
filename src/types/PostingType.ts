@@ -35,3 +35,34 @@ export interface homePostingUserType {
     nickname: string;
 }
 
+export interface PostingResponse {
+    title: string
+    htmlContent: string
+    mdContent: string
+    categoryID: number
+    stateID: number
+    isCommentAllowed: boolean
+    isStarAllowed: boolean
+    thumbnailImageUrl: string
+}
+
+export interface PostingTag {
+    tagID: number;
+    tagName: string;
+}
+
+export interface PostingTagResponse {
+    postingTags: PostingTag[]
+}
+
+export interface EditPostingRequest {
+    title: string
+    htmlContent: string
+    mdContent: string
+    isCommentAllowed: boolean
+    isStarAllowed: boolean
+    thumbnailImageUrl: string
+    categoryID: number
+    stateID: number
+    tagIDs: number[]
+}
