@@ -1,0 +1,10 @@
+.sticky{position:sticky;top:8rem;}
+.starshare-container{margin-top:4rem;margin-right:3rem;position:fixed;width: 45px;background: #F8F9FA;border: 1px solid #F1F3F5;border-radius: 2rem;padding: 0.5rem;display: flex;flex-direction: column;-webkit-box-align: center;align-items: center;}
+.star-container {align-items:center; text-align: center;}
+.star-container .star-icon{width:2.7rem;height: 2.7rem; align-items:center; text-align: center; background: #ffffff;border: 1px solid #F1F3F5;border-radius: 50%; display: flex;justify-content: center; /* 수평 가운데 정렬 */}
+.star-cnt{margin:0.5rem 0; font-size: 0.75rem; color: #495057;line-height: 1;font-weight: bold; }
+
+
+@media (max-width: 900px) {
+    .starshare-container{display: none;}
+}
