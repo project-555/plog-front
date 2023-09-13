@@ -25,6 +25,7 @@ import Radio from "@mui/material/Radio";
 import FileDrop from "../../components/common/FileDrop";
 import LoadingButton from '@mui/lab/LoadingButton';
 import Autocomplete from '@mui/material/Autocomplete';
+import {htmlStringWithRandomID} from "../../modules/html";
 
 type CreatePostingRequest = {
     title: string
@@ -252,7 +253,7 @@ export function PostingWrite() {
         let request: CreatePostingRequest = {
             title: title,
             mdContent: editorRef.current?.getInstance().getMarkdown() as string,
-            htmlContent: editorRef.current?.getInstance().getHTML() as string,
+            htmlContent: htmlStringWithRandomID(editorRef.current?.getInstance().getHTML() as string),
             categoryID: categoryID,
             tagIDs: tagIDs,
             stateID: stateID,
@@ -266,6 +267,7 @@ export function PostingWrite() {
                 setIsPosted(true);
                 navigate(`/blogs/${blogID}/postings/${response.data.data}`)
             }).catch((error) => {
+                console.log(error);
                 setIsPosted(false);
             })
         } else {
