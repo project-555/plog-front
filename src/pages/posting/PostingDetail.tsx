@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from "react";
-import {useParams} from 'react-router-dom'
+import {useParams, useLocation} from 'react-router-dom'
 import {plogAxios} from "../../modules/axios";
 import { Viewer } from '@toast-ui/react-editor';
 import '@toast-ui/editor/dist/toastui-editor-viewer.css';
@@ -9,15 +9,15 @@ import Toc from "../../components/blog/Toc";
 
 export function PostingDetail (){
 
+    const location = useLocation()
+    const nickname = location.state.nickname;
     const {blogID, postingID}  = useParams();
-    const [nickname, setNickname] = useState<string>('')
     const [post, setPost] = useState(null);
 
     useEffect(()=> {
         plogAxios.get(`/blogs/${blogID}/postings/${postingID}`)
             .then(res => {
                 setPost(res.data.data)
-                setNickname('주여정test')
             })
             .catch(err => console.log(err.message))
     }, [])
@@ -27,7 +27,6 @@ export function PostingDetail (){
             {
                 post &&
                 <>
-
                     <div style={{display:'flex', justifyContent:'space-evenly',alignItems: 'flex-start', minHeight:'1200px' }} >
                         <StarShare blogId={blogID!} postingId={postingID!}/>
                         <div className='content-container'>
@@ -45,11 +44,7 @@ export function PostingDetail (){
                         </div>
                         <Toc htmlString={post['htmlContent']}/>
                     </div>
-
                 </>
-
-
-
             }
         </div>
 
