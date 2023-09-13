@@ -12,7 +12,7 @@ const PostCard: React.FC<ChildProps> = ({ post }) => {
     const navigate = useNavigate();
     const sample = 'https://s3.ap-southeast-1.amazonaws.com/we-xpats.com/uploads/article/3824/ko_190_2.jpg'
 
-    const moveToPost = () => navigate(`/blogs/${post.blogID}/postings/${post.postingID}`)
+    const moveToPost = () => navigate(`/blogs/${post.blogID}/postings/${post.postingID}`, {state : {nickname: post.homePostingUser.nickname}})
 
 
     return (
