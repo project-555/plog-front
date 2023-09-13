@@ -17,6 +17,7 @@ const PostCard: React.FC<ChildProps> = ({ post }) => {
 
     return (
         <Card
+            onClick={moveToPost}
             sx={{
                 width: 280, display: 'inline-block',margin: '1rem',boxShadow:'rgba(0, 0, 0, 0.04) 0px 4px 16px 0px',
                 transition: '0.25s box-shadow ease-in,0.25s transform ease-in',
@@ -31,8 +32,7 @@ const PostCard: React.FC<ChildProps> = ({ post }) => {
                 title={`by ${post.homePostingUser.nickname}`}
                 subheader={post.createDt.slice(0,10)}/>
             <CardMedia
-                component="img" height="150" image={!!post.thumbnailImageUrl? post.thumbnailImageUrl : sample} alt="썸네일 사진"
-                onClick={moveToPost}/>
+                component="img" height="150" image={!!post.thumbnailImageUrl? post.thumbnailImageUrl : sample} alt="썸네일 사진"/>
             <CardContent sx={{paddingBottom:0,}}>
                 <Typography variant="body1" color="text.first" sx={{height: '48px'}}>
                     {post.title}
