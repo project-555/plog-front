@@ -3,7 +3,16 @@ import '@toast-ui/editor/dist/toastui-editor.css';
 import '../../assets/css.css'
 import {PlogEditor} from "../../components/blog/PlogEditor";
 import TextField from '@mui/material/TextField';
-import {Chip, createFilterOptions, FormControl, FormGroup, FormHelperText, InputLabel, MenuItem, RadioGroup} from "@mui/material";
+import {
+    Chip,
+    createFilterOptions,
+    FormControl,
+    FormGroup,
+    FormHelperText,
+    InputLabel,
+    MenuItem,
+    RadioGroup
+} from "@mui/material";
 import Select, {SelectChangeEvent} from '@mui/material/Select';
 import {Send} from "@mui/icons-material";
 import {plogAuthAxios, plogAxios} from "../../modules/axios";
@@ -17,7 +26,8 @@ import FileDrop from "../../components/common/FileDrop";
 import LoadingButton from '@mui/lab/LoadingButton';
 import Autocomplete from '@mui/material/Autocomplete';
 
-import {PostingResponse, PostingTagResponse, PostingTag, EditPostingRequest} from "../../types/PostingType";
+import {EditPostingRequest, PostingResponse, PostingTag, PostingTagResponse} from "../../types/PostingType";
+import {htmlStringWithRandomID} from "../../modules/html";
 
 type Category = {
     categoryID: number
@@ -58,10 +68,10 @@ export function PostingEdit() {
         isCommentAllowed: true,
         isStarAllowed: true,
         thumbnailImageUrl: ""
-      })
+    })
     const [postingTagResponse, setPostingTagResponse] = useState<PostingTagResponse>({
         postingTags: []
-      })
+    })
     const titleRef = useRef<HTMLInputElement>(null);
     const categoryRef = useRef<HTMLSelectElement>(null);
     const isStarAllowedRef = useRef<HTMLInputElement>(null);
@@ -106,7 +116,7 @@ export function PostingEdit() {
 
     useEffect(() => {
         plogAxios.get(`blogs/${blogID}/tags`)
-            .then((response) => 
+            .then((response) =>
                 setTags(response.data.data.tags)
             );
     }, [blogID, postingTagResponse.postingTags])
@@ -144,14 +154,14 @@ export function PostingEdit() {
             postingTags: postingTagResponse.postingTags.filter((postingTag) => postingTag.tagID !== tag.tagID)
         })
     }
-    
+
     const handleChangeTitle = (event: React.ChangeEvent<HTMLInputElement>) => {
         setPostingResponse(prevState => ({
             ...prevState,
             title: event.target.value
         }));
     }
-    
+
     const handleChangeCategoryID = (event: SelectChangeEvent) => {
         setPostingResponse(prevState => ({
             ...prevState,
@@ -192,7 +202,7 @@ export function PostingEdit() {
                 if (checkDuplicateTags({tagID: newValue.tagID, tagName: newValue.tagName})) {
                     setPostingTagResponse(prevState => ({
                         postingTags: [
-                            ...prevState.postingTags, 
+                            ...prevState.postingTags,
                             {
                                 tagID: tag.tagID,
                                 tagName: tag.tagName
@@ -224,7 +234,7 @@ export function PostingEdit() {
             ).then((response) => {
                 setPostingTagResponse(prevState => ({
                     postingTags: [
-                        ...prevState.postingTags, 
+                        ...prevState.postingTags,
                         {
                             tagID: response.data.data.tagID,
                             tagName: response.data.data.tagName
@@ -239,7 +249,7 @@ export function PostingEdit() {
             if (checkDuplicateTags({tagID: newValue.tagID, tagName: newValue.tagName})) {
                 setPostingTagResponse(prevState => ({
                     postingTags: [
-                        ...prevState.postingTags, 
+                        ...prevState.postingTags,
                         {
                             tagID: newValue.tagID,
                             tagName: newValue.tagName
@@ -318,7 +328,7 @@ export function PostingEdit() {
         let request: EditPostingRequest = {
             title: postingResponse.title,
             mdContent: editorRef.current?.getInstance().getMarkdown() as string,
-            htmlContent: editorRef.current?.getInstance().getHTML() as string,
+            htmlContent: htmlStringWithRandomID(editorRef.current?.getInstance().getHTML() as string),
             isCommentAllowed: postingResponse.isCommentAllowed,
             isStarAllowed: postingResponse.isStarAllowed,
             thumbnailImageUrl: postingResponse.thumbnailImageUrl,
@@ -360,13 +370,13 @@ export function PostingEdit() {
                     <Box sx={{mb: 3}}>
                         {
                             postingTagResponse.postingTags.length > 0 && postingTagResponse.postingTags.map((tag) => {
-                                return (tag != null && 
-                                <Chip
-                                    key={tag.tagID}
-                                    label={tag.tagName}
-                                    sx={{mr: 0.5, mb: 0.5}}
-                                    onDelete={() => handleDeletePostingTag(tag)}
-                                />)
+                                return (tag != null &&
+                                    <Chip
+                                        key={tag.tagID}
+                                        label={tag.tagName}
+                                        sx={{mr: 0.5, mb: 0.5}}
+                                        onDelete={() => handleDeletePostingTag(tag)}
+                                    />)
                             })
                         }
                         <Autocomplete
@@ -413,17 +423,22 @@ export function PostingEdit() {
                             }
                         </FormControl>
                     }
-                    {postingResponse.mdContent && <PlogEditor height={"600px"} initialValue={postingResponse.mdContent? postingResponse.mdContent : ""} ref={editorRef}/>}
+                    {postingResponse.mdContent && <PlogEditor height={"600px"}
+                                                              initialValue={postingResponse.mdContent ? postingResponse.mdContent : ""}
+                                                              ref={editorRef}/>}
                     <Box>
                         <FileDrop onFileAdded={handleFileAdded}/>
-                        {postingResponse.thumbnailImageUrl && <img src={postingResponse.thumbnailImageUrl} alt="uploaded image" width="500"/>}
+                        {postingResponse.thumbnailImageUrl &&
+                            <img src={postingResponse.thumbnailImageUrl} alt="uploaded image" width="500"/>}
                         <Box textAlign="center">
                             <FormControlLabel
-                                control={<Switch checked={postingResponse.isCommentAllowed} onChange={handleChangeIsCommentAllowed}
+                                control={<Switch checked={postingResponse.isCommentAllowed}
+                                                 onChange={handleChangeIsCommentAllowed}
                                                  inputRef={isCommentAllowedRef}
                                                  defaultChecked/>} label="덧글 허용"/>
                             <FormControlLabel
-                                control={<Switch checked={postingResponse.isStarAllowed} onChange={handleChangeIsStarAllowed}
+                                control={<Switch checked={postingResponse.isStarAllowed}
+                                                 onChange={handleChangeIsStarAllowed}
                                                  inputRef={isStarAllowedRef}
                                                  defaultChecked/>} label="별점 허용"/>
                             <FormControl>
