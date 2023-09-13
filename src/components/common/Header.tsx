@@ -4,12 +4,14 @@ import jwt_decode from "jwt-decode";
 import {Button, IconButton, Menu, MenuItem} from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import {LoginTokenPayload} from "../../types/UMSType";
-import {plogAuthAxios} from "../../modules/axios";
+import {plogAuthAxios, plogAxios} from "../../modules/axios";
 
 
 export default function Header() {
 
-    const token = localStorage.getItem('token')
+    const token = localStorage.getItem('token');
+    const userID = localStorage.getItem('userID');
+    const [blogID, setBlogID] = useState(null);
     const [userInfo, setUserInfo] = useState<LoginTokenPayload>({});
 
     // 토큰 리프레시 남은 시간 (초기는 30분)
@@ -24,6 +26,8 @@ export default function Header() {
             // 만료 시간이 지난 토큰인 경우 로그아웃
             if ((decoded.exp ? decoded.exp : 0) < (new Date().getTime() / 1000 as number)) {
                 localStorage.removeItem('token')
+                localStorage.removeItem('userID')
+                setBlogID(null)
                 return;
             }
             setUserInfo(decoded)
@@ -61,6 +65,17 @@ export default function Header() {
         )
     }, [expiredInterval])
 
+
+    useEffect(()=> {
+        if(!!token && !!userID){
+            plogAxios.get(`/users/${userID}`)
+                .then(response => {
+                    setBlogID(response.data.data.blogID)
+                })
+        }
+
+    },[userID])
+
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
     const open = Boolean(anchorEl);
     const openMenu = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -73,9 +88,11 @@ export default function Header() {
 
     const logoutClick = () => {
         setAnchorEl(null)
-        localStorage.clear()
+        localStorage.removeItem('token')
+        localStorage.removeItem('userID')
         window.location.reload()
     }
+
 
 
     return (
@@ -87,6 +104,12 @@ export default function Header() {
                         <SearchIcon className='search-btn'/>
                     </IconButton>
                 </NavLink>
+                {
+                    !!blogID &&
+                    <NavLink to={`/blogs/${blogID}/write-posting`}>
+                        <span className='write-posting-btn'>새 글 작성</span>
+                    </NavLink>
+                }
                 {
                     !!userInfo.nickname ?
                         <NavLink to='/'>
