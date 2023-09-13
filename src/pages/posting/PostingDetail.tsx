@@ -4,12 +4,12 @@ import {plogAxios} from "../../modules/axios";
 import { Viewer } from '@toast-ui/react-editor';
 import '@toast-ui/editor/dist/toastui-editor-viewer.css';
 import Comment from '../../components/blog/Comment'
-
+import StarShare from "../../components/blog/StarShare";
+import Toc from "../../components/blog/Toc";
 
 export function PostingDetail (){
 
     const {blogID, postingID}  = useParams();
-
     const [nickname, setNickname] = useState<string>('')
     const [post, setPost] = useState(null);
 
@@ -26,19 +26,29 @@ export function PostingDetail (){
         <div  className='inner-container'>
             {
                 post &&
-                <div>
-                    <div className='posting-header-area' style={{height:'200px', textAlign:'center'}}>
-                        <h1 className='title'>{post['title']}</h1>
-                        <div className='posting-info'>
-                            <span className='bolder'>{nickname}</span>
-                            <span className='explain'>{post['updateDt']}</span>
+                <>
+
+                    <div style={{display:'flex', justifyContent:'space-evenly',alignItems: 'flex-start', minHeight:'1200px' }} >
+                        <StarShare blogId={blogID!} postingId={postingID!}/>
+                        <div className='content-container'>
+                            <div className='posting-header-area' style={{height:'200px', textAlign:'center'}}>
+                                <h1 className='title'>{post['title']}</h1>
+                                <div className='posting-info'>
+                                    <span className='bolder'>{nickname}</span>
+                                    <span className='explain'>{post['updateDt']}</span>
+                                </div>
+                            </div>
+                            <div className='posting-contents-area'>
+                                <Viewer initialValue={post['htmlContent']}/>
+                            </div>
+                            <Comment/>
                         </div>
+                        <Toc htmlString={post['htmlContent']}/>
                     </div>
-                    <div className='posting-contents-area'>
-                        <Viewer initialValue={post['htmlContent']}/>
-                    </div>
-                    <Comment/>
-                </div>
+
+                </>
+
+
 
             }
         </div>
