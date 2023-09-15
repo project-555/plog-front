@@ -26,6 +26,7 @@ import FileDrop from "../../components/common/FileDrop";
 import LoadingButton from '@mui/lab/LoadingButton';
 import Autocomplete from '@mui/material/Autocomplete';
 import {htmlStringWithRandomID} from "../../modules/html";
+import {uploadFile} from "../../modules/file";
 
 type CreatePostingRequest = {
     title: string
@@ -81,20 +82,9 @@ export function PostingWrite() {
     const editorRef = useRef<Editor>(null) as RefObject<Editor>;
     const [isPosted, setIsPosted] = useState<boolean>(false);
     const handleFileAdded = (file: File) => {
-        const reader = new FileReader();
-
-        reader.onload = () => {
-            plogAuthAxios.post('/upload-file', {
-                fileBase64: reader.result?.toString().split(',')[1]
-            }).then((res) => {
-                setThumbnailURL(res.data.data.uploadedFileURL);
-            }).catch((err) => {
-                console.log(err);
-            })
-        };
-
-        reader.readAsDataURL(file);
+        uploadFile(file, setThumbnailURL)
     };
+
 
     useEffect(() => {
         plogAxios.get(`/blogs/${blogID}/categories`)
