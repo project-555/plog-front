@@ -1,13 +1,26 @@
 import jwt_decode from "jwt-decode";
-import {Editor, Viewer} from "@toast-ui/react-editor";
+import {Editor} from "@toast-ui/react-editor";
 import {useNavigate} from "react-router-dom";
-import React, {ChangeEvent, useEffect, useState, useRef, RefObject} from 'react';
-import {plogAuthAxios, plogAxios} from "../../modules/axios";
+import React, {ChangeEvent, RefObject, useEffect, useRef, useState} from 'react';
+import {plogAuthAxios} from "../../modules/axios";
 import {PlogEditor} from "../../components/blog/PlogEditor";
 import {LoginTokenPayload, MyPageInfo, UpdateUserRequest} from '../../types/UMSType';
-import { UpdateBlogRequest} from "../../types/BlogType";
-import {Avatar, Box, Button, Divider, TextField, Typography} from '@mui/material';
-import {Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Snackbar} from '@mui/material';
+import {UpdateBlogRequest} from "../../types/BlogType";
+import {
+    Avatar,
+    Box,
+    Button,
+    Dialog,
+    DialogActions,
+    DialogContent,
+    DialogContentText,
+    DialogTitle,
+    Divider,
+    Snackbar,
+    TextField,
+    Typography
+} from '@mui/material';
+import {uploadFile} from "../../modules/file";
 
 export function MyPage() {
     const navigate = useNavigate();
@@ -46,9 +59,9 @@ export function MyPage() {
             .then(res => {
                 if (res.status === 204) {
                     setMyPageInfo(prevState => ({
-                    ...prevState,
-                    profileImageURL: ""
-                }))
+                        ...prevState,
+                        profileImageURL: ""
+                    }))
                 }
             })
             .catch(err => console.log(err))
@@ -57,22 +70,18 @@ export function MyPage() {
     const uploadProfileImage = (event: ChangeEvent<HTMLInputElement>) => {
         const file = event.target.files?.[0] || null;
         if (file) {
-            const reader = new FileReader();
-            reader.readAsDataURL(file)
-            reader.onload = () => {
-                const base64 = reader.result?.toString().split(',')[1];
-                plogAuthAxios.post('/upload-file', {fileBase64: base64})
-                    .then((res) => {
-                        setMyPageInfo(prevState => ({
-                            ...prevState,
-                            profileImageURL: res.data.data.uploadedFileURL
-                        }))
-                        plogAuthAxios.put('/auth/edit-profile', {nickName: myPageInfo.nickname, profileImageURL: res.data.data.uploadedFileURL, userID: userID})
-                    })
-                    .catch((err) => {
-                        console.log(err);
-                    });
-            }
+            uploadFile(file, (uploadedURL: string) => {
+                setMyPageInfo(prevState => ({
+                    ...prevState,
+                    profileImageURL: uploadedURL
+                }))
+
+                plogAuthAxios.put('/auth/edit-profile', {
+                    nickName: myPageInfo.nickname,
+                    profileImageURL: uploadedURL,
+                    userID: userID
+                })
+            })
         }
     }
 
@@ -142,7 +151,7 @@ export function MyPage() {
                     <Box sx={{display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
                         <Avatar sx={{width: 150, height: 150}} src={myPageInfo.profileImageURL}
                                 alt={myPageInfo.nickname}/>
-                        <Box sx={{display: 'flex', flexDirection: 'column', marginTop:'15px', marginBottom: '10px'}}>
+                        <Box sx={{display: 'flex', flexDirection: 'column', marginTop: '15px', marginBottom: '10px'}}>
                             <Button
                                 style={{width: 160, backgroundColor: '#6CAC23', fontSize: '16px'}}
                                 size='small'
@@ -174,8 +183,22 @@ export function MyPage() {
                         variant="middle"
                         flexItem
                     />
-                    <Box sx={{display: 'flex',flexDirection: 'column', alignItems: 'flex-start', width: '100%', marginTop: '10px', marginBottom: '10px'}}>
-                        <Box sx={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%', marginTop: '3px', marginBottom: '3px'}}>
+                    <Box sx={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        alignItems: 'flex-start',
+                        width: '100%',
+                        marginTop: '10px',
+                        marginBottom: '10px'
+                    }}>
+                        <Box sx={{
+                            display: 'flex',
+                            justifyContent: 'space-between',
+                            alignItems: 'center',
+                            width: '100%',
+                            marginTop: '3px',
+                            marginBottom: '3px'
+                        }}>
                             {isNicknameEditMode ? (
                                 <>
                                     <TextField
@@ -209,7 +232,14 @@ export function MyPage() {
                                 </>
                             )}
                         </Box>
-                        <Box sx={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%', marginTop: '3px', marginBottom: '3px'}}
+                        <Box sx={{
+                            display: 'flex',
+                            justifyContent: 'space-between',
+                            alignItems: 'center',
+                            width: '100%',
+                            marginTop: '3px',
+                            marginBottom: '3px'
+                        }}
                         >
                             {isShortIntroEditMode ? (
                                 <>
@@ -298,20 +328,27 @@ export function MyPage() {
                             <DialogTitle><b>회원 탈퇴</b></DialogTitle>
                             <DialogContent>
                                 <DialogContentText>
-                                    탈퇴 시 작성하신 포스트 및 댓글이 모두 삭제되며 복구되지 않습니다.<br />
+                                    탈퇴 시 작성하신 포스트 및 댓글이 모두 삭제되며 복구되지 않습니다.<br/>
                                     정말로 탈퇴하시겠습니까?
                                 </DialogContentText>
                             </DialogContent>
                             <DialogActions>
-                                <Button 
+                                <Button
                                     sx={{color: '#000000', borderColor: '#6CAC23', borderWidth: '1px'}}
                                     onClick={event => setWithdrawalDialogOpen(false)}
                                 >
                                     취소
                                 </Button>
-                                <Button 
-                                    sx={{color: '#FFFFFF', backgroundColor: '#6CAC23', borderColor: '#6CAC23', borderWidth: '1px'}}
-                                    onClick={event => {handleUserWithdrawal()}}
+                                <Button
+                                    sx={{
+                                        color: '#FFFFFF',
+                                        backgroundColor: '#6CAC23',
+                                        borderColor: '#6CAC23',
+                                        borderWidth: '1px'
+                                    }}
+                                    onClick={event => {
+                                        handleUserWithdrawal()
+                                    }}
                                 >
                                     탈퇴
                                 </Button>
@@ -321,7 +358,7 @@ export function MyPage() {
                 </Box>
                 <Box sx={{display: 'flex', alignItems: 'center', padding: '16px'}}>
                     <Box sx={{width: '120px'}}>
-                        <Typography 
+                        <Typography
                             sx={{fontSize: '18px'}}
                         >
                             <b>자기소개</b>
@@ -335,7 +372,7 @@ export function MyPage() {
                             <u>저장</u>
                         </Button>
                         <Snackbar
-                            anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+                            anchorOrigin={{vertical: 'bottom', horizontal: 'right'}}
                             autoHideDuration={800}
                             open={introSnackbarOpen}
                             onClose={event => setIntroSnackbarOpen(false)}
@@ -345,7 +382,9 @@ export function MyPage() {
                 </Box>
                 <Box className="intro-container">
                     <Box sx={{width: '766px'}}>
-                        {myPageInfo.introMd && <PlogEditor height={"600px"} initialValue={myPageInfo.introMd ? myPageInfo.introMd : ""} ref={editorRef}/>}
+                        {myPageInfo.introMd &&
+                            <PlogEditor height={"600px"} initialValue={myPageInfo.introMd ? myPageInfo.introMd : ""}
+                                        ref={editorRef}/>}
                     </Box>
                 </Box>
             </Box>

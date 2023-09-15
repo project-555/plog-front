@@ -28,6 +28,7 @@ import Autocomplete from '@mui/material/Autocomplete';
 
 import {EditPostingRequest, PostingResponse, PostingTag, PostingTagResponse} from "../../types/PostingType";
 import {htmlStringWithRandomID} from "../../modules/html";
+import {uploadFile} from "../../modules/file";
 
 type Category = {
     categoryID: number
@@ -290,22 +291,12 @@ export function PostingEdit() {
     }
 
     const handleFileAdded = (file: File) => {
-        const reader = new FileReader();
-
-        reader.onload = () => {
-            plogAuthAxios.post('/upload-file', {
-                fileBase64: reader.result?.toString().split(',')[1]
-            }).then((res) => {
-                setPostingResponse(prevState => ({
-                    ...prevState,
-                    thumbnailImageUrl: res.data.data.uploadedFileURL
-                }));
-            }).catch((err) => {
-                console.log(err);
-            })
-        };
-
-        reader.readAsDataURL(file);
+        uploadFile(file, (uploadedURL: string) => {
+            setPostingResponse(prevState => ({
+                ...prevState,
+                thumbnailImageUrl: uploadedURL
+            }))
+        })
     };
 
     function EditPostingRequestValidate(request: EditPostingRequest): boolean {
