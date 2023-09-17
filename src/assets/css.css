@@ -109,9 +109,9 @@ body{font-family: 'Noto Sans KR', 'sans-serif', -apple-system}
 .comment-btn{float:right;height:30px;border:none;border-radius:4px;color:#fff;background-color: #12B886;}
 .comment-area {margin-top:100px;}
 .comment-area .comment-container{margin: 20px 0;padding: 15px 0;border-bottom: 1px solid #eee;}
-.comment-area .profile-container{display: flex; justify-content: space-between;}
-.comment-area .profile-container .profile{display: flex;}
-.comment-area .profile-container img{width: 45px;margin-right: 5px;}
+.comment-area .profile-wrapper{display: flex; justify-content: space-between;}
+.comment-area .profile-wrapper .profile{display: flex;}
+.comment-area .profile-wrapper img{width: 45px;margin-right: 5px;}
 .comment-area .user-info .username{font-weight: bold; margin-bottom: 7px;}
 .comment-area .edit-btns {color: #777777;cursor: pointer}
 .comment-area .edit-btns span:hover{border-bottom:1px solid #777777;}
