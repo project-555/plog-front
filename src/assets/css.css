@@ -91,12 +91,16 @@ body{font-family: 'Noto Sans KR', 'sans-serif', -apple-system}
 .profile-container {display: flex; flex-direction: column; align-items: center; width: 768px; margin-top: 40px; margin-bottom: 40px; margin-right: auto; margin-left: auto;}
 .intro-container {display: flex; align-items: center; width: 768px;}
 
-/*포스팅 - 글*/
+/*포스팅 디테일 - 글*/
 .posting-header-area{max-width: 770px; margin: 3rem auto 0 auto;}
 .posting-header-area h1{text-align: left;}
-.posting-info{text-align: left; margin-top:1.5rem;}
+.posting-info{text-align: left; margin-top:1.5rem;display: flex; justify-content: space-between;}
 .posting-info .bolder{margin-right:10px;}
-.posting-contents-area {max-width: 770px; margin:0 auto}
+.posting-info ul{text-decoration: none;}
+.posting-info li{float: left; margin-right: 5px; color: #333333}
+.posting-info li:hover{text-decoration: underline;cursor: pointer;}
+.content-container .tag-list{margin: 1rem 0; text-align: left;}
+.posting-contents-area {max-width: 770px; margin:0 auto 5rem auto;}
 
 .posting-comment-area {max-width: 770px; margin:0 auto}
 .posting-comment-area textarea{resize: none; border: 1px solid #eee; border-radius: 5px;}
