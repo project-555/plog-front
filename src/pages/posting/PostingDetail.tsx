@@ -10,9 +10,6 @@ import Toc from "../../components/blog/Toc";
 export function PostingDetail (){
 
     const navigate = useNavigate()
-
-    const token = localStorage.getItem('token')
-    const userID = localStorage.getItem('userID')
     const {blogID, postingID}  = useParams();
     const [nickname, setNickname] = useState('')
     const [post, setPost] = useState(null);
@@ -41,9 +38,11 @@ export function PostingDetail (){
                     navigate('/')
                     }
                 )
-        }else {
-
         }
+    }
+
+    const dateParser = (date :string) => {
+        return date.replaceAll('T',' ').slice(0,19)
     }
 
     return (
@@ -59,7 +58,7 @@ export function PostingDetail (){
                                 <div className='posting-info'>
                                     <div>
                                         <span className='bolder'>{nickname}</span>
-                                        <span className='explain'>{post['updateDt']}</span>
+                                        <span className='explain'>{dateParser(post['updateDt'])}</span>
                                     </div>
                                     <ul>
                                         <li onClick={()=>navigate(`/blogs/${blogID}/postings/${postingID}/edit-posting`)}>수정</li>
