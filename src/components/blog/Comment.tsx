@@ -7,9 +7,7 @@ import {Mention, MentionsInput} from 'react-mentions';
 import '../../assets/comment.css'
 import {plogAuthAxios, plogAxios} from "../../modules/axios";
 
-const Comment = () => {
-
-
+const Comment = ({isCommentAllowed}: {isCommentAllowed: boolean }) => {
     const navigate = useNavigate();
     const {blogID, postingID}  = useParams();
     const [commentList, setCommentList] = useState<any>([]);// 댓글 목록 불러오기
@@ -122,14 +120,16 @@ const Comment = () => {
 
             <h3>{commentList.length}개의 댓글</h3>
             <div className='input-area'>
-                <textarea className='comment-input' placeholder='댓글을 작성하세요'
-                       value={comment}
+                <textarea className='comment-input' placeholder={isCommentAllowed ? '댓글을 작성하세요' : '댓글 기능을 사용하지 않습니다'}
+                       value={comment} disabled={!isCommentAllowed}
                        onChange={(e)=>setComment(e.target.value)}/>
-                <button className='comment-btn' onClick={writeComment}>댓글 작성</button>
+                <button className='comment-btn' onClick={writeComment} disabled={!isCommentAllowed}>댓글 작성</button>
             </div>
 
-            <div className='comment-area'>
-                {commentList && commentList.map((c:CommentInfo) =>
+            {
+                isCommentAllowed &&
+                <div className='comment-area'>
+                    {commentList && commentList.map((c:CommentInfo) =>
                         <div className='comment-container'>
                             <div className="profile-container">
                                 <div className='profile'>
@@ -206,7 +206,7 @@ const Comment = () => {
                                                         <textarea className='comment-input' value={childC.commentContent} onChange={(e)=>setChildComment(e.target.value)}/>
                                                     }
                                                 </div>
-                                                )}
+                                            )}
                                         </>
                                         :
                                         <></>
@@ -224,8 +224,10 @@ const Comment = () => {
                                 </>
                             }
                         </div>
-                )}
-            </div>
+                    )}
+                </div>
+            }
+
         </div>
     );
 };
