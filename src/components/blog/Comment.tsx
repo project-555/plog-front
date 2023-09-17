@@ -114,10 +114,11 @@ const Comment = ({isCommentAllowed}: {isCommentAllowed: boolean }) => {
         return [user,comment]
     }
 
-
+    const dateParser = (date :string) => {
+        return date.replaceAll('T',' ').slice(0,19)
+    }
     return (
         <div className='posting-comment-area '>
-
             <h3>{commentList.length}개의 댓글</h3>
             <div className='input-area'>
                 <textarea className='comment-input' placeholder={isCommentAllowed ? '댓글을 작성하세요' : '댓글 기능을 사용하지 않습니다'}
@@ -131,24 +132,22 @@ const Comment = ({isCommentAllowed}: {isCommentAllowed: boolean }) => {
                 <div className='comment-area'>
                     {commentList && commentList.map((c:CommentInfo) =>
                         <div className='comment-container'>
-                            <div className="profile-container">
+                            <div className="profile-wrapper">
                                 <div className='profile'>
                                     <a href='/'>
                                         <img src="https://velog.velcdn.com/images/jke0829/profile/82d38172-0923-4c1a-b1ac-c0fe740a2cf0/social_profile.jpeg" alt="user-thumbnail"/>
                                     </a>
                                     <div className="user-info">
                                         <div className="username">{c.user.nickname}</div>
-                                        <div className="date">{c.createDt}</div>
+                                        <div className="date">{dateParser(c.createDt)}</div>
                                     </div>
                                 </div>
-
                                 {
                                     String(c.user.userID) === localStorage.getItem('userID') &&
                                     <div className="edit-btns">
                                         <span className='edit' onClick={()=>setEditable(c.id)}>수정</span>
                                         <span className='del' onClick={()=> delComment(c)}>삭제</span>
                                     </div>
-
                                 }
                             </div>
                             <div className="comment-contents">
