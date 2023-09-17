@@ -18,12 +18,8 @@ export function PostingDetail (){
     const [post, setPost] = useState(null);
 
     useEffect(()=> {
-        if(!!token && !!userID){
-            plogAxios.get(`/blogs/${blogID}`)
-                .then(response => {
-                    setNickname(response.data.data.blogUser.nickname)
-                })
-        }
+        plogAxios.get(`/blogs/${blogID}`)
+            .then(response => setNickname(response.data.data.blogUser.nickname))
     },[])
 
     useEffect(()=> {
