@@ -60,10 +60,11 @@ export function PostingDetail (){
                                         <span className='bolder'>{nickname}</span>
                                         <span className='explain'>{dateParser(post['updateDt'])}</span>
                                     </div>
-                                    <ul>
-                                        <li onClick={()=>navigate(`/blogs/${blogID}/postings/${postingID}/edit-posting`)}>수정</li>
+                                    {nickname === localStorage.getItem('nickname') &&
+                                        <ul>
+                                        <li onClick={() => navigate(`/blogs/${blogID}/postings/${postingID}/edit-posting`)}>수정</li>
                                         <li onClick={delThisPosting}>삭제</li>
-                                    </ul>
+                                    </ul>}
 
                                 </div>
                             </div>
