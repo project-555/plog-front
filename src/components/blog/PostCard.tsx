@@ -32,7 +32,8 @@ const PostCard: React.FC<ChildProps> = ({ post }) => {
                 title={`by ${post.homePostingUser.nickname}`}
                 subheader={post.createDt.slice(0,10)}/>
             <CardMedia
-                component="img" height="150" image={!!post.thumbnailImageUrl? post.thumbnailImageUrl : sample} alt="썸네일 사진"/>
+                component="img" height="150" image={!!post.thumbnailImageURL? post.thumbnailImageURL : sample} alt="썸네일 사진"
+                onClick={moveToPost}/>
             <CardContent sx={{paddingBottom:0,}}>
                 <Typography variant="body1" color="text.first" sx={{height: '48px'}}>
                     {post.title}

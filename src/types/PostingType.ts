@@ -26,13 +26,14 @@ export interface postType {
     title: string;
     starCnt: number;
     summary: string;
-    thumbnailImageUrl: string;
+    thumbnailImageURL: string;
     createDt: string;
 }
 
 export interface homePostingUserType {
     userID: number;
     nickname: string;
+    profileImageURL: string|null;
 }
 
 export interface PostingResponse {
