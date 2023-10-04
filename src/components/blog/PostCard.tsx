@@ -12,6 +12,7 @@ const PostCard: React.FC<ChildProps> = ({ post }) => {
     const navigate = useNavigate();
     const sample = 'https://s3.ap-southeast-1.amazonaws.com/we-xpats.com/uploads/article/3824/ko_190_2.jpg'
 
+    const userProfileImg = post.homePostingUser.profileImageURL;
     const moveToPost = () => navigate(`/blogs/${post.blogID}/postings/${post.postingID}`, {state : {nickname: post.homePostingUser.nickname}})
 
 
@@ -27,10 +28,18 @@ const PostCard: React.FC<ChildProps> = ({ post }) => {
                 }
             }}
         >
-            <CardHeader
-                avatar={<Avatar  aria-label="recipe">{post.homePostingUser.nickname[0]}</Avatar>}
-                title={`by ${post.homePostingUser.nickname}`}
-                subheader={post.createDt.slice(0,10)}/>
+
+            {!!userProfileImg ?
+                <CardHeader
+                    avatar={<img style={{width:'40px', height:'40px', borderRadius:'50%'}} src={userProfileImg} alt="thumbnail"/>}
+                    title={`by ${post.homePostingUser.nickname}`}
+                    subheader={post.createDt.slice(0,10)}/>
+                :
+                <CardHeader
+                    avatar={<Avatar  aria-label="recipe">{post.homePostingUser.nickname[0]}</Avatar>}
+                    title={`by ${post.homePostingUser.nickname}`}
+                    subheader={post.createDt.slice(0,10)}/>
+            }
             <CardMedia
                 component="img" height="150" image={!!post.thumbnailImageURL? post.thumbnailImageURL : sample} alt="썸네일 사진"
                 onClick={moveToPost}/>
