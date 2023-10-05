@@ -66,15 +66,16 @@ export default function Header() {
     }, [expiredInterval])
 
 
-    useEffect(()=> {
-        if(!!token && !!userID){
+    useEffect(() => {
+        if (!!token && !!userID) {
             plogAxios.get(`/users/${userID}`)
                 .then(response => {
                     setBlogID(response.data.data.blogID)
+                    localStorage.setItem('nickname', response.data.data.nickname)
                 })
         }
 
-    },[userID])
+    }, [userID])
 
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
     const open = Boolean(anchorEl);
@@ -92,7 +93,6 @@ export default function Header() {
         localStorage.removeItem('userID')
         window.location.reload()
     }
-
 
 
     return (
