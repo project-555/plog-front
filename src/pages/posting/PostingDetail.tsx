@@ -1,59 +1,84 @@
 import React, {useEffect, useState} from "react";
-import {useParams, useNavigate} from 'react-router-dom'
+import {useNavigate, useParams} from 'react-router-dom'
 import {plogAuthAxios, plogAxios} from "../../modules/axios";
-import { Viewer } from '@toast-ui/react-editor';
+import {Chip} from '@mui/material';
+import {Viewer} from '@toast-ui/react-editor';
 import '@toast-ui/editor/dist/toastui-editor-viewer.css';
 import Comment from '../../components/blog/Comment'
 import StarShare from "../../components/blog/StarShare";
 import Toc from "../../components/blog/Toc";
 
-export function PostingDetail (){
+
+type BlogTag = {
+    tagID: number
+    tagName: string
+}
+
+
+export function PostingDetail() {
 
     const navigate = useNavigate()
-    const {blogID, postingID}  = useParams();
+    const {blogID, postingID} = useParams();
     const [nickname, setNickname] = useState('')
     const [post, setPost] = useState(null);
+    const [tags, setTags] = useState<BlogTag[]>([])
 
-    useEffect(()=> {
+    useEffect(() => {
         plogAxios.get(`/blogs/${blogID}`)
             .then(response => setNickname(response.data.data.blogUser.nickname))
-    },[])
+    }, [])
 
-    useEffect(()=> {
+    useEffect(() => {
         plogAxios.get(`/blogs/${blogID}/postings/${postingID}`)
             .then(res => {
                 setPost(res.data.data)
             })
             .catch(err => console.log(err.message))
+
+
+        getTags()
     }, [])
 
 
     const delThisPosting = () => {
         const result = window.confirm('해당 포스팅을 삭제하시겠습니까?')
 
-        if(result){
+        if (result) {
             plogAuthAxios.delete(`blogs/${blogID}/postings/${postingID}`)
                 .then(() => {
-                    alert('포스팅을 삭제했습니다')
-                    navigate('/')
+                        alert('포스팅을 삭제했습니다')
+                        navigate('/')
                     }
                 )
         }
     }
 
-    const dateParser = (date :string) => {
-        return date.replaceAll('T',' ').slice(0,19)
+    const dateParser = (date: string) => {
+        return date.replaceAll('T', ' ').slice(0, 19)
+    }
+
+    const getTags = () => {
+        plogAxios.get(`blogs/${blogID}/postings/${postingID}/tags`)
+            .then(res => {
+                setTags(res.data.data.postingTags)
+                console.log(res.data.data.postingTags)
+            })
     }
 
     return (
-        <div  className='inner-container'>
+        <div className='inner-container'>
             {
                 post &&
                 <>
-                    <div style={{display:'flex', justifyContent:'space-evenly',alignItems: 'flex-start', minHeight:'1200px' }} >
+                    <div style={{
+                        display: 'flex',
+                        justifyContent: 'space-evenly',
+                        alignItems: 'flex-start',
+                        minHeight: '1200px'
+                    }}>
                         {post['isStarAllowed'] && <StarShare blogId={blogID!} postingId={postingID!}/>}
-                        <div className='content-container'  style={{flexGrow:'1'}}>
-                            <div className='posting-header-area' style={{height:'200px', textAlign:'center'}}>
+                        <div className='content-container' style={{flexGrow: '1'}}>
+                            <div className='posting-header-area' style={{height: '200px', textAlign: 'center'}}>
                                 <h1 className='title'>{post['title']}</h1>
                                 <div className='posting-info'>
                                     <div>
@@ -62,10 +87,14 @@ export function PostingDetail (){
                                     </div>
                                     {nickname === localStorage.getItem('nickname') &&
                                         <ul>
-                                        <li onClick={() => navigate(`/blogs/${blogID}/postings/${postingID}/edit-posting`)}>수정</li>
-                                        <li onClick={delThisPosting}>삭제</li>
-                                    </ul>}
+                                            <li onClick={() => navigate(`/blogs/${blogID}/postings/${postingID}/edit-posting`)}>수정</li>
+                                            <li onClick={delThisPosting}>삭제</li>
+                                        </ul>}
 
+                                </div>
+                                <div className='tag-list'>
+                                    {tags && tags.map((tag) => <Chip key={tag.tagID} label={tag.tagName}
+                                                                     sx={{mr: 0.5, mb: 0.5}}/>)}
                                 </div>
                             </div>
                             <div className='posting-contents-area'>
