@@ -121,6 +121,9 @@ export default function Header() {
                                 <MenuItem onClick={closeMenu}>
                                     <NavLink to='/mypage'>마이페이지</NavLink>
                                 </MenuItem>
+                                <MenuItem onClick={closeMenu}>
+                                    <NavLink to={`/blogs/${blogID}`}>내 프로그</NavLink>
+                                </MenuItem>
                             </Menu>
                         </NavLink>
                         :
