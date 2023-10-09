@@ -3,6 +3,8 @@ import {NavLink} from "react-router-dom";
 import jwt_decode from "jwt-decode";
 import {Button, IconButton, Menu, MenuItem} from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
+import DarkModeIcon from '@mui/icons-material/DarkMode';
+import LightModeIcon from '@mui/icons-material/LightMode';
 import {LoginTokenPayload} from "../../types/UMSType";
 import {plogAuthAxios, plogAxios} from "../../modules/axios";
 
@@ -11,6 +13,7 @@ export default function Header() {
 
     const token = localStorage.getItem('token');
     const userID = localStorage.getItem('userID');
+    const [isDarkMode, setIsDarkMode] = useState(false)
     const [blogID, setBlogID] = useState(null);
     const [userInfo, setUserInfo] = useState<LoginTokenPayload>({});
 
@@ -74,7 +77,6 @@ export default function Header() {
                     localStorage.setItem('nickname', response.data.nickname)
                 })
         }
-
     }, [userID])
 
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
@@ -95,15 +97,26 @@ export default function Header() {
     }
 
 
+    //다크모드
+    const changeMode = () => {
+        setIsDarkMode(!isDarkMode)
+    }
+
     return (
         <div className='header inner-container'>
-            <div><a href='/'><span className='logo'>plog</span></a></div>
+            <div><a href='/'><span className='logo darkmode'>plog</span></a></div>
             <div>
+                <span onClick={changeMode}>
+                    {isDarkMode ? <DarkModeIcon/> : <LightModeIcon/>}
+                </span>
+
                 <NavLink to='/search'>
                     <IconButton aria-label="search" disabled color="primary">
                         <SearchIcon className='search-btn'/>
                     </IconButton>
                 </NavLink>
+
+
                 {
                     !!blogID &&
                     <NavLink to={`/blogs/${blogID}/write-posting`}>
