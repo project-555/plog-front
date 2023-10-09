@@ -1,0 +1,603 @@
+@import "reset.css";
+
+
+/*
+바탕색 : #BAB5AA
+기본색 : #3C802C
+음영색 : #0F3715
+*/
+
+:root {
+    --bg-color: #000;
+    --font-color: rgba(0, 0, 0, .7);
+    --h2-color: rgba(0, 0, 0, 1);
+    --kbd-color: orange;
+    --kbd-border: orange;
+    --check-color: #749ed7;
+}
+
+.darkmode {
+    --bg-color: red;
+    --font-color: rgba(255, 255, 255, .7);
+    --h2-color: rgba(255, 255, 255, 1);
+    --kbd-color: red;
+    --kbd-border: red;
+    --check-color: #006cff;
+}
+
+
+/* 레이아웃 공용 디자인 */
+body {
+    font-family: 'Noto Sans KR', 'sans-serif', -apple-system
+}
+
+.container {
+    width: 100%;
+}
+
+.inner-container {
+    max-width: 1560px;
+    margin: 0 auto;
+}
+
+/*폰트 공용 디자인*/
+.title {
+    font-weight: bold;
+    font-size: 30px;
+}
+
+.explain {
+    color: #777
+}
+
+/* 서브 설명 문구 */
+.bolder {
+    font-weight: 500;
+}
+
+.inner-width {
+    max-width: 1280px;
+    margin: 0 auto;
+}
+
+.header {
+    margin-top: 20px;
+    display: flex;
+    justify-content: space-between;
+    height: 80px;
+}
+
+.header .logo {
+    height: 30px;
+    /* color: #000;*/
+    color: var(--bg-color);
+    font-weight: bold;
+    font-size: 25px;
+    letter-spacing: 1.3px
+}
+
+.header .search-btn {
+    color: #000;
+}
+
+.header .write-posting-btn {
+    border: 1px solid #000;
+    border-radius: 1rem;
+    padding: 5px 1rem;
+    margin: 0 1rem;
+}
+
+.header .write-posting-btn:hover {
+    background-color: #000;
+    color: #fff;
+    box-shadow: none;
+}
+
+.header .login-btn {
+    background-color: #000;
+    border-radius: 30px;
+}
+
+.header .login-btn:hover {
+    background-color: #000;
+    color: #fff;
+    box-shadow: none;
+}
+
+
+/*로그인*/
+.login-container {
+    width: 100%;
+    min-height: 100vh;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    padding: 15px;
+    background-color: #fff;
+}
+
+.login-container .login-modal {
+    width: 390px;
+    background-color: #fff;
+    border-radius: 10px;
+    overflow: hidden;
+    padding: 77px 55px 33px 55px;
+    box-shadow: 0 5px 10px 0 rgba(0, 0, 0, 0.2);
+}
+
+.login-form .login-logo {
+    display: block;
+    margin: 0 auto;
+    width: 180px;
+}
+
+.login-form .login-inputs {
+    width: 100%;
+    position: relative;
+    border-bottom: 2px solid #adadad;
+    margin-bottom: 37px;
+}
+
+.login-form .login-inputs .login-input {
+    font-size: 15px;
+    color: #333;
+    line-height: 1.2;
+    border: none;
+    display: block;
+    width: 100%;
+    height: 45px;
+    background-color: transparent;
+    padding: 0 5px;
+}
+
+.login-form .login-inputs .login-input:focus {
+    outline: 0;
+}
+
+.MuiButton-root.login-btn-full {
+    margin-top: 15px;
+    font-size: 17px;
+    background-color: #2e7d32;
+    line-height: 1.2;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 55px;
+}
+
+.MuiButton-root.login-btn-full:hover {
+    background-color: #2e7d32;
+}
+
+.login-form .sentence {
+    font-size: 13px;
+    text-align: center;
+    margin-top: 25px;
+    color: #555;
+    cursor: default;
+}
+
+.login-form .sentence .forgot-pw:hover {
+    color: #2e7d32;
+}
+
+.login-form .sentence .sign-up:hover {
+    color: #2e7d32;
+}
+
+
+/*회원가입*/
+.signup-container {
+    width: 100%;
+    min-height: 100vh;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    padding: 15px;
+    background-color: #fff;
+}
+
+.signup-container .signup-modal {
+    width: 390px;
+    background-color: #fff;
+    border-radius: 10px;
+    overflow: hidden;
+    padding: 77px 55px 33px 55px;
+    box-shadow: 0 5px 10px 0 rgba(0, 0, 0, 0.2);
+}
+
+.signup-modal .stepper-container {
+    width: 100%;
+    margin-top: 50px;
+}
+
+.step1-container .email-input {
+    width: 67%;
+    margin-right: 3%;
+    color: #fff;
+    height: 55px;
+}
+
+.step1-container .email-chk {
+    width: 30%;
+    height: 41px;
+    margin-top: 24px;
+}
+
+.step2-container .signup-inputs span {
+    color: #888;
+    margin-right: 20px;
+}
+
+.step2-container .signup-inputs .sex-btn {
+    width: 35%;
+    margin-right: 10px;
+}
+
+.step2-container .signup-inputs .birth-input {
+    width: 84%;
+    font-size: 15px;
+    float: right;
+    color: #888;
+    border: none;
+    border-bottom: 2px solid #adadad;
+}
+
+.step2-container .signup-inputs .birth-input:focus {
+    outline: 0;
+}
+
+.step2-container .back-btn, .join-btn {
+    font-size: 17px;
+}
+
+
+.signup-form .signup-logo {
+    display: block;
+    margin: 0 auto;
+    width: 180px;
+}
+
+.signup-form .signup-title {
+    margin: 60px 0 30px;
+    font-size: 20px;
+    color: #333;
+    font-weight: bold;
+    line-height: 1.2;
+}
+
+.signup-form .signup-inputs {
+    width: 100%;
+    position: relative;
+    margin-bottom: 37px;
+}
+
+.signup-form .signup-inputs[class~=email-wrapper] {
+    display: flex;
+}
+
+.signup-form .signup-inputs .email-chk {
+    width: 100px;
+    padding: 0 10px;
+    margin-left: 15px;
+}
+
+.signup-form .signup-inputs .signup-input {
+    font-size: 15px;
+    color: #333;
+    line-height: 1.2;
+    border: none;
+    border-bottom: 2px solid #adadad;
+    display: block;
+    width: 100%;
+    height: 45px;
+    background-color: transparent;
+    padding: 0 5px;
+}
+
+.signup-form .signup-inputs .signup-input:focus {
+    outline: 0;
+}
+
+/*.signup-form .signup-btn {font-size: 15px;border: none;border-radius: 10px;color: #fff;line-height: 1.2;text-transform: uppercase;display: flex;justify-content: center;align-items: center;width: 100%;height: 50px;background: #333;}*/
+.MuiButton-root.btn-full {
+    margin-top: 15px;
+    font-size: 17px;
+    background-color: #2e7d32;
+    line-height: 1.2;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 55px;
+    color: #fff
+}
+
+.MuiButton-root.btn-full:hover {
+    background-color: #2e7d32;
+}
+
+
+/*회원가입 완료*/
+
+.finish-container {
+    width: 100%;
+    min-height: 100vh;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    padding: 15px;
+    background-color: #fff;
+}
+
+.finish-container .finish-modal {
+    width: 390px;
+    padding: 30px;
+    background-color: #fff;
+    text-align: center;
+    line-height: 1.66;
+    border: 1px solid #4c8e06
+}
+
+.finish-container .finish-modal .finish-btn {
+    width: 100%;
+    height: 50px;
+    margin-top: 20px;
+    background-color: #4c8e06;
+}
+
+/*블로그 - 메인화면*/
+.posting-container {
+    background-color: #F8F9FA
+}
+
+.postcard-wrapper {
+    display: flex;
+    flex-wrap: wrap;
+    padding: 2rem 0;
+}
+
+
+/*블로그 - 검색화면*/
+.search-container {
+    width: 768px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.search-description {
+    margin-top: 1rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+}
+
+.input-wrapper {
+    display: flex;
+    align-items: center;
+    cursor: text;
+    height: 4rem;
+    padding: 0 1.5rem;
+    border: 1px solid #000;
+}
+
+.input-wrapper input {
+    font-size: 1.5rem;
+    line-height: 1rem;
+    height: 2rem;
+    border: none;
+}
+
+/*블로그 - 마이페이지*/
+.profile-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 768px;
+    margin-top: 40px;
+    margin-bottom: 40px;
+    margin-right: auto;
+    margin-left: auto;
+}
+
+.intro-container {
+    display: flex;
+    align-items: center;
+    width: 768px;
+}
+
+/*포스팅 디테일 - 글*/
+.posting-header-area {
+    max-width: 770px;
+    margin: 3rem auto 0 auto;
+}
+
+.posting-header-area h1 {
+    text-align: left;
+}
+
+.posting-info {
+    text-align: left;
+    margin-top: 1.5rem;
+    display: flex;
+    justify-content: space-between;
+}
+
+.posting-info .bolder {
+    margin-right: 10px;
+}
+
+.posting-info ul {
+    text-decoration: none;
+}
+
+.posting-info li {
+    float: left;
+    margin-right: 5px;
+    color: #333333
+}
+
+.posting-info li:hover {
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+.content-container .tag-list {
+    margin: 1rem 0;
+    text-align: left;
+}
+
+.posting-contents-area {
+    max-width: 770px;
+    margin: 0 auto 5rem auto;
+}
+
+.posting-comment-area {
+    max-width: 770px;
+    margin: 0 auto
+}
+
+.posting-comment-area textarea {
+    resize: none;
+    border: 1px solid #eee;
+    border-radius: 5px;
+}
+
+.comment-input {
+    margin: 15px 0;
+    width: 100%;
+    height: 69px;
+}
+
+.comment-input:focus {
+    outline: none;
+}
+
+.comment-btn {
+    float: right;
+    height: 30px;
+    border: none;
+    border-radius: 4px;
+    color: #fff;
+    background-color: #12B886;
+}
+
+.comment-area {
+    margin-top: 100px;
+}
+
+.comment-area .comment-container {
+    margin: 20px 0;
+    padding: 15px 0;
+    border-bottom: 1px solid #eee;
+}
+
+.comment-area .profile-wrapper {
+    display: flex;
+    justify-content: space-between;
+}
+
+.comment-area .profile-wrapper .profile {
+    display: flex;
+}
+
+.comment-area .profile-wrapper img {
+    width: 45px;
+    margin-right: 5px;
+}
+
+.comment-area .user-info .username {
+    font-weight: bold;
+    margin-bottom: 7px;
+}
+
+.comment-area .edit-btns {
+    color: #777777;
+    cursor: pointer
+}
+
+.comment-area .edit-btns span:hover {
+    border-bottom: 1px solid #777777;
+}
+
+.comment-area .edit-btns .edit::after {
+    content: "  |  "
+}
+
+
+.comment-area .comment-contents {
+    margin: 10px 0;
+    font-size: 18px;
+    line-height: 1.7;
+    letter-spacing: -0.004em;
+    word-break: keep-all;
+    overflow-wrap: break-word;
+}
+
+.comment-area .add-comment {
+    color: #12B886;
+    font-weight: bold;
+}
+
+.comment-area .add-comment:hover {
+    color: #20C997;
+    cursor: default;
+}
+
+.comment-area .add-comment span {
+    vertical-align: top
+}
+
+.comment-area .child-comment-container {
+    margin-top: 10px;
+    padding: 20px;
+    background-color: rgba(0, 0, 0, 0.016);
+    border-radius: 4px;
+}
+
+.comment-area .child-comment-container p {
+    margin-top: 15px;
+}
+
+.comment-area .child-comment-container p span.mention {
+    margin-right: 5px;
+    font-weight: bold;
+    cursor: default
+}
+
+.comment-area .child-comment-container p span.mention:hover {
+    text-decoration: underline;
+}
+
+.comment-area .child-comment-input {
+    margin: 10px 0;
+    padding: 20px 0;
+}
+
+.comment-area .child-comment-input .mentions-input {
+    position: relative;
+    height: 3.5rem;
+    margin-bottom: 10px;
+}
+
+
+/************ 반응형 **************/
+@media (max-width: 1024px) {
+    /*코드 작성 영역*/
+}
+
+
+/************ 반응형 - 테블릿 **************/
+@media (max-width: 767px) {
+
+}
+
+
+/************ 반응형 - 모바일**************/
+@media (max-width: 480px) {
+
+}
+
+
+
