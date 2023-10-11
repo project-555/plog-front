@@ -5,10 +5,12 @@
 .mentions--singleLine .mentions__control {
     display: inline-block;
 }
+
 .mentions--singleLine .mentions__higlighter {
     padding: 1px;
     border: 2px inset transparent;
 }
+
 .mentions--singleLine .mentions__input {
     padding: 5px;
     border: 2px inset;
@@ -19,9 +21,11 @@
     font-size: 14pt;
     border: 1px solid silver;
 }
+
 .mentions--multiLine .mentions__highlighter {
     padding: 9px;
 }
+
 .mentions--multiLine .mentions__input {
     padding: 9px;
     min-height: 63px;
