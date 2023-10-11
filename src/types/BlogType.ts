@@ -59,3 +59,8 @@ export interface UpdateBlogRequest {
     shortIntro?: string
 }
 
+export type BlogTag = {
+    tagID: number
+    tagName: string
+}
+
