@@ -4,15 +4,10 @@ import {plogAuthAxios, plogAxios} from "../../modules/axios";
 import {Chip} from '@mui/material';
 import {Viewer} from '@toast-ui/react-editor';
 import '@toast-ui/editor/dist/toastui-editor-viewer.css';
+import {BlogTag} from "../../types/BlogType";
 import Comment from '../../components/blog/Comment'
 import StarShare from "../../components/blog/StarShare";
 import Toc from "../../components/blog/Toc";
-
-
-type BlogTag = {
-    tagID: number
-    tagName: string
-}
 
 
 export function PostingDetail() {
