@@ -13,7 +13,7 @@ export default function Header() {
 
     const token = localStorage.getItem('token');
     const userID = localStorage.getItem('userID');
-    const [isDarkMode, setIsDarkMode] = useState(false)
+
     const [blogID, setBlogID] = useState(null);
     const [userInfo, setUserInfo] = useState<LoginTokenPayload>({});
 
@@ -96,18 +96,47 @@ export default function Header() {
         window.location.reload()
     }
 
+    const [mode, setMode] = useState(window.localStorage.getItem("mode"))
 
     //다크모드
     const changeMode = () => {
-        setIsDarkMode(!isDarkMode)
+        if (mode === 'light') {
+            setMode('dark')
+        } else if (mode === 'dark') {
+            setMode('light')
+        }
+        darkOnOff()
     }
+
+    useEffect(() => {
+        if (mode === null) {
+            localStorage.setItem('mode', 'light')
+            document.getElementsByTagName("html")[0].classList.add("light");
+        } else if (mode === "dark") {
+            document.getElementsByTagName("html")[0].classList.add("dark");
+        } else if (mode === "light") {
+            document.getElementsByTagName("html")[0].classList.add("light");
+        }
+    }, [mode]);
+
+    const darkOnOff = () => {
+        if (document.getElementsByTagName("html")[0].classList.contains("dark")) {
+            document.getElementsByTagName("html")[0].classList.remove("dark");
+            document.getElementsByTagName("html")[0].classList.add("light");
+            localStorage.setItem("mode", "light");
+        } else {
+            document.getElementsByTagName("html")[0].classList.remove("light");
+            document.getElementsByTagName("html")[0].classList.add("dark");
+            localStorage.setItem("mode", "dark");
+        }
+    };
 
     return (
         <div className='header inner-container'>
             <div><a href='/'><span className='logo darkmode'>plog</span></a></div>
             <div>
-                <span onClick={changeMode}>
-                    {isDarkMode ? <DarkModeIcon/> : <LightModeIcon/>}
+                <span className='mode-toggle-btn' onClick={changeMode}>
+                    {mode === 'dark' ? <DarkModeIcon sx={{color: '#ECECEC'}}/> : <LightModeIcon/>}
                 </span>
 
                 <NavLink to='/search'>
@@ -115,7 +144,6 @@ export default function Header() {
                         <SearchIcon className='search-btn'/>
                     </IconButton>
                 </NavLink>
-
 
                 {
                     !!blogID &&
@@ -144,7 +172,6 @@ export default function Header() {
                             <Button className='login-btn' variant="contained">로그인</Button>
                         </NavLink>
                 }
-
             </div>
         </div>
     )
