@@ -92,7 +92,7 @@ export function PostingTab(props: PostingTabProps) {
             paramsSerializer: repeatQuerySerializer
         }).then(
             (response: AxiosResponse) => {
-                let newPostings = response.data.data.postings as Posting[]
+                let newPostings = response.data.postings as Posting[]
                 if (newPostings.length < listBlogPostingsRequest.pageSize) {
                     setHasMore(false)
                 }

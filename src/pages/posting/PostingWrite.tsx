@@ -90,7 +90,7 @@ export function PostingWrite() {
         plogAxios.get(`/blogs/${blogID}/categories`)
             .then(
                 (response) => {
-                    setCategories(response.data.data.categories)
+                    setCategories(response.data.categories)
                     setIsCategoryRendered(true)
                 })
             .catch(
@@ -104,14 +104,14 @@ export function PostingWrite() {
     useEffect(() => {
         plogAxios.get(`blogs/states`).then(
             (response) => {
-                setStates(response.data.data.states)
+                setStates(response.data.states)
             }
         )
     }, [])
 
     useEffect(() => {
         plogAxios.get(`blogs/${blogID}/tags`)
-            .then((response) => setTags(response.data.data.tags));
+            .then((response) => setTags(response.data.tags));
     }, [blogID, postingTags])
 
 
@@ -168,10 +168,10 @@ export function PostingWrite() {
                     {tagName: newValue}
                 ).then((response) => {
                     setUniquePostingTags([...postingTags, {
-                        tagID: response.data.data.tagID,
-                        tagName: response.data.data.tagName
+                        tagID: response.data.tagID,
+                        tagName: response.data.tagName
                     }])
-                    setInputTag({tagID: response.data.data.tagID, tagName: response.data.data.tagName})
+                    setInputTag({tagID: response.data.tagID, tagName: response.data.tagName})
                 })
             }
 
@@ -183,10 +183,10 @@ export function PostingWrite() {
                 {tagName: newValue.inputValue}
             ).then((response) => {
                 setUniquePostingTags([...postingTags, {
-                    tagID: response.data.data.tagID,
-                    tagName: response.data.data.tagName
+                    tagID: response.data.tagID,
+                    tagName: response.data.tagName
                 }])
-                setInputTag({tagID: response.data.data.tagID, tagName: response.data.data.tagName})
+                setInputTag({tagID: response.data.tagID, tagName: response.data.tagName})
             })
         }
         // 사용자가 이미 존재하는 셀렉트 아이템을 선택한 경우
@@ -255,7 +255,7 @@ export function PostingWrite() {
         if (CreatePostingRequestValidate(request)) {
             plogAuthAxios.post(`/blogs/${blogID}/postings`, request).then((response) => {
                 setIsPosted(true);
-                navigate(`/blogs/${blogID}/postings/${response.data.data}`)
+                navigate(`/blogs/${blogID}/postings/${response.data.postingID}`)
             }).catch((error) => {
                 console.log(error);
                 setIsPosted(false);

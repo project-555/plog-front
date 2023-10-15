@@ -6,7 +6,7 @@ export function uploadFile(file: File,
                            uploadFailedCallback: (error: any) => void = (error) => {
                                console.error(error);
                            }) {
-    plogAuthAxios.post('/generate-presigned-url', {
+    plogAuthAxios.post('/files/generate-presigned-url', {
         contentType: file.type,
         fileName: file.name
     }).then((res) => {

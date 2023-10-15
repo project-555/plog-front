@@ -21,7 +21,7 @@ export function UserBlog() {
     useEffect(() => {
         getPlogAxios().get(`/blogs/${params.blogID}`).then(
             (response: any) => {
-                setBlog(response.data.data as Blog);
+                setBlog(response.data as Blog);
             });
     }, [params.blogID]);
 
@@ -29,7 +29,7 @@ export function UserBlog() {
         if (!blog.blogUser) return;
         getPlogAxios().get(`/users/${blog?.blogUser?.userID}`).then(
             (response: any) => {
-                setBlogUser(response.data.data as User);
+                setBlogUser(response.data as User);
             });
     }, [blog?.blogUser]);
 

@@ -20,13 +20,13 @@ export function PostingDetail() {
 
     useEffect(() => {
         plogAxios.get(`/blogs/${blogID}`)
-            .then(response => setNickname(response.data.data.blogUser.nickname))
+            .then(response => setNickname(response.data.blogUser.nickname))
     }, [])
 
     useEffect(() => {
         plogAxios.get(`/blogs/${blogID}/postings/${postingID}`)
             .then(res => {
-                setPost(res.data.data)
+                setPost(res.data)
             })
             .catch(err => console.log(err.message))
 
@@ -55,8 +55,8 @@ export function PostingDetail() {
     const getTags = () => {
         plogAxios.get(`blogs/${blogID}/postings/${postingID}/tags`)
             .then(res => {
-                setTags(res.data.data.postingTags)
-                console.log(res.data.data.postingTags)
+                setTags(res.data.postingTags)
+                console.log(res.data.postingTags)
             })
     }
 

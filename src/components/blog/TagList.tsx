@@ -19,7 +19,7 @@ export function TagList(props: TagListProps) {
 
         getPlogAxios().get(`/blogs/${props.blogID}/tags`).then(
             (response: any) => {
-                setTags(response.data.data.tags as PostingTag[]);
+                setTags(response.data.tags as PostingTag[]);
                 setNeedRefresh(false)
             }
         );
