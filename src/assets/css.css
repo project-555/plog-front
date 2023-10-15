@@ -14,6 +14,7 @@ html[class~='dark'] {
     --primary1: #12B886;
     --primary2: #20C997;
     --shadow: rgba(255, 255, 255, 0.2);
+    --border: #ECECEC
 }
 
 html[class~='light'] {
@@ -30,6 +31,7 @@ html[class~='light'] {
     --primary1: #12B886;
     --primary2: #20C997;
     --shadow: rgba(0, 0, 0, 0.2);
+    --border: #212529;
 }
 
 /* 레이아웃 공용 디자인 */
@@ -385,6 +387,7 @@ div, span, p, h1, h2, h3, h4, h5, h6, button, input {
 
 .postcard-wrapper span.MuiTypography-root, button.MuiButtonBase-root {
     color: var(--text1);
+    /*color: #fff*/
 }
 
 
@@ -423,6 +426,10 @@ div, span, p, h1, h2, h3, h4, h5, h6, button, input {
 
 .input-wrapper input:focus {
     outline: none;
+}
+
+.input-wrapper .search-input {
+    background-color: var(--bg-page1);
 }
 
 /*블로그 - 마이페이지*/
@@ -620,6 +627,17 @@ div, span, p, h1, h2, h3, h4, h5, h6, button, input {
     margin-bottom: 10px;
 }
 
+
+/* 새글쓰기 */
+.posing-write-container button.MuiButtonBase-root {
+    color: #fff;
+}
+
+
+/*블로그*/
+.MuiCardContent-root css-46bh2p-MuiCardContent-root {
+
+}
 
 /************ 반응형 **************/
 @media (max-width: 1024px) {

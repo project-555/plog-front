@@ -28,6 +28,7 @@ import Autocomplete from '@mui/material/Autocomplete';
 import {htmlStringWithRandomID} from "../../modules/html";
 import {uploadFile} from "../../modules/file";
 
+
 type CreatePostingRequest = {
     title: string
     htmlContent: string
@@ -268,15 +269,16 @@ export function PostingWrite() {
 
     return (
         <Box className="container">
-            <Box className="inner-container">
+            <Box className="posing-write-container inner-container">
                 <FormGroup>
                     <TextField
-                        required sx={{mb: 3}} fullWidth id="standard-basic" label="제목" variant="standard"
+                        required sx={{mb: 3}} fullWidth id="standard-basic"
+                        label="제목" variant="standard"
                         placeholder="제목을 입력하세요"
                         inputRef={titleRef}
                         error={validateEmpty(title)}
                         helperText={validateEmpty(title) && "제목을 입력해주세요."}
-                        InputProps={{style: {fontSize: 30, fontWeight: 'bold'}}}
+                        InputProps={{style: {fontSize: 30, fontWeight: 'bold', color: '1px solid var(--border)'}}}
                         InputLabelProps={{style: {fontSize: 30, fontWeight: 'bold'}}}
                         onChange={handleChangeTitle}
                         value={title}
@@ -287,7 +289,8 @@ export function PostingWrite() {
                                 return (tag != null && <Chip
                                     key={tag.tagID}
                                     label={tag.tagName}
-                                    sx={{mr: 0.5, mb: 0.5}}
+                                    sx={{mr: 0.5, mb: 0.5, backgroundColor: 'var(--primary1)', color: '#fff'}}
+                                    color="success"
                                     onDelete={() => handleDeletePostingTag(tag)}
                                 />)
                             })
@@ -369,11 +372,17 @@ export function PostingWrite() {
                         <Box textAlign="center" sx={{px: 70, pt: 4}}>
 
                             <LoadingButton
+                                className='write-post-btn'
                                 loading={isPosted}
                                 fullWidth
+                                sx={{
+                                    backgroundColor: 'var(--primary1)',
+                                    color: '#fff',
+                                    '&:hover': {backgroundColor: 'var(--primary2)'}
+                                }}
                                 onClick={handleClickSubmit}
                                 variant="contained"
-                                endIcon={<Send/>}>
+                                endIcon={<Send sx={{color: '#fff'}}/>}>
                                 게시하기
                             </LoadingButton>
                         </Box>

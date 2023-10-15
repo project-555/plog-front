@@ -1,4 +1,4 @@
-import {useEffect, useState} from "react";
+import {useContext, useEffect, useState} from "react";
 import {NavLink} from "react-router-dom";
 import jwt_decode from "jwt-decode";
 import {Button, IconButton, Menu, MenuItem} from '@mui/material';
@@ -7,7 +7,7 @@ import DarkModeIcon from '@mui/icons-material/DarkMode';
 import LightModeIcon from '@mui/icons-material/LightMode';
 import {LoginTokenPayload} from "../../types/UMSType";
 import {plogAuthAxios, plogAxios} from "../../modules/axios";
-
+import {ModeContext} from "../../Root";
 
 export default function Header() {
 
@@ -16,9 +16,12 @@ export default function Header() {
 
     const [blogID, setBlogID] = useState(null);
     const [userInfo, setUserInfo] = useState<LoginTokenPayload>({});
-
     // 토큰 리프레시 남은 시간 (초기는 30분)
     const [expiredInterval, setExpiredInterval] = useState<number>(1800);
+    const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+    // const [mode, setMode] = useState(window.localStorage.getItem("mode"))
+    const {theme, setTheme} = useContext(ModeContext)
+    const open = Boolean(anchorEl);
 
     useEffect(() => {
         if (!token) return;
@@ -79,8 +82,7 @@ export default function Header() {
         }
     }, [userID])
 
-    const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-    const open = Boolean(anchorEl);
+
     const openMenu = (event: React.MouseEvent<HTMLButtonElement>) => {
         setAnchorEl(event.currentTarget);
     };
@@ -96,38 +98,41 @@ export default function Header() {
         window.location.reload()
     }
 
-    const [mode, setMode] = useState(window.localStorage.getItem("mode"))
 
     //다크모드
     const changeMode = () => {
-        if (mode === 'light') {
-            setMode('dark')
-        } else if (mode === 'dark') {
-            setMode('light')
+        if (theme === 'light') {
+            setTheme('dark')
+            // setMode('dark')
+        } else if (theme === 'dark') {
+            setTheme('')
+            // setMode('light')
         }
         darkOnOff()
     }
 
     useEffect(() => {
-        if (mode === null) {
+        if (theme === null) {
             localStorage.setItem('mode', 'light')
             document.getElementsByTagName("html")[0].classList.add("light");
-        } else if (mode === "dark") {
+        } else if (theme === "dark") {
             document.getElementsByTagName("html")[0].classList.add("dark");
-        } else if (mode === "light") {
+        } else if (theme === "light") {
             document.getElementsByTagName("html")[0].classList.add("light");
         }
-    }, [mode]);
+    }, [theme]);
 
     const darkOnOff = () => {
         if (document.getElementsByTagName("html")[0].classList.contains("dark")) {
             document.getElementsByTagName("html")[0].classList.remove("dark");
             document.getElementsByTagName("html")[0].classList.add("light");
             localStorage.setItem("mode", "light");
+            setTheme('')
         } else {
             document.getElementsByTagName("html")[0].classList.remove("light");
             document.getElementsByTagName("html")[0].classList.add("dark");
             localStorage.setItem("mode", "dark");
+            setTheme('dark')
         }
     };
 
@@ -136,7 +141,7 @@ export default function Header() {
             <div><a href='/'><span className='logo darkmode'>plog</span></a></div>
             <div>
                 <span className='mode-toggle-btn' onClick={changeMode}>
-                    {mode === 'dark' ? <DarkModeIcon sx={{color: '#ECECEC'}}/> : <LightModeIcon/>}
+                    {theme === 'dark' ? <DarkModeIcon sx={{color: '#ECECEC'}}/> : <LightModeIcon/>}
                 </span>
 
                 <NavLink to='/search'>
@@ -153,7 +158,7 @@ export default function Header() {
                 }
                 {
                     !!userInfo.nickname ?
-                        <NavLink to='/'>
+                        <>
                             <Button className='login-btn' variant="contained"
                                     onClick={openMenu}>{userInfo.nickname}</Button>
                             <Menu anchorEl={anchorEl} open={open} onClose={closeMenu}
@@ -166,7 +171,7 @@ export default function Header() {
                                     <NavLink to={`/blogs/${blogID}`}>내 프로그</NavLink>
                                 </MenuItem>
                             </Menu>
-                        </NavLink>
+                        </>
                         :
                         <NavLink to='/sign-in'>
                             <Button className='login-btn' variant="contained">로그인</Button>
