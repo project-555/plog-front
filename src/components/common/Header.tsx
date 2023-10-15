@@ -19,7 +19,6 @@ export default function Header() {
     // 토큰 리프레시 남은 시간 (초기는 30분)
     const [expiredInterval, setExpiredInterval] = useState<number>(1800);
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-    // const [mode, setMode] = useState(window.localStorage.getItem("mode"))
     const {theme, setTheme} = useContext(ModeContext)
     const open = Boolean(anchorEl);
 
@@ -101,24 +100,15 @@ export default function Header() {
 
     //다크모드
     const changeMode = () => {
-        if (theme === 'light') {
-            setTheme('dark')
-            // setMode('dark')
-        } else if (theme === 'dark') {
-            setTheme('')
-            // setMode('light')
-        }
         darkOnOff()
     }
 
     useEffect(() => {
-        if (theme === null) {
+        if (theme === '') {
             localStorage.setItem('mode', 'light')
             document.getElementsByTagName("html")[0].classList.add("light");
         } else if (theme === "dark") {
             document.getElementsByTagName("html")[0].classList.add("dark");
-        } else if (theme === "light") {
-            document.getElementsByTagName("html")[0].classList.add("light");
         }
     }, [theme]);
 
