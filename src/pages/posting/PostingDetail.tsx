@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from "react";
+import React, {useContext, useEffect, useLayoutEffect, useState} from "react";
 import {useNavigate, useParams} from 'react-router-dom'
 import {plogAuthAxios, plogAxios} from "../../modules/axios";
 import {Chip} from '@mui/material';
@@ -8,15 +8,18 @@ import {BlogTag} from "../../types/BlogType";
 import Comment from '../../components/blog/Comment'
 import StarShare from "../../components/blog/StarShare";
 import Toc from "../../components/blog/Toc";
+import {ModeContext} from "../../Root";
 
 
 export function PostingDetail() {
 
     const navigate = useNavigate()
     const {blogID, postingID} = useParams();
+    const theme = useContext(ModeContext)
     const [nickname, setNickname] = useState('')
     const [post, setPost] = useState(null);
     const [tags, setTags] = useState<BlogTag[]>([])
+
 
     useEffect(() => {
         plogAxios.get(`/blogs/${blogID}`)
@@ -34,6 +37,21 @@ export function PostingDetail() {
         getTags()
     }, [])
 
+    const modeCheck = () => {
+        const editorEl = document.querySelectorAll('.posting-contents-area div')[0];
+
+        if (editorEl) {
+            if (theme.theme === 'dark') {
+                editorEl.classList.add("toastui-editor-dark");
+            } else {
+                editorEl.classList.remove("toastui-editor-dark");
+            }
+        }
+    }
+
+    useLayoutEffect(() => {
+        modeCheck()
+    }, [theme.theme])
 
     const delThisPosting = () => {
         const result = window.confirm('해당 포스팅을 삭제하시겠습니까?')
@@ -88,8 +106,13 @@ export function PostingDetail() {
 
                                 </div>
                                 <div className='tag-list'>
-                                    {tags && tags.map((tag) => <Chip key={tag.tagID} label={tag.tagName}
-                                                                     sx={{mr: 0.5, mb: 0.5}}/>)}
+                                    {tags && tags.map((tag) => <Chip key={tag.tagID} label={tag.tagName} className='tag'
+                                                                     sx={{
+                                                                         mr: 0.5,
+                                                                         mb: 0.5,
+                                                                         backgroundColor: '#12B886',
+                                                                         color: '#fff'
+                                                                     }}/>)}
                                 </div>
                             </div>
                             <div className='posting-contents-area'>

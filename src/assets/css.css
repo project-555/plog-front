@@ -14,7 +14,7 @@ html[class~='dark'] {
     --primary1: #12B886;
     --primary2: #20C997;
     --shadow: rgba(255, 255, 255, 0.2);
-    --border: #ECECEC
+    --border: #ECECEC;
 }
 
 html[class~='light'] {
@@ -40,7 +40,7 @@ body {
     background-color: var(--bg-page1);
 }
 
-div, span, p, h1, h2, h3, h4, h5, h6, button, input {
+div, p, h1, h2, h3, h4, h5, h6, input {
     color: var(--text1)
 }
 
@@ -450,6 +450,23 @@ div, span, p, h1, h2, h3, h4, h5, h6, button, input {
     width: 768px;
 }
 
+.intro-container .make-introMd {
+    height: 600px;
+    border: 1px solid #dadde6;
+    border-radius: 4px;
+    text-align: center;
+}
+
+.intro-container .make-introMd button {
+    background-color: var(--primary1);
+    color: #fff;
+    padding: 20px;
+    width: 30%;
+    border: none;
+    border-radius: 10px;
+}
+
+
 /*포스팅 디테일 - 글*/
 .posting-header-area {
     max-width: 770px;
@@ -490,6 +507,11 @@ div, span, p, h1, h2, h3, h4, h5, h6, button, input {
     margin: 1rem 0;
     text-align: left;
 }
+
+.content-container .tag-list .tag {
+    color: #fff;
+}
+
 
 .posting-contents-area {
     max-width: 770px;

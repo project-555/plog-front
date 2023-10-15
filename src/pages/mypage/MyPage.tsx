@@ -386,9 +386,17 @@ export function MyPage() {
                 </Box>
                 <Box className="intro-container">
                     <Box sx={{width: '766px'}}>
-                        {myPageInfo.introMd &&
+                        {myPageInfo.introMd === null ?
+                            <div className='make-introMd'>
+
+                                <button>자기소개 수정하기</button>
+                            </div>
+                            :
                             <PlogEditor height={"600px"} initialValue={myPageInfo.introMd ? myPageInfo.introMd : ""}
-                                        ref={editorRef}/>}
+                                        ref={editorRef}/>
+                        }
+                        {/*<PlogEditor height={"600px"} initialValue={myPageInfo.introMd ? myPageInfo.introMd : ""}*/}
+                        {/*            ref={editorRef}/>*/}
                     </Box>
                 </Box>
             </Box>

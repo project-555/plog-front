@@ -3,7 +3,7 @@ import Header from './components/common/Header'
 import {createContext, useState} from "react";
 
 export const ModeContext = createContext({
-    theme: 'light',
+    theme: '',
     setTheme: (theme: string) => {
     }
 })
