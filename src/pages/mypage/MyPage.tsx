@@ -2,7 +2,7 @@ import jwt_decode from "jwt-decode";
 import {Editor} from "@toast-ui/react-editor";
 import {useNavigate} from "react-router-dom";
 import React, {ChangeEvent, RefObject, useEffect, useRef, useState} from 'react';
-import {plogAuthAxios} from "../../modules/axios";
+import {getPlogAxios, plogAuthAxios} from "../../modules/axios";
 import {PlogEditor} from "../../components/blog/PlogEditor";
 import {LoginTokenPayload, MyPageInfo, UpdateUserRequest} from '../../types/UMSType';
 import {UpdateBlogRequest} from "../../types/BlogType";
@@ -55,7 +55,11 @@ export function MyPage() {
     }, [userID])
 
     const removeProfileImage = () => {
-        plogAuthAxios.put('/auth/edit-profile', {nickName: myPageInfo.nickname, profileImageURL: null, userID: userID})
+        getPlogAxios().post('/auth/edit-profile', {
+            nickName: myPageInfo.nickname,
+            profileImageURL: null,
+            userID: userID
+        })
             .then(res => {
                 if (res.status === 204) {
                     setMyPageInfo(prevState => ({
@@ -76,7 +80,7 @@ export function MyPage() {
                     profileImageURL: uploadedURL
                 }))
 
-                plogAuthAxios.put('/auth/edit-profile', {
+                getPlogAxios().post('/auth/edit-profile', {
                     nickName: myPageInfo.nickname,
                     profileImageURL: uploadedURL,
                     userID: userID
@@ -91,7 +95,7 @@ export function MyPage() {
             profileImageURL: myPageInfo.profileImageURL as string,
             userID: userID
         }
-        plogAuthAxios.put('/auth/edit-profile', params)
+        getPlogAxios().post('/auth/edit-profile', params)
         setIsNicknameEditMode(false)
     }
 
@@ -108,7 +112,7 @@ export function MyPage() {
             introHTML: editorRef.current?.getInstance().getHTML() as string,
             introMd: editorRef.current?.getInstance().getMarkdown() as string
         }
-        plogAuthAxios.patch(`/blogs/${blogID}`, params)
+        getPlogAxios().patch(`/blogs/${blogID}`, params)
         setIntroSnackbarOpen(true)
     }
 
