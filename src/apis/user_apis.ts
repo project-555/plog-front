@@ -21,7 +21,7 @@ export const verifyJoinEmailApi = async (email: string, code: string): Promise<o
     }
     try {
         const res = await axios.post(`${BASE_URL}/auth/verify-join-email`, params)
-        return res.data.data
+        return res.data
     } catch (err) {
         return null
     }

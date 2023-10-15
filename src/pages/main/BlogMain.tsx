@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import {plogAxios} from "../../modules/axios";
 import PostCard from '../../components/blog/PostCard';
 import jwt_decode from "jwt-decode";
@@ -14,11 +14,11 @@ const BlogMain = () => {
     const [pageSize] = useState<number>(15);
     const [isLoading, setIsLoading] = useState<boolean>(false);
 
-    useEffect(()=> {
-        if(token !== null){
+    useEffect(() => {
+        if (token !== null) {
             const decoded = jwt_decode(token);
             // @ts-ignore
-            localStorage.setItem('userID',decoded.userID)
+            localStorage.setItem('userID', decoded.userID)
         }
         getPosting()
     }, [])
@@ -34,16 +34,16 @@ const BlogMain = () => {
         if (isLoading) return;
         setIsLoading(true);
 
-        try{
+        try {
             let res;
-            if(lastCursorID === null){
+            if (lastCursorID === null) {
                 res = await plogAxios.get(`/home/recent-postings?pageSize=${pageSize}`)
-            } else{
+            } else {
                 res = await plogAxios.get(`/home/recent-postings?lastCursorID=${lastCursorID}&pageSize=${pageSize}`)
             }
 
-            const postingArr = res.data.data.homePostings
-            const cursor = postingArr[postingArr.length-1].postingID
+            const postingArr = res.data.homePostings
+            const cursor = postingArr[postingArr.length - 1].postingID
 
             if (lastCursorID === null) {
                 setPosting(postingArr);
@@ -65,7 +65,7 @@ const BlogMain = () => {
         const scrollTop = window.scrollY;
         const clientHeight = document.documentElement.clientHeight;
 
-        if (scrollTop + clientHeight + 1>= scrollHeight) {
+        if (scrollTop + clientHeight + 1 >= scrollHeight) {
             getPosting()
         }
 
@@ -73,22 +73,27 @@ const BlogMain = () => {
 
 
     const SkeletonCard = () => {
-        const numbers = Array.from({ length: 3 }, (_, index) => index);
+        const numbers = Array.from({length: 3}, (_, index) => index);
 
         return (
             <>
                 {numbers.map(number => (
                     <Card key={number}
-                          sx={{width: 280, display: 'inline-block',margin: '1rem',boxShadow:'rgba(0, 0, 0, 0.04) 0px 4px 16px 0px',}}>
-                    <CardHeader
-                    avatar={<Skeleton animation="wave" variant="circular" width={40} height={40} />}
-                    title={<Skeleton animation="wave" height={10} width="80%" style={{ marginBottom: 6 }}/>}
-                    subheader={<Skeleton animation="wave" height={10} width="40%" />}/>
-                    <Skeleton sx={{ height: 150 }} animation="wave" variant="rectangular" />
-                    <CardContent sx={{paddingBottom:0,}}>
-                    <Skeleton animation="wave" height={10} style={{ marginBottom: 6 }} />
-                    <Skeleton animation="wave" height={10} width="80%" style={{ marginBottom: 6 }} />
-                    </CardContent>
+                          sx={{
+                              width: 280,
+                              display: 'inline-block',
+                              margin: '1rem',
+                              boxShadow: 'rgba(0, 0, 0, 0.04) 0px 4px 16px 0px',
+                          }}>
+                        <CardHeader
+                            avatar={<Skeleton animation="wave" variant="circular" width={40} height={40}/>}
+                            title={<Skeleton animation="wave" height={10} width="80%" style={{marginBottom: 6}}/>}
+                            subheader={<Skeleton animation="wave" height={10} width="40%"/>}/>
+                        <Skeleton sx={{height: 150}} animation="wave" variant="rectangular"/>
+                        <CardContent sx={{paddingBottom: 0,}}>
+                            <Skeleton animation="wave" height={10} style={{marginBottom: 6}}/>
+                            <Skeleton animation="wave" height={10} width="80%" style={{marginBottom: 6}}/>
+                        </CardContent>
                     </Card>
                 ))}
             </>

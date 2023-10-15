@@ -60,7 +60,7 @@ export default function Header() {
         // 엑세스 토큰 리프레시
         plogAuthAxios.post("/auth/refresh-access-token").then(
             (response: any) => {
-                localStorage.setItem("token", response.data.data.token.accessToken)
+                localStorage.setItem("token", response.data.token.accessToken)
             }
         )
     }, [expiredInterval])
@@ -70,8 +70,8 @@ export default function Header() {
         if (!!token && !!userID) {
             plogAxios.get(`/users/${userID}`)
                 .then(response => {
-                    setBlogID(response.data.data.blogID)
-                    localStorage.setItem('nickname', response.data.data.nickname)
+                    setBlogID(response.data.blogID)
+                    localStorage.setItem('nickname', response.data.nickname)
                 })
         }
 

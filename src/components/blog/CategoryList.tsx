@@ -39,7 +39,7 @@ export function CategoryList(props: CategoryListProps) {
 
         getPlogAxios().get(`/blogs/${props.blogID}/categories`).then(
             (response: any) => {
-                setCategories(response.data.data.categories as Category[]);
+                setCategories(response.data.categories as Category[]);
                 setNeedRefresh(false)
             });
 
@@ -71,7 +71,7 @@ export function CategoryList(props: CategoryListProps) {
                 params: {categoryIDs: [category.categoryID]},
                 paramsSerializer: repeatQuerySerializer
             });
-            postingCount = response.data.data.count;
+            postingCount = response.data.count;
             setPostingCount(postingCount); // 상태를 업데이트하면서 화면을 새로고침합니다.
         } catch (error) {
             console.error("Error fetching posting count:", error);
