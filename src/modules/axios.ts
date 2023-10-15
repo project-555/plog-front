@@ -23,7 +23,7 @@ export function getPlogAxios() {
 }
 
 export function getData(response: any) {
-    return response.data.data;
+    return response.data;
 }
 
 export function getErrorCode(error: any) {

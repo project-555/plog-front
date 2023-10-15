@@ -88,17 +88,17 @@ export function PostingEdit() {
     useEffect(() => {
         plogAxios.get(`/blogs/${blogID}/postings/${postingID}`)
             .then((response) => {
-                console.log(response.data.data)
-                setPostingResponse(response.data.data)
-                setCategoryID(response.data.data.categoryID)
+                console.log(response.data)
+                setPostingResponse(response.data)
+                setCategoryID(response.data.categoryID)
             })
             .catch((error: any) => {
                 console.log(error);
             })
         plogAxios.get(`/blogs/${blogID}/postings/${postingID}/tags`)
             .then((response) => {
-                console.log(response.data.data)
-                setPostingTagResponse(response.data.data)
+                console.log(response.data)
+                setPostingTagResponse(response.data)
             })
             .catch((error: any) => {
                 console.log(error);
@@ -108,7 +108,7 @@ export function PostingEdit() {
     useEffect(() => {
         plogAxios.get(`/blogs/${blogID}/categories`)
             .then((response) => {
-                setCategories(response.data.data.categories)
+                setCategories(response.data.categories)
             })
             .catch((error: any) => {
                 console.log(error);
@@ -118,14 +118,14 @@ export function PostingEdit() {
     useEffect(() => {
         plogAxios.get(`blogs/${blogID}/tags`)
             .then((response) =>
-                setTags(response.data.data.tags)
+                setTags(response.data.tags)
             );
     }, [blogID, postingTagResponse.postingTags])
 
     useEffect(() => {
         plogAxios.get(`blogs/states`)
             .then((response) => {
-                setStates(response.data.data.states)
+                setStates(response.data.states)
             })
     }, [])
 
@@ -219,10 +219,10 @@ export function PostingEdit() {
                     {tagName: newValue}
                 ).then((response) => {
                     setUniquePostingTags([...postingTags, {
-                        tagID: response.data.data.tagID,
-                        tagName: response.data.data.tagName
+                        tagID: response.data.tagID,
+                        tagName: response.data.tagName
                     }])
-                    setInputTag({tagID: response.data.data.tagID, tagName: response.data.data.tagName})
+                    setInputTag({tagID: response.data.tagID, tagName: response.data.tagName})
                 })
             }
 
@@ -237,12 +237,12 @@ export function PostingEdit() {
                     postingTags: [
                         ...prevState.postingTags,
                         {
-                            tagID: response.data.data.tagID,
-                            tagName: response.data.data.tagName
+                            tagID: response.data.tagID,
+                            tagName: response.data.tagName
                         }
                     ]
                 }))
-                setInputTag({tagID: response.data.data.tagID, tagName: response.data.data.tagName})
+                setInputTag({tagID: response.data.tagID, tagName: response.data.tagName})
             })
         }
         // 사용자가 이미 존재하는 셀렉트 아이템을 선택한 경우

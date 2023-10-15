@@ -49,7 +49,7 @@ export function MyPage() {
         if (userID) {
             plogAuthAxios.get(`/users/${userID}`)
                 .then(res => {
-                    setMyPageInfo(res.data.data as MyPageInfo)
+                    setMyPageInfo(res.data as MyPageInfo)
                 })
         }
     }, [userID])
