@@ -1,13 +1,12 @@
 /* eslint-disable */
 import {useState} from 'react'
 import {useNavigate} from 'react-router-dom';
-import axios from 'axios'
 import {Box, Button, Grid, Link, Step, StepLabel, Stepper, TextField, Typography,} from '@mui/material';
 import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
 import {email, required} from '../../modules/validation'
 import {CodeParams, SignupParams} from "../../types/UMSType";
-// import {sendVerifyEmailApi, joinApi}  from '../../apis/user_apis'
-export const BASE_URL = process.env.REACT_APP_BASE_API_URL
+import {getPlogAxios} from "../../modules/axios";
+
 
 export function SignUp() {
     const navigate = useNavigate();
@@ -55,7 +54,7 @@ export function SignUp() {
             "email": account
         }
         // sendVerifyEmailApi(params).then(res => setSendEmail(true))
-        axios.post(`${BASE_URL}/auth/send-verify-join-email`, params)
+        getPlogAxios().post(`/auth/send-verify-join-email`, params)
             .then(res => setSendEmail(true))
 
     }
@@ -66,7 +65,7 @@ export function SignUp() {
             "verifyCode": verifyCode
         }
         if (verifyCode.length === 6 || e.keyCode === 9 || e.keyCode === 13) {
-            axios.post('http://api.plogcareers.com/auth/verify-join-email', params)
+            getPlogAxios().post('/auth/verify-join-email', params)
                 .then(res => {
                     if (res.status === 200) {
                         const token = res.data.verifyToken //인증번호 일치하면 토큰획득
@@ -98,7 +97,7 @@ export function SignUp() {
             "verifyToken": verifyToken
         }
         // joinApi(params).then
-        axios.post('http://api.plogcareers.com/auth/join', params)
+        getPlogAxios().post('/auth/join', params)
             .then((res: any) => {
                 if (res.status === 200) {
                     console.log(res.status)
