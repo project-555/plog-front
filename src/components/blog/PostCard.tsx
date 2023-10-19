@@ -16,6 +16,22 @@ const PostCard: React.FC<ChildProps> = ({ post }) => {
     const moveToPost = () => navigate(`/blogs/${post.blogID}/postings/${post.postingID}`, {state : {nickname: post.homePostingUser.nickname}})
 
 
+    const summary = (htmlstring: any) => {
+
+        const domParser = new DOMParser()
+        const htmlDoc = domParser.parseFromString(htmlstring, 'text/xml')
+        const bodyTagChildren = htmlDoc.getElementsByTagName('body')[0].childNodes
+
+        const text : any[]= []
+
+        bodyTagChildren.forEach(node => {
+            const contents = node.textContent
+            text.push(contents)
+        })
+
+        return text.join(' ')
+    }
+
     return (
         <Card
             onClick={moveToPost}
@@ -40,15 +56,18 @@ const PostCard: React.FC<ChildProps> = ({ post }) => {
                     title={`by ${post.homePostingUser.nickname}`}
                     subheader={post.createDt.slice(0,10)}/>
             }
-            <CardMedia
-                component="img" height="150" image={!!post.thumbnailImageURL? post.thumbnailImageURL : sample} alt="썸네일 사진"
-                onClick={moveToPost}/>
+            {post.thumbnailImageURL &&
+                <CardMedia component="img" height="150" image={!!post.thumbnailImageURL ? post.thumbnailImageURL : sample}
+                alt="썸네일 사진"
+                onClick={moveToPost}/>}
             <CardContent sx={{paddingBottom:0,}}>
                 <Typography variant="body1" color="text.first" sx={{height: '48px'}}>
                     {post.title}
                 </Typography>
-                <Typography variant="body2" color="text.secondary" sx={{height: '80px', marginTop:'4px'}}>
-                    {post.summary}
+                <Typography id='postcard-summary' variant="body2" color="text.secondary"
+                            sx={{height: !!post.thumbnailImageURL ? '80px' : '230px',}}
+                >
+                    {summary(post.htmlContent)}
                 </Typography>
             </CardContent>
             <CardActions disableSpacing>
