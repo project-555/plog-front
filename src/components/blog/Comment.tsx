@@ -4,6 +4,7 @@ import {useNavigate, useParams} from "react-router-dom";
 import {CommentInfo} from '../../types/PostingType';
 // @ts-ignore
 import {Mention, MentionsInput} from 'react-mentions';
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import '../../assets/comment.css'
 import {plogAuthAxios, plogAxios} from "../../modules/axios";
 
@@ -132,11 +133,7 @@ const Comment = ({isCommentAllowed}: { isCommentAllowed: boolean }) => {
                         <div className='comment-container'>
                             <div className="profile-wrapper">
                                 <div className='profile'>
-                                    <a href='/'>
-                                        <img
-                                            src="https://velog.velcdn.com/images/jke0829/profile/82d38172-0923-4c1a-b1ac-c0fe740a2cf0/social_profile.jpeg"
-                                            alt="user-thumbnail"/>
-                                    </a>
+                                    <AccountCircleIcon sx={{fontSize:'45px', marginRight: '8px'}}/>
                                     <div className="user-info">
                                         <div className="username">{c.user.nickname}</div>
                                         <div className="date">{dateParser(c.createDt)}</div>
@@ -158,18 +155,19 @@ const Comment = ({isCommentAllowed}: { isCommentAllowed: boolean }) => {
                                               onChange={(e) => setEditComment(e.target.value)}/>
                                 }
                             </div>
-                            <p className='add-comment'>
-                                <AddBoxOutlinedIcon fontSize='small' sx={{marginRight: '5px'}}/>
                                 {
                                     c.children ?
-                                        <span onClick={() => {
-                                            childCommentClick(c.id, c.children)
-                                        }}>{c.children.length}개의 댓글</span>
+                                        <p className='add-comment' onClick={() => {childCommentClick(c.id, c.children)}}>
+                                            <span><AddBoxOutlinedIcon fontSize='small' sx={{marginRight: '5px', verticalAlign:'text-bottom'}}/></span>
+                                            <span>{c.children.length}개의 댓글</span>
+                                        </p>
                                         :
-                                        <span onClick={() => childCommentClick(c.id, [])}>답글달기</span>
+                                        <p className='add-comment' onClick={() => childCommentClick(c.id, [])}>
+                                            <span><AddBoxOutlinedIcon fontSize='small' sx={{marginRight: '5px', verticalAlign:'text-bottom'}}/></span>
+                                            <span>답글달기</span>
+                                        </p>
 
                                 }
-                            </p>
 
                             {
                                 /*대댓글 영역*/
@@ -179,16 +177,12 @@ const Comment = ({isCommentAllowed}: { isCommentAllowed: boolean }) => {
                                         <>
                                             {c.children.map((childC, idx) =>
                                                 <div key={idx} className='child-comment-container'>
-                                                    <div className="profile-container">
+                                                    <div className="profile-wrapper">
                                                         <div className='profile'>
-                                                            <a href='/'>
-                                                                <img
-                                                                    src="https://velog.velcdn.com/images/jke0829/profile/82d38172-0923-4c1a-b1ac-c0fe740a2cf0/social_profile.jpeg"
-                                                                    alt="user-thumbnail"/>
-                                                            </a>
+                                                            <AccountCircleIcon sx={{fontSize:'45px', marginRight: '8px'}}/>
                                                             <div className="user-info">
                                                                 <div className="username">{childC.user.nickname}</div>
-                                                                <div className="date">{childC.createDt}</div>
+                                                                <div className="date">{dateParser(childC.createDt)}</div>
                                                             </div>
                                                         </div>
 

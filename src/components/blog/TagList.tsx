@@ -39,19 +39,14 @@ export function TagList(props: TagListProps) {
 
     return (
         <Box>
-            <Stack direction="row"
-                   spacing={0.5}
-                   flexWrap="wrap"
-            >
+            <Stack direction="row" flexWrap="wrap" gap='8px'>
                 {tags.length > 0 && tags.map((tag: PostingTag) => {
                         return (
                             <Chip
                                 key={tag.tagID}
                                 label={tag.tagName}
-                                sx={{mb: 0.5}}
-                                onDelete={() => {
-                                    handleTagDelete(tag)
-                                }}
+                                sx={{backgroundColor: '#c4c4c4', color: '#fff', ':hover':{backgroundColor:'var(--primary1)', color: '#fff'}}}
+                                onDelete={() => {handleTagDelete(tag)}}
                                 onClick={() => props.handleToggleTagID(tag.tagID)}
                                 color={props.tagIDs?.includes(tag.tagID) ? "primary" : "default"}
                             />

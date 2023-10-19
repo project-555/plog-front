@@ -25,7 +25,7 @@ export interface postType {
     homePostingUser: homePostingUserType;
     title: string;
     starCnt: number;
-    summary: string;
+    htmlContent: string;
     thumbnailImageURL: string;
     createDt: string;
 }

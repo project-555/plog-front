@@ -165,15 +165,16 @@ export function PostingTab(props: PostingTabProps) {
                 <Box sx={{ml: 1}}>
                     {isBlogOwner && <Button variant="outlined"
                                             sx={{
-                                                color: "black",
-                                                borderColor: "black",
+                                                color: "var(--text1)",
+                                                borderColor: "var(--text1)",
                                                 fontWeight: "bold",
                                                 height: "40px",
+                                                backgroundColor: 'var(--bg-card1)',
                                                 borderRadius: "20px",
                                                 ":hover": {
-                                                    borderColor: "black",
-                                                    backgroundColor: "black",
-                                                    color: "white"
+                                                    borderColor: "var(--primary1)",
+                                                    backgroundColor: "var(--primary1)",
+                                                    color: "#fff"
                                                 }
                                             }}
                                             onClick={handleOnClickPostingWriteBtn}
@@ -202,7 +203,14 @@ export function PostingTab(props: PostingTabProps) {
                                 </InputAdornment>
                             )
                         }}
-
+                        InputLabelProps={{
+                            style: {color:'var(--text1)'},
+                        }}
+                        sx={{
+                            '& input':{color: 'var(--text1)'},
+                            '& fieldset':{borderColor: 'var(--border)', color:'var(--text1)'},
+                            '& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline':{  borderColor: "var(--primary1)"}
+                        }}
                     />
                 </Box>
             </Box>
@@ -210,15 +218,9 @@ export function PostingTab(props: PostingTabProps) {
                 <Box width={"80%"}>
                     <List>
                         {postings.map((posting: Posting) => (
-                            <ListItem key={posting.id} sx={{padding: 0}}>
+                            <ListItem key={posting.id} sx={{padding: 0, marginTop:'8px',  boxShadow: 'none',}}>
                                 <Card elevation={0}
-                                      sx={{
-                                          boxShadow: 'none',
-                                          width: "100%",
-                                          ":hover": {
-                                              backgroundColor: "#f5f5f5"
-                                          }
-                                      }}
+                                      sx={{boxShadow: 'none', width: "100%", backgroundColor:'var(--bg-card1)',}}
                                       onClick={() => navigate(`/blogs/${props.blog.blogID}/postings/${posting.id}`)}
                                 >
                                     <CardContent>
@@ -230,7 +232,7 @@ export function PostingTab(props: PostingTabProps) {
                                                     height={"500px"}
                                                 />
                                             )}
-                                        <Typography variant="h4">
+                                        <Typography variant="h4" sx={{margin: '15px 0 5px 0'}}>
                                             {posting.title}
                                         </Typography>
                                         <Typography variant={"subtitle2"} color="text.secondary" sx={{mb: 1}}>
@@ -242,6 +244,7 @@ export function PostingTab(props: PostingTabProps) {
                                                     <Chip
                                                         key={postingTag.tagID}
                                                         onClick={() => handleToggleTagID(postingTag.tagID)}
+                                                        sx={{mr: 0.5, mb: 0.5, backgroundColor: 'var(--primary1)', color: '#fff'}}
                                                         label={postingTag.tagName}
                                                         color={listBlogPostingsRequest.tagIDs?.includes(postingTag.tagID) ? "primary" : "default"}
                                                     />

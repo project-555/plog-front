@@ -8,7 +8,7 @@ interface TimeAgoProps {
 
 const TimeAgo: React.FC<TimeAgoProps> = ({timestamp}) => {
     const timeAgo = formatDistanceToNow(new Date(timestamp), {addSuffix: true, locale: ko});
-    return <span>{timeAgo}</span>;
+    return <span style={{color:'var(--text1)'}}>{timeAgo}</span>;
 };
 
 export default TimeAgo;
