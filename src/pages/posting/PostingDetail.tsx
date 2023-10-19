@@ -1,9 +1,8 @@
-import React, {useContext, useEffect, useLayoutEffect, useState} from "react";
+import React, {useContext, useEffect,useState} from "react";
 import {useNavigate, useParams} from 'react-router-dom'
 import {plogAuthAxios, plogAxios} from "../../modules/axios";
 import {Chip} from '@mui/material';
 import {Viewer} from '@toast-ui/react-editor';
-import '@toast-ui/editor/dist/toastui-editor-viewer.css';
 import {BlogTag} from "../../types/BlogType";
 import Comment from '../../components/blog/Comment'
 import StarShare from "../../components/blog/StarShare";
@@ -32,24 +31,25 @@ export function PostingDetail() {
                 setPost(res.data)
             })
             .catch(err => console.log(err.message))
-
-
         getTags()
     }, [])
 
     const modeCheck = () => {
         const editorEl = document.querySelectorAll('.posting-contents-area div')[0];
-
+        const editorEl2 = document.querySelectorAll('.toastui-editor-contents div')[0];
+        console.log(editorEl, 'ele', editorEl2)
         if (editorEl) {
             if (theme.theme === 'dark') {
+                console.log(theme.theme, 'dart')
                 editorEl.classList.add("toastui-editor-dark");
             } else {
+                console.log(theme.theme, 'light')
                 editorEl.classList.remove("toastui-editor-dark");
             }
         }
     }
 
-    useLayoutEffect(() => {
+    useEffect(() => {
         modeCheck()
     }, [theme.theme])
 
@@ -72,10 +72,7 @@ export function PostingDetail() {
 
     const getTags = () => {
         plogAxios.get(`blogs/${blogID}/postings/${postingID}/tags`)
-            .then(res => {
-                setTags(res.data.postingTags)
-                console.log(res.data.postingTags)
-            })
+            .then(res => setTags(res.data.postingTags))
     }
 
     return (
@@ -98,7 +95,7 @@ export function PostingDetail() {
                                         <span className='bolder'>{nickname}</span>
                                         <span className='explain'>{dateParser(post['updateDt'])}</span>
                                     </div>
-                                    {nickname === localStorage.getItem('nickname') &&
+                                    {nickname === localStorage.getItem('nickname') &&  localStorage.getItem('token') &&
                                         <ul>
                                             <li onClick={() => navigate(`/blogs/${blogID}/postings/${postingID}/edit-posting`)}>수정</li>
                                             <li onClick={delThisPosting}>삭제</li>
@@ -106,13 +103,11 @@ export function PostingDetail() {
 
                                 </div>
                                 <div className='tag-list'>
-                                    {tags && tags.map((tag) => <Chip key={tag.tagID} label={tag.tagName} className='tag'
-                                                                     sx={{
-                                                                         mr: 0.5,
-                                                                         mb: 0.5,
-                                                                         backgroundColor: '#12B886',
-                                                                         color: '#fff'
-                                                                     }}/>)}
+                                    {tags && tags.map((tag) =>
+                                        <Chip key={tag.tagID}
+                                              label={tag.tagName}
+                                              className='tag'
+                                              sx={{mr: 0.5, mb: 0.5, backgroundColor: '#12B886', color: '#fff'}}/>)}
                                 </div>
                             </div>
                             <div className='posting-contents-area'>

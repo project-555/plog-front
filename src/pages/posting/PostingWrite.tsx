@@ -272,16 +272,22 @@ export function PostingWrite() {
             <Box className="posing-write-container inner-container">
                 <FormGroup>
                     <TextField
-                        required sx={{mb: 3}} fullWidth id="standard-basic"
-                        label="제목" variant="standard"
-                        placeholder="제목을 입력하세요"
+                        required
+                        fullWidth id="standard-basic"
+                        label="제목"
+                        variant="standard"
+                        // placeholder="제목을 입력하세요"
                         inputRef={titleRef}
                         error={validateEmpty(title)}
                         helperText={validateEmpty(title) && "제목을 입력해주세요."}
-                        InputProps={{style: {fontSize: 30, fontWeight: 'bold', color: '1px solid var(--border)'}}}
+                        InputProps={{disableUnderline: true, style: {fontSize: 30, fontWeight: 'bold', color:'var(--text1)'}}}
                         InputLabelProps={{style: {fontSize: 30, fontWeight: 'bold'}}}
                         onChange={handleChangeTitle}
                         value={title}
+                        sx={{mb: 3,
+                            '& input.MuiInputBase-input':{color: 'var(--text1)', borderBottom: '1px solid var(--form-border)'},
+                            '& label.MuiFormLabel-root':{color: 'var(--text1)'},
+                        }}
                     />
                     <Box sx={{mb: 3}}>
                         {
@@ -308,12 +314,17 @@ export function PostingWrite() {
                             filterOptions={handleFilterOptions}
                             renderOption={(props, option) => <li {...props} key={option.tagID}>{option.tagName}</li>}
                             renderInput={(params) => (
-                                <TextField {...params} variant={"standard"} label="태그"/>
-                            )}/>
+                                <TextField {...params} variant={"standard"} label="태그" sx={{color: '#fff'}}/>
+                            )}
+                            sx={{
+                                borderBottom: '1px solid var(--form-border)',
+                                '& input.MuiInputBase-input, & label.MuiFormLabel-root':{color: 'var(--text1)'},
+                            }}
+                        />
                     </Box>
                     {isCategoryRendered &&
                         <FormControl fullWidth variant="standard">
-                            <InputLabel id="category-label" required error={validateEmpty(categoryID)}>카테고리</InputLabel>
+                            <InputLabel id="category-label" required error={validateEmpty(categoryID)} sx={{color: 'var(--text1)'}}>카테고리</InputLabel>
                             <Select
                                 labelId="category-label"
                                 id="demo-simple-select"
@@ -321,8 +332,10 @@ export function PostingWrite() {
                                 inputRef={categoryRef}
                                 value={categoryID.toString()}
                                 label="카테고리"
+                                disableUnderline={true}
                                 error={validateEmpty(categoryID)}
                                 onChange={handleChangeCategoryID}
+                                sx={{color: 'var(--text1)', borderBottom:'1px solid var(--form-border)',}}
                             >
                                 {
                                     categories.map((category) => {
@@ -370,7 +383,6 @@ export function PostingWrite() {
                         </Box>
 
                         <Box textAlign="center" sx={{px: 70, pt: 4}}>
-
                             <LoadingButton
                                 className='write-post-btn'
                                 loading={isPosted}

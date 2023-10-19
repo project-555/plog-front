@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
-import './assets/css_dark.css'
+import './assets/css.css'
 import reportWebVitals from './reportWebVitals';
 import Router from './Router'
 import {RouterProvider} from "react-router-dom";

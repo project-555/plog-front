@@ -40,7 +40,7 @@ export function UserBlog() {
     return (
         <Box className="inner-container">
             <Box sx={{pt: 5, pl: 25, pr: 25}}>
-                {blogUser && <Card elevation={0} style={{boxShadow: 'none'}}>
+                {blogUser && <Card elevation={0} style={{boxShadow: 'none', backgroundColor:'var(--bg-card1)', color:'var(--text1)'}}>
                     <CardContent style={{display: 'flex', flexDirection: 'row'}}>
                         <Box sx={{margin: 1}}>
                             <Avatar alt={blogUser.nickname}
@@ -51,21 +51,30 @@ export function UserBlog() {
                             <Typography variant="h5" component="div">
                                 {blogUser.nickname}
                             </Typography>
-                            <Typography variant="body2" color="text.secondary" component="div" sx={{mt: 2}}>
+                            <Typography variant="body2" color="text.secondary" component="div" sx={{mt: 2, color:'var(--text1)'}}>
                                 {blogUser.shortIntro}
                             </Typography>
                         </Box>
                     </CardContent>
                 </Card>}
                 <Divider/>
-                <Box display={"flex"} sx={{mt: 3}} justifyContent={"center"}>
+                <Box display={"flex"} sx={{mt: 6}} justifyContent={"center"}>
                     <Tabs
                         aria-label="basic tabs example"
                         value={tabIndex}
                         onChange={handleOnChangeTabIndex}
+                        sx={{
+                            "& .MuiTabs-indicator": {
+                                backgroundColor: "var(--primary2)",
+                                height: 4,
+                            },
+                            "& .MuiTab-root.Mui-selected": {
+                                color: "var(--primary2)",
+                            }
+                        }}
                     >
-                        <Tab label="포스팅"/>
-                        <Tab label="커리어"/>
+                        <Tab label="포스팅" sx={{fontSize:'16px'}}/>
+                        <Tab label="커리어" sx={{fontSize:'16px'}}/>
                     </Tabs>
                 </Box>
                 <Box>

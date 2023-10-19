@@ -15,6 +15,7 @@ html[class~='dark'] {
     --primary2: #20C997;
     --shadow: rgba(255, 255, 255, 0.2);
     --border: #ECECEC;
+    --form-border: #ECECEC;
 }
 
 html[class~='light'] {
@@ -32,6 +33,7 @@ html[class~='light'] {
     --primary2: #20C997;
     --shadow: rgba(0, 0, 0, 0.2);
     --border: #212529;
+    --form-border: #ADB5BD;
 }
 
 /* 레이아웃 공용 디자인 */
@@ -91,6 +93,8 @@ div, p, h1, h2, h3, h4, h5, h6, input {
 
 .header .mode-toggle-btn {
     color: var(--text1);
+    vertical-align: middle;
+    margin-right: 3px;
 }
 
 .header .search-btn {
@@ -99,6 +103,7 @@ div, p, h1, h2, h3, h4, h5, h6, input {
 
 .header .write-posting-btn {
     border: 1px solid var(--text1);
+   background-color: white;
     border-radius: 1rem;
     padding: 5px 1rem;
     margin: 0 1rem;
@@ -371,7 +376,7 @@ div, p, h1, h2, h3, h4, h5, h6, input {
 
 /*블로그 - 메인화면*/
 .posting-container {
-    background-color: var(--bg-element1)
+    background-color: var(--bg-page1)
 }
 
 .postcard-wrapper {
@@ -388,6 +393,17 @@ div, p, h1, h2, h3, h4, h5, h6, input {
 .postcard-wrapper span.MuiTypography-root, button.MuiButtonBase-root {
     color: var(--text1);
     /*color: #fff*/
+}
+
+#postcard-summary{
+    margin-top:8px;
+    color:var(--text3);
+    overflow-x: hidden;
+    text-overflow: ellipsis;
+    display:-webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    line-height: 1.35em;
 }
 
 
@@ -433,7 +449,7 @@ div, p, h1, h2, h3, h4, h5, h6, input {
 }
 
 /*블로그 - 마이페이지*/
-.profile-container {
+.mypage-container .profile-container {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -451,19 +467,21 @@ div, p, h1, h2, h3, h4, h5, h6, input {
 }
 
 .intro-container .make-introMd {
-    height: 600px;
-    border: 1px solid #dadde6;
+    height: 300px;
+    border: 2px solid var(--form-border);
     border-radius: 4px;
     text-align: center;
 }
 
 .intro-container .make-introMd button {
     background-color: var(--primary1);
+    font-size: 16px;
     color: #fff;
-    padding: 20px;
+    padding: 15px;
     width: 30%;
     border: none;
     border-radius: 10px;
+    margin-top: 15%;
 }
 
 
@@ -524,6 +542,10 @@ div, p, h1, h2, h3, h4, h5, h6, input {
 }
 
 
+.posting-comment-area {
+    max-width: 770px;
+    margin: 0 auto 5rem auto;
+}
 .posting-comment-area textarea {
     resize: none;
     border: 1px solid var(--text4);
@@ -558,7 +580,6 @@ div, p, h1, h2, h3, h4, h5, h6, input {
 .comment-area .comment-container {
     margin: 20px 0;
     padding: 15px 0;
-    border-bottom: 1px solid var(--text1);
 }
 
 .comment-area .profile-wrapper {
@@ -568,6 +589,7 @@ div, p, h1, h2, h3, h4, h5, h6, input {
 
 .comment-area .profile-wrapper .profile {
     display: flex;
+    align-items: end;
 }
 
 .comment-area .profile-wrapper img {
@@ -614,7 +636,7 @@ div, p, h1, h2, h3, h4, h5, h6, input {
 }
 
 .comment-area .add-comment span {
-    vertical-align: top
+    vertical-align: baseline
 }
 
 .comment-area .child-comment-container {

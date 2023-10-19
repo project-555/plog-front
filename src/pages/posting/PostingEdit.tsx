@@ -348,15 +348,20 @@ export function PostingEdit() {
             <Box className="inner-container">
                 <FormGroup>
                     <TextField
-                        required sx={{mb: 3}} fullWidth id="standard-basic" label="제목" variant="standard"
+                        required
+                        fullWidth id="standard-basic" label="제목" variant="standard"
                         placeholder="제목을 입력하세요"
                         inputRef={titleRef}
                         error={validateEmpty(postingResponse.title)}
                         helperText={validateEmpty(postingResponse.title) && "제목을 입력해주세요."}
-                        InputProps={{style: {fontSize: 30, fontWeight: 'bold'}}}
+                        InputProps={{disableUnderline: true, style: {fontSize: 30, fontWeight: 'bold'}}}
                         InputLabelProps={{style: {fontSize: 30, fontWeight: 'bold'}}}
                         onChange={handleChangeTitle}
                         value={postingResponse.title}
+                        sx={{mb: 3,
+                            '& input.MuiInputBase-input':{color: 'var(--text1)', borderBottom: '1px solid var(--form-border)'},
+                            '& label.MuiFormLabel-root':{color: 'var(--text1)'},
+                        }}
                     />
                     <Box sx={{mb: 3}}>
                         {
@@ -365,7 +370,7 @@ export function PostingEdit() {
                                     <Chip
                                         key={tag.tagID}
                                         label={tag.tagName}
-                                        sx={{mr: 0.5, mb: 0.5}}
+                                        sx={{mr: 0.5, mb: 0.5, backgroundColor: 'var(--primary1)', color: '#fff'}}
                                         onDelete={() => handleDeletePostingTag(tag)}
                                     />)
                             })
@@ -383,12 +388,17 @@ export function PostingEdit() {
                             filterOptions={handleFilterOptions}
                             renderOption={(props, option) => <li {...props} key={option.tagID}>{option.tagName}</li>}
                             renderInput={(params) => (
-                                <TextField {...params} variant={"standard"} label="태그"/>
-                            )}/>
+                                <TextField {...params} variant={"standard"} label="태그" sx={{color: '#fff'}}/>
+                            )}
+                            sx={{
+                                borderBottom: '1px solid var(--form-border)',
+                                '& input.MuiInputBase-input, & label.MuiFormLabel-root':{color: 'var(--text1)'},
+                            }}
+                        />
                     </Box>
                     {categories &&
                         <FormControl fullWidth variant="standard">
-                            <InputLabel id="category-label" required error={validateEmpty(categoryID)}>카테고리</InputLabel>
+                            <InputLabel id="category-label" required error={validateEmpty(categoryID)} sx={{color: 'var(--text1)'}}>카테고리</InputLabel>
                             <Select
                                 labelId="category-label"
                                 id="demo-simple-select"
@@ -396,6 +406,7 @@ export function PostingEdit() {
                                 inputRef={categoryRef}
                                 value={categoryID.toString()}
                                 label="카테고리"
+                                disableUnderline={true}
                                 error={validateEmpty(categoryID)}
                                 onChange={handleChangeCategoryID}
                             >
