@@ -1,7 +1,7 @@
-import {useContext, useEffect, useState} from "react";
+import React, {useContext, useEffect, useState} from "react";
 import {NavLink} from "react-router-dom";
 import jwt_decode from "jwt-decode";
-import {Button, IconButton, Menu, MenuItem} from '@mui/material';
+import {Avatar, Button, CardHeader, IconButton, Menu, MenuItem} from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import DarkModeIcon from '@mui/icons-material/DarkMode';
 import LightModeIcon from '@mui/icons-material/LightMode';
@@ -149,13 +149,15 @@ export default function Header() {
                 {
                     !!userInfo.nickname ?
                         <>
-                            <Button className='login-btn' variant="contained"
-                                    onClick={openMenu}>{userInfo.nickname}</Button>
+                            <Button className='login-btn' variant="contained" onClick={openMenu}>{userInfo.nickname}</Button>
                             <Menu anchorEl={anchorEl} open={open} onClose={closeMenu}
                                   MenuListProps={{'aria-labelledby': 'basic-button',}}>
                                 <MenuItem onClick={logoutClick}>로그아웃</MenuItem>
                                 <MenuItem onClick={closeMenu}>
                                     <NavLink to='/mypage'>마이페이지</NavLink>
+                                </MenuItem>
+                                <MenuItem onClick={closeMenu}>
+                                    <NavLink to={`/blogs/${blogID}`}>내 프로그</NavLink>
                                 </MenuItem>
                             </Menu>
                         </>
