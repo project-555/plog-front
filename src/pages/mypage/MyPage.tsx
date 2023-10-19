@@ -34,6 +34,7 @@ export function MyPage() {
     const [isShortIntroEditMode, setIsShortIntroEditMode] = useState(false);
     const [introSnackbarOpen, setIntroSnackbarOpen] = useState(false);
     const [withdrawalDialogOpen, setWithdrawalDialogOpen] = useState(false);
+    const [showIntroEditor, setShowIntroEditor] = useState<boolean>(false)
 
     useEffect(() => {
         if (token) {
@@ -149,7 +150,7 @@ export function MyPage() {
 
 
     return (
-        <Box className='inner-container'>
+        <Box className='inner-container mypage-container'>
             <Box className="profile-container">
                 <Box sx={{display: 'flex', width: '100%', paddingBottom: '10px'}}>
                     <Box sx={{display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
@@ -157,7 +158,7 @@ export function MyPage() {
                                 alt={myPageInfo.nickname}/>
                         <Box sx={{display: 'flex', flexDirection: 'column', marginTop: '15px', marginBottom: '10px'}}>
                             <Button
-                                style={{width: 160, backgroundColor: '#6CAC23', fontSize: '16px'}}
+                                style={{width: 160, backgroundColor: 'var(--primary1)', fontSize: '16px'}}
                                 size='small'
                                 variant="contained"
                                 component="label"
@@ -214,7 +215,7 @@ export function MyPage() {
                                         fullWidth
                                     />
                                     <Button
-                                        style={{color: '#6CAC23'}}
+                                        style={{color: 'var(--primary1)'}}
                                         onClick={(event) => updateUserNickname()}
                                     >
                                         <u>저장</u>
@@ -228,7 +229,7 @@ export function MyPage() {
                                         <b>{myPageInfo.nickname}</b>
                                     </Typography>
                                     <Button
-                                        style={{color: '#6CAC23'}}
+                                        style={{color:'var(--primary1)'}}
                                         onClick={(event) => setIsNicknameEditMode(true)}
                                     >
                                         <u>수정</u>
@@ -248,6 +249,10 @@ export function MyPage() {
                             {isShortIntroEditMode ? (
                                 <>
                                     <TextField
+                                        sx={{
+                                            '& textarea':{color: 'var(--text1)'},
+                                            '& fieldset':{borderColor: 'var(--form-border)'},
+                                    }}
                                         InputProps={{style: {padding: '4px'}}}
                                         InputLabelProps={{style: {fontSize: '16px'}}}
                                         defaultValue={myPageInfo.shortIntro}
@@ -255,9 +260,10 @@ export function MyPage() {
                                         fullWidth
                                         multiline
                                         rows={6}
+                                        focused={false}
                                     />
                                     <Button
-                                        style={{color: '#6CAC23'}}
+                                        style={{color: 'var(--primary1)'}}
                                         onClick={(event) => updateUserShortIntro()}
                                     >
                                         <u>저장</u>
@@ -271,7 +277,7 @@ export function MyPage() {
                                         {myPageInfo.shortIntro}
                                     </Typography>
                                     <Button
-                                        style={{color: '#6CAC23'}}
+                                        style={{color: 'var(--primary1)'}}
                                         onClick={(event) => setIsShortIntroEditMode(true)}
                                     >
                                         <u>수정</u>
@@ -370,7 +376,7 @@ export function MyPage() {
                     </Box>
                     <Box sx={{width: '648px', display: 'flex', justifyContent: 'flex-end'}}>
                         <Button
-                            style={{color: '#6CAC23'}}
+                            style={{color: 'var(--primary1)'}}
                             onClick={(event) => updateUserIntro()}
                         >
                             <u>저장</u>
@@ -386,17 +392,14 @@ export function MyPage() {
                 </Box>
                 <Box className="intro-container">
                     <Box sx={{width: '766px'}}>
-                        {myPageInfo.introMd === null ?
+                        {myPageInfo.introMd === null && !showIntroEditor ?
                             <div className='make-introMd'>
-
-                                <button>자기소개 수정하기</button>
+                                <button onClick={()=>setShowIntroEditor(true)}>자기소개 작성하기</button>
                             </div>
                             :
                             <PlogEditor height={"600px"} initialValue={myPageInfo.introMd ? myPageInfo.introMd : ""}
                                         ref={editorRef}/>
                         }
-                        {/*<PlogEditor height={"600px"} initialValue={myPageInfo.introMd ? myPageInfo.introMd : ""}*/}
-                        {/*            ref={editorRef}/>*/}
                     </Box>
                 </Box>
             </Box>
