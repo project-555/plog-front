@@ -16,6 +16,9 @@ html[class~='dark'] {
     --shadow: rgba(255, 255, 255, 0.2);
     --border: #ECECEC;
     --form-border: #ECECEC;
+    --error: #f56f6f;
+    --important: #ef3636;
+
 }
 
 html[class~='light'] {
@@ -34,6 +37,8 @@ html[class~='light'] {
     --shadow: rgba(0, 0, 0, 0.2);
     --border: #212529;
     --form-border: #ADB5BD;
+    --error: #ff5b5b;
+    --important: #ef3636;
 }
 
 /* 레이아웃 공용 디자인 */
@@ -211,7 +216,7 @@ div, p, h1, h2, h3, h4, h5, h6, input {
 }
 
 
-/*회원가입*/
+/*회원가입 & 비번찾기*/
 .signup-container {
     width: 100%;
     min-height: 100vh;
@@ -226,11 +231,21 @@ div, p, h1, h2, h3, h4, h5, h6, input {
 .signup-container .signup-modal {
     width: 390px;
     background-color: var(--bg-card1);
-    /*background-color: var(--bg-element1);*/
     border-radius: 10px;
     overflow: hidden;
     padding: 77px 55px 33px 55px;
     box-shadow: 0 5px 10px 0 rgba(0, 0, 0, 0.2);
+}
+
+
+.signup-container .signup-modal input.MuiInputBase-input{
+    color:var(--text1);
+    border-bottom: 1px solid var(--form-border);
+
+}
+
+.signup-container .signup-modal label.MuiFormLabel-root{
+    color:var(--text1);
 }
 
 .signup-modal .stepper-container {
@@ -259,10 +274,19 @@ div, p, h1, h2, h3, h4, h5, h6, input {
 .step2-container .signup-inputs .sex-btn {
     width: 35%;
     margin-right: 10px;
+    border-color: var(--form-border);
+    color: var(--text2);
 }
 
+.step2-container .signup-inputs .MuiButton-contained {
+    background-color: var(--primary1);
+    border:none;
+    color: #fff;
+}
 .step2-container .signup-inputs .birth-input {
     width: 84%;
+    height: 30px;
+    margin-top: -10px;
     font-size: 15px;
     float: right;
     color: var(--text3);
@@ -270,12 +294,15 @@ div, p, h1, h2, h3, h4, h5, h6, input {
     border-bottom: 2px solid var(--text3);
 }
 
+
 .step2-container .signup-inputs .birth-input:focus {
     outline: 0;
 }
 
 .step2-container .back-btn, .join-btn {
     font-size: 17px;
+    height: 55px;
+    width: 100%;
 }
 
 
@@ -326,7 +353,6 @@ div, p, h1, h2, h3, h4, h5, h6, input {
     outline: 0;
 }
 
-/*.signup-form .signup-btn {font-size: 15px;border: none;border-radius: 10px;color: #fff;line-height: 1.2;text-transform: uppercase;display: flex;justify-content: center;align-items: center;width: 100%;height: 50px;background: #333;}*/
 .MuiButton-root.btn-full {
     margin-top: 15px;
     font-size: 17px;
@@ -340,9 +366,40 @@ div, p, h1, h2, h3, h4, h5, h6, input {
 }
 
 .MuiButton-root.btn-full:hover {
-    background-color: #2e7d32;
+    background-color: var(--primary2);
 }
 
+.forgot-pw-container {
+    width: 100%;
+    min-height: 100vh;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    padding: 15px;
+    background-color: var(--bg-page1);
+}
+
+.forgot-pw-container .forgot-pw-modal {
+    width: 390px;
+    background-color: var(--bg-card1);
+    border-radius: 10px;
+    overflow: hidden;
+    padding: 77px 55px 33px 55px;
+    box-shadow: 0 5px 10px 0 rgba(0, 0, 0, 0.2);
+}
+
+.password-form-container .email-input {
+    width: 67%;
+    margin-right: 3%;
+    color: var(--text1);
+    height: 55px;
+}
+.password-form-container .email-chk {
+    width: 30%;
+    height: 41px;
+    margin-top: 24px;
+}
 
 /*회원가입 완료*/
 
@@ -374,6 +431,8 @@ div, p, h1, h2, h3, h4, h5, h6, input {
     color: #fff;
 }
 
+
+
 /*블로그 - 메인화면*/
 .posting-container {
     background-color: var(--bg-page1)
@@ -390,9 +449,12 @@ div, p, h1, h2, h3, h4, h5, h6, input {
     background-color: var(--bg-card1);
 }
 
-.postcard-wrapper span.MuiTypography-root, button.MuiButtonBase-root {
+
+.postcard-wrapper span.MuiTypography-root{
     color: var(--text1);
-    /*color: #fff*/
+}
+.postcard-wrapper button.MuiButtonBase-root {
+    color: var(--text1);
 }
 
 #postcard-summary{

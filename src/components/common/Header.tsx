@@ -94,6 +94,7 @@ export default function Header() {
         setAnchorEl(null)
         localStorage.removeItem('token')
         localStorage.removeItem('userID')
+        localStorage.removeItem('nickname')
         window.location.reload()
     }
 

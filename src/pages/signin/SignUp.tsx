@@ -53,9 +53,19 @@ export function SignUp() {
         const params = {
             "email": account
         }
-        // sendVerifyEmailApi(params).then(res => setSendEmail(true))
         getPlogAxios().post(`/auth/send-verify-join-email`, params)
-            .then(res => setSendEmail(true))
+            .then(res => {
+                if(res.status === 200){
+                    setSendEmail(true)
+                }
+            })
+            .catch(err => {
+                if(err.response.data.code === 'ERR_EMAIL_DUPLICATED'){
+                    alert(err.response.data.message)
+                }else {
+                    alert('다시 시도해주세요.')
+                }
+            })
 
     }
 
@@ -96,7 +106,6 @@ export function SignUp() {
             "shortIntro": shortIntro,
             "verifyToken": verifyToken
         }
-        // joinApi(params).then
         getPlogAxios().post('/auth/join', params)
             .then((res: any) => {
                 if (res.status === 200) {
@@ -113,9 +122,7 @@ export function SignUp() {
     const regCheck = (value: string, target: string): boolean => {
         const emailReg = /^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*.[a-zA-Z]{2,3}$/i;
 
-        if (value.length === 0) {
-            return true
-        }
+        if (value.length === 0) return true
 
         switch (target) {
             case 'email':
@@ -128,19 +135,17 @@ export function SignUp() {
     return (
         <div className='signup-container'>
             <div className='signup-modal'>
-                <Typography variant="h3" gutterBottom align="center">
-                    Sign Up
-                </Typography>
+                <Typography variant="h3" gutterBottom align="center">Sign Up</Typography>
                 <Typography variant="body2" align="center">
-                    <Link href="/sign-in">이미 계정이 있나요?</Link>
+                    <Link href="/sign-in" sx={{color:'var(--text2)', textDecoration:'none'}}>이미 계정이 있나요?</Link>
                 </Typography>
                 <Box className='stepper-container'>
                     <Stepper activeStep={activeStep} alternativeLabel color='success'>
                         {steps.map((label) => (
                             <Step key={label}
                                   sx={{
-                                      '& .MuiStepLabel-root .Mui-completed': {color: '#2e7d32',},
-                                      '& .MuiStepLabel-root .Mui-active': {color: '#2e7d32',}
+                                      '& .MuiStepLabel-root .Mui-completed': {color: 'var(--primary1)',},
+                                      '& .MuiStepLabel-root .Mui-active': {color:  'var(--primary1)'},
                                   }}>
                                 <StepLabel>{label}</StepLabel>
                             </Step>
@@ -154,6 +159,7 @@ export function SignUp() {
                                autoComplete="email" margin="normal"
                                onChange={(e) => setAccount(e.target.value)}
                                helperText={regCheck(account, 'email') ? '' : '올바른 이메일 형식을 입력해주세요'}
+                               sx={{'& .MuiFormHelperText-root':{color:'var(--error)'}}}
                                required/>
                     <Button className='email-chk' size="small" color='success'
                             disabled={regCheck(account, 'email') === false || account === ''}
@@ -168,6 +174,7 @@ export function SignUp() {
                                        onChange={(e) => setVerifyCode(e.target.value)}
                                        onKeyDown={codeCheckRequest}
                                        helperText={!!verifyToken || verifyCode.length === 0 ? '' : '인증번호가 일치하지 않습니다.'}
+                                       sx={{'& .MuiFormHelperText-root':{color:'var(--error)'}}}
                                        color={!!verifyToken ? 'success' : 'primary'}
                                        required
                             />
@@ -183,12 +190,10 @@ export function SignUp() {
                                type="password" margin="normal"
                                onChange={(e) => setPasswordConfirm(e.target.value)}
                                helperText={password === passwordConfirm && passwordConfirm.length > 0 ? '비밀번호가 일치합니다' : ''}
+                               sx={{'& .MuiFormHelperText-root':{color:'var(--primary1)'}}}
                                required
                     />
-                    <Button variant='contained' className='btn-full'
-                            onClick={() => setActiveStep(1)}
-                        // disabled={account === '' || verifyCode === '' || password === '' || passwordConfirm === ''}
-                    >
+                    <Button variant='contained' className='btn-full' onClick={() => setActiveStep(1)}>
                         다음 단계 진행하기
                     </Button>
                 </Box>
@@ -204,19 +209,20 @@ export function SignUp() {
                                onChange={(e) => setLastName(e.target.value)}/>
                     </div>
                     <div className='signup-inputs'>
-                        {/*<input className='signup-input' type='text' placeholder='* 성별' onChange={(e)=> setSex(e.target.value)}></input>*/}
                         <span>* 성별</span>
-                        <Button className='sex-btn' color='success'
+                        <Button className='sex-btn'
                                 variant={sex === 'FEMALE' ? 'contained' : 'outlined'}
                                 onClick={() => setSex('FEMALE')}>여자</Button>
-                        <Button className='sex-btn' color='success' variant={sex === 'MALE' ? 'contained' : 'outlined'}
+                        <Button className='sex-btn'
+                                variant={sex === 'MALE' ? 'contained' : 'outlined'}
                                 onClick={() => setSex('MALE')}>남자</Button>
                     </div>
                     <div className='signup-inputs'>
                         <span>* 생일</span>
-                        <input className='birth-input' type='date' onChange={(e) => {
-                            setBirth(e.target.value)
-                        }}/>
+                        <input className='birth-input' type='date'
+                               onChange={(e) => setBirth(e.target.value)}
+                               style={{backgroundColor: 'var(--bg-card1)'}}
+                        />
                     </div>
 
                     <div className='signup-inputs'>
@@ -231,15 +237,18 @@ export function SignUp() {
                         <input className='signup-input' type='text' placeholder='* 본인 소개'
                                onChange={(e) => setShortIntro(e.target.value)}/>
                     </div>
-                    <Button className='back-btn' variant='outlined'>이전단계로</Button>
-                    <Button className='join-btn' variant='contained' onClick={signupRequest}>회원가입</Button>
+                    <Button className='join-btn'
+                            variant='contained'
+                            sx={{backgroundColor: 'var(--primary1)',color: '#fff', ':hover':{backgroundColor: 'var(--primary2)'}}}
+                            onClick={signupRequest}>회원가입</Button>
                 </div>
 
                 <div className='signup-form'
                      style={{display: activeStep === 2 ? 'block' : 'none', textAlign: 'center'}}>
-                    <CheckCircleOutlineIcon sx={{color: '#4c8e06', fontSize: '100px', marginTop: '60px'}}/>
+                    <CheckCircleOutlineIcon sx={{color: 'var(--primary1)', fontSize: '100px', marginTop: '60px'}}/>
                     <p className='explain' style={{margin: '60px 0'}}>plog 회원이 되신 것을 환영합니다!</p>
                     <Button className='btn-full' variant='contained'
+                            sx={{backgroundColor: 'var(--primary1)',color: '#fff', ':hover':{backgroundColor: 'var(--primary2)'}}}
                             onClick={() => navigate('/sign-in')}>로그인하러가기</Button>
                 </div>
 
