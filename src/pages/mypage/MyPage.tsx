@@ -36,6 +36,7 @@ export function MyPage() {
     const [withdrawalDialogOpen, setWithdrawalDialogOpen] = useState(false);
     const [showIntroEditor, setShowIntroEditor] = useState<boolean>(false)
 
+
     useEffect(() => {
         if (token) {
             const decoded = jwt_decode(localStorage.getItem('token') || '') as LoginTokenPayload
@@ -321,45 +322,38 @@ export function MyPage() {
                 </Box>
                 <Box sx={{display: 'flex', alignItems: 'center', padding: '16px'}}>
                     <Box sx={{width: '120px'}}>
-                        <Typography
-                            sx={{fontSize: '18px'}}
-                        >
+                        <Typography sx={{fontSize: '18px'}}>
                             <b>회원 탈퇴</b>
                         </Typography>
                     </Box>
                     <Box sx={{width: '648px'}}>
                         <Button
-                            style={{backgroundColor: '#FF6F77', color: 'white'}}
+                            style={{backgroundColor: 'var(--error)', color: 'white'}}
                             onClick={event => setWithdrawalDialogOpen(true)}
                         >
                             회원 탈퇴
                         </Button>
-                        <Dialog open={withdrawalDialogOpen} onClose={event => setWithdrawalDialogOpen(false)}>
-                            <DialogTitle><b>회원 탈퇴</b></DialogTitle>
+                        <Dialog open={withdrawalDialogOpen} onClose={() => setWithdrawalDialogOpen(false)}
+                                sx={{'& .MuiPaper-root': {backgroundColor: 'var(--bg-card1)'}}}>
+                            <DialogTitle><b style={{color:'var(--text1)'}}>회원 탈퇴</b></DialogTitle>
                             <DialogContent>
-                                <DialogContentText>
+                                <DialogContentText sx={{color:'var(--text1)'}}>
                                     탈퇴 시 작성하신 포스트 및 댓글이 모두 삭제되며 복구되지 않습니다.<br/>
                                     정말로 탈퇴하시겠습니까?
                                 </DialogContentText>
                             </DialogContent>
                             <DialogActions>
                                 <Button
-                                    sx={{color: '#000000', borderColor: '#6CAC23', borderWidth: '1px'}}
-                                    onClick={event => setWithdrawalDialogOpen(false)}
+                                    sx={{color: 'var(--text1)'}}
+                                    onClick={() => setWithdrawalDialogOpen(false)}
                                 >
                                     취소
                                 </Button>
                                 <Button
-                                    sx={{
-                                        color: '#FFFFFF',
-                                        backgroundColor: '#6CAC23',
-                                        borderColor: '#6CAC23',
-                                        borderWidth: '1px'
+                                    sx={{color: '#FFFFFF', backgroundColor: 'var(--primary1)',
+                                        '&:hover':{backgroundColor: 'var(--primary2)'}
                                     }}
-                                    onClick={event => {
-                                        handleUserWithdrawal()
-                                    }}
-                                >
+                                    onClick={() => handleUserWithdrawal()}>
                                     탈퇴
                                 </Button>
                             </DialogActions>
@@ -368,9 +362,7 @@ export function MyPage() {
                 </Box>
                 <Box sx={{display: 'flex', alignItems: 'center', padding: '16px'}}>
                     <Box sx={{width: '120px'}}>
-                        <Typography
-                            sx={{fontSize: '18px'}}
-                        >
+                        <Typography sx={{fontSize: '18px'}}>
                             <b>자기소개</b>
                         </Typography>
                     </Box>
@@ -392,11 +384,12 @@ export function MyPage() {
                 </Box>
                 <Box className="intro-container">
                     <Box sx={{width: '766px'}}>
-                        {myPageInfo.introMd === null && !showIntroEditor ?
+                        {!showIntroEditor && myPageInfo.introMd === null &&
                             <div className='make-introMd'>
                                 <button onClick={()=>setShowIntroEditor(true)}>자기소개 작성하기</button>
                             </div>
-                            :
+                        }
+                        {!!myPageInfo.introMd &&
                             <PlogEditor height={"600px"} initialValue={myPageInfo.introMd ? myPageInfo.introMd : ""}
                                         ref={editorRef}/>
                         }
