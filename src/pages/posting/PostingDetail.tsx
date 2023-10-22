@@ -7,6 +7,7 @@ import {BlogTag} from "../../types/BlogType";
 import Comment from '../../components/blog/Comment'
 import StarShare from "../../components/blog/StarShare";
 import Toc from "../../components/blog/Toc";
+import TimeAgo from "../../components/common/TimeAgo";
 import {ModeContext} from "../../Root";
 
 
@@ -18,8 +19,6 @@ export function PostingDetail() {
     const [nickname, setNickname] = useState('')
     const [post, setPost] = useState(null);
     const [tags, setTags] = useState<BlogTag[]>([])
-    const editorEl = document.querySelectorAll('.posting-contents-area div')[0];
-
 
     useEffect(() => {
         plogAxios.get(`/blogs/${blogID}`)
@@ -28,27 +27,21 @@ export function PostingDetail() {
 
     useEffect(() => {
         plogAxios.get(`/blogs/${blogID}/postings/${postingID}`)
-            .then(res => {
-                setPost(res.data)
-            })
+            .then(res => setPost(res.data))
             .catch(err => console.log(err.message))
         getTags()
     }, [])
 
 
     useEffect(() => {
-
-            const editorEl = document.querySelectorAll('.posting-contents-area div')[0];
-
-            if (editorEl) {
-                if (theme.theme === 'dark') {
-                    console.log(theme.theme, 'dart')
-                    editorEl.classList.add("toastui-editor-dark");
-                } else {
-                    console.log(theme.theme, 'light')
-                    editorEl.classList.remove("toastui-editor-dark");
-                }
+        const editorEl = document.querySelectorAll('.posting-contents-area div')[0];
+        if (editorEl) {
+            if (theme.theme === 'dark') {
+                editorEl.classList.add("toastui-editor-dark");
+            } else {
+                editorEl.classList.remove("toastui-editor-dark");
             }
+        }
     }, [theme.theme])
 
     const delThisPosting = () => {
@@ -57,15 +50,10 @@ export function PostingDetail() {
         if (result) {
             plogAuthAxios.delete(`blogs/${blogID}/postings/${postingID}`)
                 .then(() => {
-                        alert('포스팅을 삭제했습니다')
-                        navigate('/')
-                    }
-                )
+                    alert('포스팅을 삭제했습니다')
+                    navigate('/')
+                })
         }
-    }
-
-    const dateParser = (date: string) => {
-        return date.replaceAll('T', ' ').slice(0, 19)
     }
 
     const getTags = () => {
@@ -91,7 +79,9 @@ export function PostingDetail() {
                                 <div className='posting-info'>
                                     <div>
                                         <span className='bolder'>{nickname}</span>
-                                        <span className='explain'>{dateParser(post['updateDt'])}</span>
+                                        <span className='explain'>
+                                            <TimeAgo timestamp={post['updateDt']}/>
+                                        </span>
                                     </div>
                                     {nickname === localStorage.getItem('nickname') &&  localStorage.getItem('token') &&
                                         <ul>
@@ -105,7 +95,7 @@ export function PostingDetail() {
                                         <Chip key={tag.tagID}
                                               label={tag.tagName}
                                               className='tag'
-                                              sx={{mr: 0.5, mb: 0.5, backgroundColor: '#12B886', color: '#fff'}}/>)}
+                                              sx={{mr: 0.5, mb: 0.5, backgroundColor: 'var(--primary1)', color: '#fff'}}/>)}
                                 </div>
                             </div>
                             <div className='posting-contents-area'>
@@ -118,7 +108,5 @@ export function PostingDetail() {
                 </>
             }
         </div>
-
-
     )
 }
