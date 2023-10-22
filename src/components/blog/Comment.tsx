@@ -7,7 +7,7 @@ import {Mention, MentionsInput} from 'react-mentions';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import '../../assets/comment.css'
 import {plogAuthAxios, plogAxios} from "../../modules/axios";
-import {Avatar, CardHeader} from "@mui/material";
+
 
 const Comment = ({isCommentAllowed}: { isCommentAllowed: boolean }) => {
     const navigate = useNavigate();
@@ -48,11 +48,7 @@ const Comment = ({isCommentAllowed}: { isCommentAllowed: boolean }) => {
                     window.location.reload()
                 })
                 .catch(err => alert(err.message))
-        }else {
-            alert('로그인 후 댓글을 작성할 수 있습니다.')
         }
-
-
     }
 
     //댓글 삭제
@@ -242,24 +238,28 @@ const Comment = ({isCommentAllowed}: { isCommentAllowed: boolean }) => {
                                         <></>
                                     }
 
-                                    <MentionsInput className='mentions input-area' value={value}
-                                                   onChange={mentionChange} placeholder='댓글을 작성하세요(@로 멘션 가능)'>
-                                        <Mention
-                                            trigger="@"
-                                            data={userMentionData}
-                                            markup="@{{__display__}}"
-                                            className="mentions__mention comment-input"
-                                        />
-                                    </MentionsInput>
-                                    <button className='comment-btn' onClick={() => writeChildComment(c.id)}>댓글 작성
-                                    </button>
+                                    {
+                                        !!localStorage.getItem('token') ?
+                                            <>
+                                                <MentionsInput className='mentions input-area' value={value} onChange={mentionChange} placeholder='댓글을 작성하세요(@로 멘션 가능)'>
+                                                    <Mention trigger="@" data={userMentionData} markup="@{{__display__}}" className="mentions__mention comment-input"/>
+                                                </MentionsInput>
+                                                <button className='comment-btn' onClick={() => writeChildComment(c.id)}>댓글 작성</button>
+                                            </>
+                                            :
+                                            <>
+                                                <MentionsInput className='mentions input-area' disabled placeholder='로그인 후 이용 가능합니다'>
+                                                    <Mention trigger="@" data={userMentionData} markup="@{{__display__}}" className="mentions__mention comment-input"/>
+                                                </MentionsInput>
+                                                <button className='comment-btn' disabled>댓글 작성</button>
+                                            </>
+                                    }
                                 </>
                             }
                         </div>
                     )}
                 </div>
             }
-
         </div>
     );
 };
