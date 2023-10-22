@@ -37,7 +37,7 @@ export function PostingDetail() {
 
 
     useEffect(() => {
-        setTimeout(()=>{
+
             const editorEl = document.querySelectorAll('.posting-contents-area div')[0];
 
             if (editorEl) {
@@ -49,7 +49,6 @@ export function PostingDetail() {
                     editorEl.classList.remove("toastui-editor-dark");
                 }
             }
-        },100)
     }, [theme.theme])
 
     const delThisPosting = () => {
