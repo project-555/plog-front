@@ -18,6 +18,7 @@ export function PostingDetail() {
     const [nickname, setNickname] = useState('')
     const [post, setPost] = useState(null);
     const [tags, setTags] = useState<BlogTag[]>([])
+    const editorEl = document.querySelectorAll('.posting-contents-area div')[0];
 
 
     useEffect(() => {
@@ -34,23 +35,21 @@ export function PostingDetail() {
         getTags()
     }, [])
 
-    const modeCheck = () => {
-        const editorEl = document.querySelectorAll('.posting-contents-area div')[0];
-        const editorEl2 = document.querySelectorAll('.toastui-editor-contents div')[0];
-        console.log(editorEl, 'ele', editorEl2)
-        if (editorEl) {
-            if (theme.theme === 'dark') {
-                console.log(theme.theme, 'dart')
-                editorEl.classList.add("toastui-editor-dark");
-            } else {
-                console.log(theme.theme, 'light')
-                editorEl.classList.remove("toastui-editor-dark");
-            }
-        }
-    }
 
     useEffect(() => {
-        modeCheck()
+        setTimeout(()=>{
+            const editorEl = document.querySelectorAll('.posting-contents-area div')[0];
+
+            if (editorEl) {
+                if (theme.theme === 'dark') {
+                    console.log(theme.theme, 'dart')
+                    editorEl.classList.add("toastui-editor-dark");
+                } else {
+                    console.log(theme.theme, 'light')
+                    editorEl.classList.remove("toastui-editor-dark");
+                }
+            }
+        },100)
     }, [theme.theme])
 
     const delThisPosting = () => {

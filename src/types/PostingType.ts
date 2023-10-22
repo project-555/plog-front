@@ -2,6 +2,7 @@
 export interface CommentUser {
     nickname: string;
     userID: number;
+    profileImageURL: string|null;
 }
 
 export interface CommentInfo {
