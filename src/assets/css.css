@@ -460,12 +460,12 @@ div, p, h1, h2, h3, h4, h5, h6, input {
 #postcard-summary{
     margin-top:8px;
     color:var(--text3);
-    overflow-x: hidden;
+    overflow: hidden;
     text-overflow: ellipsis;
     display:-webkit-box;
     -webkit-box-orient: vertical;
-    -webkit-line-clamp: 2;
-    line-height: 1.35em;
+    /*-webkit-line-clamp: 12;*/
+    line-height: 1.39em;
 }
 
 

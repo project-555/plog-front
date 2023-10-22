@@ -31,6 +31,13 @@ const StarShare = (props: Props) => {
                     })
                 }
             })
+            .catch(err => {
+                if(err.response.status === 500){
+                    console.error(err.message)
+                }else {
+                    alert('북마크 정보를 불러오지 못했습니다. 다시 시도해주세요')
+                }
+            })
     }
 
     useEffect(checkStarClicked, [starCnt])
@@ -42,11 +49,7 @@ const StarShare = (props: Props) => {
                 setCheckStarClick(true)
                 setStarCnt(starCnt + 1)
             })
-            .catch(err => {
-                    console.log(err)
-                    alert(err.message + ' 로그인이 필요한 서비스입니다.')
-                }
-            )
+            .catch(err => alert(err.message + ' 로그인이 필요한 서비스입니다.'))
     }
 
     const cancelStar = () => {
@@ -55,27 +58,22 @@ const StarShare = (props: Props) => {
                 setCheckStarClick(false)
                 setStarCnt(starCnt - 1)
             })
-            .catch(err => {
-                    alert(err.message + ' 로그인이 필요한 서비스입니다.')
-                }
-            )
+            .catch(err => alert(err.message + ' 로그인이 필요한 서비스입니다.'))
     }
 
     return (
         <div className='starshare-container sticky'>
             <div className='star-container'>
                 <p className='star-icon'
-                   style={{backgroundColor: checkStarClick === true ? '#20C997' : '#fff'}}
-                   onClick={checkStarClick ? cancelStar : clickStar}
-                >
+                   style={{backgroundColor: checkStarClick === true ? 'var(--primary1)' : '#fff'}}
+                   onClick={checkStarClick ? cancelStar : clickStar}>
                     <FavoriteIcon sx={{color: checkStarClick === true ? '#fff' : '#868E96', fontSize: '24px',}}/>
                 </p>
-                {starCnt && <p className='star-cnt'>{starCnt}</p>}
+                 <p className='star-cnt'>{starCnt}</p>
             </div>
             <div className='share-container'>
                 <ShareIcon sx={{color: '#868E96'}}/>
             </div>
-
         </div>
     );
 };

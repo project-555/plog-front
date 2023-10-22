@@ -7,6 +7,7 @@ import {Mention, MentionsInput} from 'react-mentions';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import '../../assets/comment.css'
 import {plogAuthAxios, plogAxios} from "../../modules/axios";
+import {Avatar, CardHeader} from "@mui/material";
 
 const Comment = ({isCommentAllowed}: { isCommentAllowed: boolean }) => {
     const navigate = useNavigate();
@@ -40,11 +41,18 @@ const Comment = ({isCommentAllowed}: { isCommentAllowed: boolean }) => {
             "parentCommentID": null //대댓글인 경우 부모 댓글 아이디
         }
 
-        plogAuthAxios.post(`/blogs/${blogID}/postings/${postingID}/comment`, params)
-            .then(res => {
-                setComment('')
-                window.location.reload()
-            })
+        if(localStorage.getItem('token')){
+            plogAuthAxios.post(`/blogs/${blogID}/postings/${postingID}/comment`, params)
+                .then(res => {
+                    setComment('')
+                    window.location.reload()
+                })
+                .catch(err => alert(err.message))
+        }else {
+            alert('로그인 후 댓글을 작성할 수 있습니다.')
+        }
+
+
     }
 
     //댓글 삭제
@@ -120,10 +128,20 @@ const Comment = ({isCommentAllowed}: { isCommentAllowed: boolean }) => {
         <div className='posting-comment-area '>
             <h3>{commentList.length}개의 댓글</h3>
             <div className='input-area'>
-                <textarea className='comment-input' placeholder={isCommentAllowed ? '댓글을 작성하세요' : '댓글 기능을 사용하지 않습니다'}
-                          value={comment} disabled={!isCommentAllowed}
-                          onChange={(e) => setComment(e.target.value)}/>
-                <button className='comment-btn' onClick={writeComment} disabled={!isCommentAllowed}>댓글 작성</button>
+                {
+                    !!localStorage.getItem('token') ?
+                        <>
+                            <textarea className='comment-input' placeholder={isCommentAllowed ? '댓글을 작성하세요' : '댓글 기능을 사용하지 않습니다'}
+                                      value={comment} disabled={!isCommentAllowed}
+                                      onChange={(e) => setComment(e.target.value)}/>
+                            <button className='comment-btn' onClick={writeComment} disabled={!isCommentAllowed}>댓글 작성</button>
+                        </>
+                        :
+                        <>
+                            <textarea className='comment-input' placeholder='로그인 후 이용 가능힙니다. ' disabled/>
+                            <button className='comment-btn' onClick={writeComment} disabled>댓글 작성</button>
+                        </>
+                }
             </div>
 
             {
@@ -133,7 +151,11 @@ const Comment = ({isCommentAllowed}: { isCommentAllowed: boolean }) => {
                         <div className='comment-container'>
                             <div className="profile-wrapper">
                                 <div className='profile'>
-                                    <AccountCircleIcon sx={{fontSize:'45px', marginRight: '8px'}}/>
+                                    {!!c.user.profileImageURL ?
+                                        <img style={{width:'45px', height:'45px', borderRadius:'50%'}} src={c.user.profileImageURL} alt="thumbnail"/>
+                                        :
+                                        <AccountCircleIcon sx={{fontSize:'45px', marginRight: '8px'}}/>
+                                    }
                                     <div className="user-info">
                                         <div className="username">{c.user.nickname}</div>
                                         <div className="date">{dateParser(c.createDt)}</div>
@@ -179,7 +201,11 @@ const Comment = ({isCommentAllowed}: { isCommentAllowed: boolean }) => {
                                                 <div key={idx} className='child-comment-container'>
                                                     <div className="profile-wrapper">
                                                         <div className='profile'>
-                                                            <AccountCircleIcon sx={{fontSize:'45px', marginRight: '8px'}}/>
+                                                            {!!childC.user.profileImageURL ?
+                                                                <img style={{width:'45px', height:'45px', borderRadius:'50%'}} src={childC.user.profileImageURL} alt="thumbnail"/>
+                                                                :
+                                                                <AccountCircleIcon sx={{fontSize:'45px', marginRight: '8px'}}/>
+                                                            }
                                                             <div className="user-info">
                                                                 <div className="username">{childC.user.nickname}</div>
                                                                 <div className="date">{dateParser(childC.createDt)}</div>
