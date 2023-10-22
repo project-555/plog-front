@@ -36,7 +36,6 @@ export function SignIn() {
         <div className='login-container'>
             <div className='login-modal'>
                 <div className='login-form'>
-                    {/*<a href='/'><img src={logo} className="login-logo" alt='logo_login'/></a>*/}
                     <Typography variant="h3" gutterBottom align="center">
                         Sign In
                     </Typography>
@@ -46,9 +45,17 @@ export function SignIn() {
                     </div>
                     <div className='login-inputs'>
                         <input className='login-input' type='password' placeholder='password'
-                               onChange={(e) => setPassword(e.target.value)}/>
+                               onChange={(e) => setPassword(e.target.value)}
+                               onKeyUp={(e)=>{
+                                   if(e.keyCode === 13){
+                                       loginRequest()
+                                   }
+                               }}
+                        />
                     </div>
-                    <Button className='login-btn-full' variant='contained' onClick={loginRequest}>Login</Button>
+                    <Button className='login-btn-full' variant='contained'
+                            onClick={loginRequest}
+                    >Login</Button>
                     <p className='sentence'>
                         <span className='forgot-pw' onClick={() => navigate('/forgot-password')}>비밀번호 찾기 </span>
                         |
