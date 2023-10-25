@@ -139,7 +139,7 @@ export function MyPage() {
             })
             .catch(err => {
                 setSnackbarSeverity("error")
-                setSnackbarMessage("현재 비밀번호가 일치하지 않습니다.")
+                setSnackbarMessage(err.response.data.message)
                 setPasswordSnackbarOpen(true)
             })
 
