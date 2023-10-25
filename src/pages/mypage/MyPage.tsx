@@ -69,7 +69,7 @@ export function MyPage() {
                     setMyPageInfo(res.data as MyPageInfo)
                 })
         }
-    }, [userID])
+    }, [userID, myPageInfo.profileImageURL])
 
     const removeProfileImage = () => {
         getPlogAxios().post('/auth/edit-profile', {
@@ -214,6 +214,7 @@ export function MyPage() {
                                 size='small'
                                 variant="text"
                                 onClick={removeProfileImage}
+                                disabled={myPageInfo.profileImageURL===null}
                             >
                                 이미지 제거
                             </Button>
