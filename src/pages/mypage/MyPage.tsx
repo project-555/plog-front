@@ -4,7 +4,7 @@ import {useNavigate} from "react-router-dom";
 import React, {ChangeEvent, RefObject, useEffect, useRef, useState} from 'react';
 import {getPlogAxios, plogAuthAxios} from "../../modules/axios";
 import {PlogEditor} from "../../components/blog/PlogEditor";
-import {LoginTokenPayload, MyPageInfo, UpdateUserRequest} from '../../types/UMSType';
+import {LoginTokenPayload, MyPageInfo, UpdateUserRequest, UpdatePasswordRequest} from '../../types/UMSType';
 import {UpdateBlogRequest} from "../../types/BlogType";
 import {
     Avatar,
@@ -27,11 +27,16 @@ export function MyPage() {
     const token = localStorage.getItem('token')
     const [userID, setUserID] = useState(0);
     const [blogID, setBlogID] = useState(0);
+    const [prevPasswd, setPrevPasswd] = useState('');
+    const [newPasswd, setNewPasswd] = useState('');
     const [myPageInfo, setMyPageInfo] = useState<MyPageInfo>({});
     const fileRef = useRef<HTMLInputElement | null>(null)
     const editorRef = useRef<Editor>(null) as RefObject<Editor>;
     const [isNicknameEditMode, setIsNicknameEditMode] = useState(false);
     const [isShortIntroEditMode, setIsShortIntroEditMode] = useState(false);
+    const [isPasswordEditMode, setIsPasswordEditMode] = useState(false);
+    const [sPasswordSnackbarOpen, setSPasswordSnackbarOpen] = useState(false);
+    const [fPasswordSnackbarOpen, setFPasswordSnackbarOpen] = useState(false);
     const [introSnackbarOpen, setIntroSnackbarOpen] = useState(false);
     const [withdrawalDialogOpen, setWithdrawalDialogOpen] = useState(false);
     const [showIntroEditor, setShowIntroEditor] = useState<boolean>(false)
@@ -109,6 +114,23 @@ export function MyPage() {
         setIsShortIntroEditMode(false)
     }
 
+    const updateUserPassword = () => {
+        let params: UpdatePasswordRequest = {
+            newPassword: newPasswd as string,
+            password: prevPasswd as string,
+            userID: userID
+        }
+        plogAuthAxios.post('/auth/edit-password', params)
+            .then(res => {
+                setSPasswordSnackbarOpen(true)
+                setIsPasswordEditMode(false)
+            })
+            .catch(err => {
+                setFPasswordSnackbarOpen(true)
+            })
+
+    }
+
     const updateUserIntro = () => {
         let params: UpdateBlogRequest = {
             introHTML: editorRef.current?.getInstance().getHTML() as string,
@@ -174,7 +196,7 @@ export function MyPage() {
                                 />
                             </Button>
                             <Button
-                                sx={{width: 160, color: '#6CAC23', fontSize: '16px'}}
+                                sx={{width: 160, color: 'var(--primary1)', fontSize: '16px'}}
                                 size='small'
                                 variant="text"
                                 onClick={removeProfileImage}
@@ -289,7 +311,7 @@ export function MyPage() {
                     </Box>
                 </Box>
                 <Box sx={{display: 'flex', alignItems: 'center', padding: '16px'}}>
-                    <Box sx={{width: '120px'}}>
+                    <Box sx={{width: '130px'}}>
                         <Typography
                             sx={{fontSize: '18px'}}
                         >
@@ -305,7 +327,7 @@ export function MyPage() {
                     </Box>
                 </Box>
                 <Box sx={{display: 'flex', alignItems: 'center', padding: '16px'}}>
-                    <Box sx={{width: '120px'}}>
+                    <Box sx={{width: '130px'}}>
                         <Typography
                             sx={{fontSize: '18px'}}
                         >
@@ -321,7 +343,81 @@ export function MyPage() {
                     </Box>
                 </Box>
                 <Box sx={{display: 'flex', alignItems: 'center', padding: '16px'}}>
-                    <Box sx={{width: '120px'}}>
+                    <Box sx={{width: '130px'}}>
+                        <Typography
+                            sx={{fontSize: '18px'}}
+                        >
+                            <b>비밀번호 변경</b>
+                        </Typography>
+                    </Box>
+                    <Box sx={{width: '648px'}}>
+                        {isPasswordEditMode ? (
+                            <>
+                                <Box sx={{display: 'flex', alignItems: 'center'}}>
+                                    <TextField
+                                        sx={{
+                                            '& textarea':{color: 'var(--text1)'},
+                                            '& fieldset':{borderColor: 'var(--form-border)'},
+                                            marginRight: '10px'
+                                    }}
+                                        InputProps={{style: {padding: '4px'}}}
+                                        InputLabelProps={{style: {fontSize: '16px'}}}
+                                        label='현재 비밀번호'
+                                        type="password"
+                                        size='small'
+                                        variant="standard"
+                                        onChange={event => setPrevPasswd(event.target.value)}
+                                        focused={false}
+                                    />
+                                    <TextField
+                                        sx={{
+                                            '& textarea':{color: 'var(--text1)'},
+                                            '& fieldset':{borderColor: 'var(--form-border)'},
+                                            marginRight: '10px'
+                                    }}
+                                        InputProps={{style: {padding: '4px'}}}
+                                        InputLabelProps={{style: {fontSize: '16px'}}}
+                                        label='변경할 비밀번호'
+                                        type="password"
+                                        size='small'
+                                        variant="standard"
+                                        onChange={event => setNewPasswd(event.target.value)}
+                                        focused={false}
+                                    />
+                                    <Button
+                                        style={{color: 'var(--primary1)'}}
+                                        onClick={(event) => updateUserPassword()}
+                                    >
+                                        <u>저장</u>
+                                    </Button>
+                                </Box>
+                            </>
+                        ) : (
+                            <Button
+                                style={{backgroundColor: 'var(--primary1)', color: 'white'}}
+                                onClick={event => setIsPasswordEditMode(true)}
+                            >
+                                비밀번호 변경
+                            </Button>
+                        )}
+                        <Snackbar
+                            anchorOrigin={{vertical: 'bottom', horizontal: 'right'}}
+                            autoHideDuration={800}
+                            open={sPasswordSnackbarOpen}
+                            onClose={event => setSPasswordSnackbarOpen(false)}
+                            message="비밀번호가 변경되었습니다."
+                        />
+                        <Snackbar
+                            anchorOrigin={{vertical: 'bottom', horizontal: 'right'}}
+                            autoHideDuration={800}
+                            open={fPasswordSnackbarOpen}
+                            onClose={event => setFPasswordSnackbarOpen(false)}
+                            message="현재 비밀번호가 일치하지 않습니다."
+                        />
+                    </Box>
+                </Box>
+                <Box sx={{display: 'flex', alignItems: 'center', padding: '16px'}}>
+                    <Box sx={{width: '130px'}}>
                         <Typography sx={{fontSize: '18px'}}>
                             <b>회원 탈퇴</b>
                         </Typography>
@@ -361,7 +457,7 @@ export function MyPage() {
                     </Box>
                 </Box>
                 <Box sx={{display: 'flex', alignItems: 'center', padding: '16px'}}>
-                    <Box sx={{width: '120px'}}>
+                    <Box sx={{width: '130px'}}>
                         <Typography sx={{fontSize: '18px'}}>
                             <b>자기소개</b>
                         </Typography>
