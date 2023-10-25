@@ -33,8 +33,9 @@ export function CategoryList(props: CategoryListProps) {
     const [categories, setCategories] = useState<Category[]>([]);
     const [needRefresh, setNeedRefresh] = useState<boolean>(true);
     const [addCategoryBtnClicked, setAddCategoryBtnClicked] = useState<boolean>(false);
-    const [categoryName, setCategoryName] = useState<string>("" as string);
+    const [editCategoryName, setEditCategoryName] = useState<string>("" as string);
     const [editCategoryID, setEditCategoryID] = useState<number | null>(null);
+    const [categoryName, setCategoryName] = useState<string>("");
     const [snackBarOpen, setSnackBarOpen] = useState<boolean>(false);
     const [snackBarMessage, setSnackBarMessage] = useState<string>("");
     const [snackBarSeverity, setSnackBarSeverity] = useState<"success" | "error" | "warning" | "info" | undefined>("success");
@@ -52,7 +53,7 @@ export function CategoryList(props: CategoryListProps) {
 
     const handleOnClickEditCategoryBtn = (category: Category) => {
         if (editCategoryID === category.categoryID) {
-            if (categoryName === null || categoryName.trim() === "") {
+            if (editCategoryName === null || editCategoryName.trim() === "") {
                 setSnackBarMessage("카테고리 명을 입력해주세요.")
                 setSnackBarSeverity("warning")
                 setSnackBarOpen(true)
@@ -60,26 +61,26 @@ export function CategoryList(props: CategoryListProps) {
             }
             // 저장 로직 추가
             getPlogAxios().patch(`/blogs/${props.blogID}/categories/${category.categoryID}`, {
-                categoryName: categoryName
+                categoryName: editCategoryName
             }).then(
                 (response: any) => {
                     setNeedRefresh(true);
                     setEditCategoryID(null);
-                    setCategoryName("");
+                    setEditCategoryName("");
                     setSnackBarMessage("카테고리가 수정되었습니다.")
                     setSnackBarSeverity("success")
                     setSnackBarOpen(true)
                 }
             ).catch(
                 (error: any) => {
-                    setCategoryName("");
+                    setEditCategoryName("");
                     setSnackBarMessage(getErrorMessage(error))
                     setSnackBarSeverity("error")
                     setSnackBarOpen(true)
                 }
             );
         } else {
-            setCategoryName(category.categoryName);
+            setEditCategoryName(category.categoryName);
             setEditCategoryID(category.categoryID);
         }
     }
@@ -180,9 +181,9 @@ export function CategoryList(props: CategoryListProps) {
                                 <TextField
                                     InputProps={{style: {height: '40px'}}}
                                     InputLabelProps={{style: {top: '-16px'}}}
-                                    value={categoryName}
+                                    value={editCategoryName}
                                     placeholder="카테고리 명"
-                                    onChange={(e) => setCategoryName(e.target.value)}
+                                    onChange={(e) => setEditCategoryName(e.target.value)}
                                 />
                             ) : (
                                 <Box
