@@ -7,6 +7,7 @@ import {PlogEditor} from "../../components/blog/PlogEditor";
 import {LoginTokenPayload, MyPageInfo, UpdateUserRequest, UpdatePasswordRequest} from '../../types/UMSType';
 import {UpdateBlogRequest} from "../../types/BlogType";
 import {
+    AlertColor,
     Avatar,
     Box,
     Button,
@@ -20,7 +21,15 @@ import {
     TextField,
     Typography
 } from '@mui/material';
+import MuiAlert, { AlertProps } from '@mui/material/Alert';
 import {uploadFile} from "../../modules/file";
+
+const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(
+    props,
+    ref,
+  ) {
+    return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
+  });
 
 export function MyPage() {
     const navigate = useNavigate();
@@ -29,14 +38,15 @@ export function MyPage() {
     const [blogID, setBlogID] = useState(0);
     const [prevPasswd, setPrevPasswd] = useState('');
     const [newPasswd, setNewPasswd] = useState('');
+    const [snackbarMessage, setSnackbarMessage] = useState('');
+    const [snackbarSeverity, setSnackbarSeverity] = useState<AlertColor | undefined>(undefined);
     const [myPageInfo, setMyPageInfo] = useState<MyPageInfo>({});
     const fileRef = useRef<HTMLInputElement | null>(null)
     const editorRef = useRef<Editor>(null) as RefObject<Editor>;
     const [isNicknameEditMode, setIsNicknameEditMode] = useState(false);
     const [isShortIntroEditMode, setIsShortIntroEditMode] = useState(false);
     const [isPasswordEditMode, setIsPasswordEditMode] = useState(false);
-    const [sPasswordSnackbarOpen, setSPasswordSnackbarOpen] = useState(false);
-    const [fPasswordSnackbarOpen, setFPasswordSnackbarOpen] = useState(false);
+    const [passwordSnackbarOpen, setPasswordSnackbarOpen] = useState(false);
     const [introSnackbarOpen, setIntroSnackbarOpen] = useState(false);
     const [withdrawalDialogOpen, setWithdrawalDialogOpen] = useState(false);
     const [showIntroEditor, setShowIntroEditor] = useState<boolean>(false)
@@ -122,11 +132,15 @@ export function MyPage() {
         }
         plogAuthAxios.post('/auth/edit-password', params)
             .then(res => {
-                setSPasswordSnackbarOpen(true)
+                setSnackbarSeverity("success")
+                setSnackbarMessage("비밀번호가 변경되었습니다.")
+                setPasswordSnackbarOpen(true)
                 setIsPasswordEditMode(false)
             })
             .catch(err => {
-                setFPasswordSnackbarOpen(true)
+                setSnackbarSeverity("error")
+                setSnackbarMessage("현재 비밀번호가 일치하지 않습니다.")
+                setPasswordSnackbarOpen(true)
             })
 
     }
@@ -403,17 +417,13 @@ export function MyPage() {
                         <Snackbar
                             anchorOrigin={{vertical: 'bottom', horizontal: 'right'}}
                             autoHideDuration={800}
-                            open={sPasswordSnackbarOpen}
-                            onClose={event => setSPasswordSnackbarOpen(false)}
-                            message="비밀번호가 변경되었습니다."
-                        />
-                        <Snackbar
-                            anchorOrigin={{vertical: 'bottom', horizontal: 'right'}}
-                            autoHideDuration={800}
-                            open={fPasswordSnackbarOpen}
-                            onClose={event => setFPasswordSnackbarOpen(false)}
-                            message="현재 비밀번호가 일치하지 않습니다."
-                        />
+                            open={passwordSnackbarOpen}
+                            onClose={event => setPasswordSnackbarOpen(false)}
+                        >
+                            <Alert severity={snackbarSeverity} id="password-snackbar">
+                                {snackbarMessage}
+                            </Alert>
+                        </Snackbar>
                     </Box>
                 </Box>
                 <Box sx={{display: 'flex', alignItems: 'center', padding: '16px'}}>
