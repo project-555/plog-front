@@ -546,6 +546,10 @@ div, p, h1, h2, h3, h4, h5, h6, input {
     margin-top: 15%;
 }
 
+#password-snackbar .MuiAlert-message,.MuiSvgIcon-root {
+    color: #fff;
+}
+
 
 /*포스팅 디테일 - 글*/
 .posting-header-area {
