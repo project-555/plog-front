@@ -62,3 +62,9 @@ export interface UpdateUserRequest {
     profileImageURL: string
     userID: number
 }
+
+export interface UpdatePasswordRequest {
+    newPassword: string;
+    password: string;
+    userID: number
+}
