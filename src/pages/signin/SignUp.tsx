@@ -165,11 +165,17 @@ export function SignUp() {
                                helperText={regCheck(account, 'email') ? '' : '올바른 이메일 형식을 입력해주세요'}
                                sx={{'& .MuiFormHelperText-root':{color:'var(--error)'}}}
                                required/>
-                    <Button className='email-chk' size="small" color='success'
+                    <Button className='email-chk' size="small"
                             disabled={regCheck(account, 'email') === false || account === ''}
+                            sx={{
+                                backgroundColor:sendEmail ? 'var(--primary1)' : '',
+                                color:sendEmail?'#fff':'var(--border)',
+                                border: sendEmail?'none':'1px solid var(--form-border)',
+                                '&:hover':{border: sendEmail?'none':'1px solid var(--form-border)', backgroundColor:sendEmail ? 'var(--primary1)' : '#fff',}
+                            }}
                             variant={sendEmail ? 'contained' : 'outlined'}
                             onClick={sendEmailRequest}>
-                        {load ? <CircularProgress color="success" size="1.5rem"/> : '인증코드 전송'}
+                        {load ? <CircularProgress sx={{color: 'var(--form-border)'}} size="1.5rem"/> : '인증코드 전송'}
                     </Button>
                     {sendEmail && <Grid container spacing={2}>
                         <Grid item xs={12} sm={6}>
