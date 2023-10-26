@@ -1,7 +1,7 @@
 /* eslint-disable */
 import {useState} from 'react'
 import {useNavigate} from 'react-router-dom';
-import {Box, Button, Grid, Link, Step, StepLabel, Stepper, TextField, Typography,} from '@mui/material';
+import {Box, Button, Grid, Link, Step, StepLabel, Stepper, TextField, Typography,CircularProgress} from '@mui/material';
 import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
 import {email, required} from '../../modules/validation'
 import {CodeParams, SignupParams} from "../../types/UMSType";
@@ -17,6 +17,7 @@ export function SignUp() {
     //STEP 1
     const [account, setAccount] = useState<string>(''); // 유저 이메일
     const [sendEmail, setSendEmail] = useState<boolean>(false); // 인증코드 메일 전송 체크
+    const [load, setLoad] = useState<boolean>(false)// 인증코드 전송 로딩스피너
     const [verifyCode, setVerifyCode] = useState<string>(''); // 메일 인증코드
     const [verifyToken, setVerifyToken] = useState<string>(''); // 인증코드 맞으면 리턴되는 토큰값
     const [password, setPassword] = useState<string>(''); // 유저 비밀번호
@@ -33,33 +34,36 @@ export function SignUp() {
     const [sent, setSent] = useState<boolean>(false);
 
 
-    const validate = (values: { [index: string]: string }) => {
-        const errors = required(['firstName', 'lastName', 'email', 'password'], values);
+    // const validate = (values: { [index: string]: string }) => {
+    //     const errors = required(['firstName', 'lastName', 'email', 'password'], values);
+    //
+    //     if (!errors.email) {
+    //         const emailError = email(values.email);
+    //         if (emailError) {
+    //             errors.email = emailError;
+    //         }
+    //     }
+    //     return errors;
+    // };
 
-        if (!errors.email) {
-            const emailError = email(values.email);
-            if (emailError) {
-                errors.email = emailError;
-            }
-        }
-        return errors;
-    };
-
-    const handleSubmit = () => {
-        setSent(true);
-    };
+    // const handleSubmit = () => {
+    //     setSent(true);
+    // };
 
     const sendEmailRequest = () => {
+        setLoad(true)
         const params = {
             "email": account
         }
         getPlogAxios().post(`/auth/send-verify-join-email`, params)
             .then(res => {
-                if(res.status === 200){
+                if(res.status === 200 || res.status === 204){
                     setSendEmail(true)
+                    setLoad(false)
                 }
             })
             .catch(err => {
+                setLoad(false)
                 if(err.response.data.code === 'ERR_EMAIL_DUPLICATED'){
                     alert(err.response.data.message)
                 }else {
@@ -165,21 +169,21 @@ export function SignUp() {
                             disabled={regCheck(account, 'email') === false || account === ''}
                             variant={sendEmail ? 'contained' : 'outlined'}
                             onClick={sendEmailRequest}>
-                        인증코드 전송
+                        {load ? <CircularProgress color="success" size="1.5rem"/> : '인증코드 전송'}
                     </Button>
-                    <Grid container spacing={2} style={{display: sendEmail ? 'block' : 'none'}}>
+                    {sendEmail && <Grid container spacing={2}>
                         <Grid item xs={12} sm={6}>
                             <TextField variant="standard" autoFocus autoComplete="given-name" label="인증번호" name="인증번호"
                                        inputProps={{maxLength: 6,}}
                                        onChange={(e) => setVerifyCode(e.target.value)}
                                        onKeyDown={codeCheckRequest}
                                        helperText={!!verifyToken || verifyCode.length === 0 ? '' : '인증번호가 일치하지 않습니다.'}
-                                       sx={{'& .MuiFormHelperText-root':{color:'var(--error)'}}}
+                                       sx={{'& .MuiFormHelperText-root': {color: 'var(--error)'}}}
                                        color={!!verifyToken ? 'success' : 'primary'}
                                        required
                             />
                         </Grid>
-                    </Grid>
+                    </Grid>}
                     <TextField
                         variant="standard" fullWidth name="password" autoComplete="new-password" label="비밀번호"
                         type="password" margin="normal"
