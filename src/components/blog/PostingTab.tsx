@@ -51,7 +51,7 @@ export function PostingTab(props: PostingTabProps) {
     const [needRefresh, setNeedRefresh] = useState<boolean>(false);
     const navigate = useNavigate();
     const isBlogOwner = getLoginTokenPayload() !== null && getLoginTokenPayload()?.userID === props.blog.blogUser?.userID;
-    const setCategoryID = (categoryID: number) => {
+    const setCategoryID = (categoryID: number | undefined) => {
         setListBlogPostingsRequest((prevRequest: ListBlogPostingsRequest) => {
             return {
                 ...prevRequest,
@@ -291,7 +291,10 @@ export function PostingTab(props: PostingTabProps) {
                         카테고리
                     </Typography>
                     <Divider/>
-                    <CategoryList blogID={props.blog.blogID} setCategoryID={setCategoryID} isBlogOwner={isBlogOwner}
+                    <CategoryList blogID={props.blog.blogID}
+                                  setCategoryID={setCategoryID}
+                                  selectedCategoryID={listBlogPostingsRequest.categoryID}
+                                  isBlogOwner={isBlogOwner}
                                   setNeedPostingRefresh={setNeedRefresh}/>
                     <Typography sx={{mt: 2, mb: 0.5}} variant={"h6"}>
                         태그
