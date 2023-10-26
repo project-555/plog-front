@@ -24,7 +24,8 @@ import {repeatQuerySerializer} from "../../modules/serialize";
 
 type CategoryListProps = {
     blogID: number
-    setCategoryID: (categoryID: number) => void
+    setCategoryID: (categoryID: number | undefined) => void
+    selectedCategoryID: number | undefined
     isBlogOwner: boolean
     setNeedPostingRefresh: (needRefresh: boolean) => void
 }
@@ -51,6 +52,13 @@ export function CategoryList(props: CategoryListProps) {
 
     }, [props.blogID, needRefresh]);
 
+    const handleToggleCategoryID = (categoryID: number) => {
+        if (props.selectedCategoryID === categoryID) {
+            props.setCategoryID(undefined);
+        } else {
+            props.setCategoryID(categoryID);
+        }
+    }
     const handleOnClickEditCategoryBtn = (category: Category) => {
         if (editCategoryID === category.categoryID) {
             if (editCategoryName === null || editCategoryName.trim() === "") {
@@ -160,7 +168,9 @@ export function CategoryList(props: CategoryListProps) {
                     <Box key={category.categoryID}>
                         <ListItem key={category.categoryID}
                                   sx={{
-                                      pt: 0, pb: 0, ":hover": {
+                                      padding: 1,
+                                      margin: 1,
+                                      ":hover": {
                                           backgroundColor: "#f5f5f5"
                                       }
                                   }}
@@ -175,8 +185,6 @@ export function CategoryList(props: CategoryListProps) {
                                       </Box>
                                   }
                         >
-
-
                             {editCategoryID === category.categoryID && props.isBlogOwner ? (
                                 <TextField
                                     InputProps={{style: {height: '40px'}}}
@@ -187,17 +195,15 @@ export function CategoryList(props: CategoryListProps) {
                                 />
                             ) : (
                                 <Box
-                                    onClick={() => props.setCategoryID(category.categoryID)}
+                                    onClick={() => handleToggleCategoryID(category.categoryID)}
                                     sx={{
                                         "height": "40px", "display": "flex", "alignItems": "center",
                                     }}
+                                    fontWeight={props.selectedCategoryID === category.categoryID ? "bold" : "normal"}
                                 >
                                     {category.categoryName}
                                 </Box>
-                            )
-                            }
-
-
+                            )}
                         </ListItem>
                         <Divider/>
                     </Box>
