@@ -1,5 +1,5 @@
 import {useState} from "react";
-import {Box, Button, Grid, TextField, Typography} from '@mui/material';
+import {Box, Button, CircularProgress, Grid, TextField, Typography} from '@mui/material';
 import {CodeParams} from "../../types/UMSType";
 import {getPlogAxios} from "../../modules/axios";
 
@@ -9,11 +9,13 @@ export function ForgotPassword() {
 
     const [account, setAccount] = useState<string>(''); // 유저 이메일
     const [sendEmail, setSendEmail] = useState<boolean>(false); // 인증코드 메일 전송 체크
+    const [load, setLoad] = useState<boolean>(false)// 인증코드 전송 로딩스피너
     const [verifyCode, setVerifyCode] = useState<string>(''); // 메일 인증코드
     const [verifyToken, setVerifyToken] = useState<string>(''); // 인증코드 맞으면 리턴되는 토큰값
     const [password, setPassword] = useState<string>(''); // 유저 비밀번호
 
     const sendEmailRequest = () => {
+        setLoad(true)
         const params = {
             "email": account
         }
@@ -21,10 +23,12 @@ export function ForgotPassword() {
             .then(res => {
                 if (res.status === 200 || res.status === 204) {
                     setSendEmail(true)
+                    setLoad(false)
                 }
             })
             .catch(err => {
-                console.log(err.message)
+                setLoad(false)
+                alert(err.message)
             })
     }
 
@@ -81,11 +85,12 @@ export function ForgotPassword() {
                             sx={{
                                 backgroundColor:sendEmail ? 'var(--primary1)' : '',
                                 color:sendEmail?'#fff':'var(--border)',
-                                border: sendEmail?'none':'1px solid var(--border)',
+                                border: sendEmail?'none':'1px solid var(--form-border)',
+                                '&:hover':{border: sendEmail?'none':'1px solid var(--form-border)', backgroundColor:sendEmail ? 'var(--primary1)' : '#fff',}
                             }}
                             onClick={sendEmailRequest}
                     >
-                        인증코드 전송
+                        {load ? <CircularProgress sx={{color: 'var(--form-border)'}} size="1.5rem"/> : '인증코드 전송'}
                     </Button>
                     <Grid container spacing={2} style={{display: sendEmail ? 'block' : 'none'}}>
                         <Grid item xs={12} sm={6}>
