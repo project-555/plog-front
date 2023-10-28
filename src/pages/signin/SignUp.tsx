@@ -13,7 +13,7 @@ export function SignUp() {
 
     const steps = ['이메일 인증', '상세정보 기입', '가입완료',];
 
-    const [activeStep, setActiveStep] = useState<number>(1)
+    const [activeStep, setActiveStep] = useState<number>(0)
     //STEP 1
     const [account, setAccount] = useState<string>(''); // 유저 이메일
     const [sendEmail, setSendEmail] = useState<boolean>(false); // 인증코드 메일 전송 체크
