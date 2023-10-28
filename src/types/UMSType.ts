@@ -18,7 +18,7 @@ export interface SignupParams {
     "firstName": string;
     "introHTML": string;
     "lastName": string;
-    "nickName": string;
+    "nickname": string;
     "password": string;
     "sex": string;
     "shortIntro": string;
