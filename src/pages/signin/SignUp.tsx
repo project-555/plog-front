@@ -87,7 +87,7 @@ export function SignUp() {
             "firstName": firstName,
             "introHTML": introHtml,
             "lastName": lastName,
-            "nickName": nickName,
+            "nickname": nickName,
             "password": password,
             "sex": sex,
             "shortIntro": shortIntro,
@@ -95,14 +95,13 @@ export function SignUp() {
         }
         getPlogAxios().post('/auth/join', params)
             .then((res: any) => {
-                if (res.status === 200) {
-                    console.log(res.status)
+                if (res.status === 200 || res.status === 201) {
                     setActiveStep(2)
                 } else {
                     console.log(res.status)
                 }
             })
-            .catch(err => console.log(err.message))
+            .catch(err => alert(err.message + '필수 입력 칸을 모두 채워주세요.'))
     }
 
 
