@@ -1,16 +1,17 @@
 import React, {useEffect, useState} from 'react';
 import AddBoxOutlinedIcon from '@mui/icons-material/AddBoxOutlined';
-import {useNavigate, useParams} from "react-router-dom";
+import {useParams} from "react-router-dom";
 import {CommentInfo} from '../../types/PostingType';
 // @ts-ignore
 import {Mention, MentionsInput} from 'react-mentions';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import '../../assets/comment.css'
 import {plogAuthAxios, plogAxios} from "../../modules/axios";
+import TimeAgo from "../common/TimeAgo";
 
 
 const Comment = ({isCommentAllowed}: { isCommentAllowed: boolean }) => {
-    const navigate = useNavigate();
+
     const {blogID, postingID} = useParams();
     const [commentList, setCommentList] = useState<any>([]);// 댓글 목록 불러오기
     const [comment, setComment] = useState<string>(''); // 댓글 등록
@@ -22,10 +23,6 @@ const Comment = ({isCommentAllowed}: { isCommentAllowed: boolean }) => {
     const [childComment, setChildComment] = useState<string>('')// 대댓글 내용
     const [childEditable, setChildEditable] = useState<number>(0)// 내가 쓴 대댓글 수정, 삭제 여부
     const [editedChildComment, setEditedChildComment] = useState<string>(''); // 수정한 대댓글
-
-    const moveToBlog = (blogID: number) => {
-        navigate(`/blogs/${blogID}`)
-    }
 
     // 댓글 데이터 조회
     useEffect(() => {
@@ -44,7 +41,7 @@ const Comment = ({isCommentAllowed}: { isCommentAllowed: boolean }) => {
 
         if(localStorage.getItem('token')){
             plogAuthAxios.post(`/blogs/${blogID}/postings/${postingID}/comment`, params)
-                .then(res => {
+                .then(() => {
                     setComment('')
                     window.location.reload()
                 })
@@ -61,9 +58,7 @@ const Comment = ({isCommentAllowed}: { isCommentAllowed: boolean }) => {
 
         if(localStorage.getItem('token')){
             plogAuthAxios.put(`/blogs/${blogID}/postings/${postingID}/comments/${commentID}`, params)
-                .then(() => {
-                    setEditable(0)
-                })
+                .then(() => setEditable(0))
                 .catch(err => alert(err.message))
         }
     }
@@ -77,7 +72,8 @@ const Comment = ({isCommentAllowed}: { isCommentAllowed: boolean }) => {
         }
 
         plogAuthAxios.delete(`/blogs/${blogID}/postings/${postingID}/comments/${c.id}`, {params: params})
-            .then(res => window.location.reload())
+            .then(() => window.location.reload())
+            .catch(err => alert(err.message))
     }
 
 
@@ -106,6 +102,7 @@ const Comment = ({isCommentAllowed}: { isCommentAllowed: boolean }) => {
 
         plogAuthAxios.put(`/blogs/${blogID}/postings/${postingID}/comments/${id}`, params)
             .then(() => setChildEditable(0))
+            .catch(err => alert(err.message))
     }
 
     //답글 영역 클릭 시 오픈
@@ -141,13 +138,13 @@ const Comment = ({isCommentAllowed}: { isCommentAllowed: boolean }) => {
         if (userReg.test(mention)) {
             user = mention.match(userReg)[0].slice(3, -2)
             comment = comment.slice(1).join(' ')
+        }else {
+            comment = comment.join(' ')
         }
         return [user, comment]
     }
 
-    const dateParser = (date: string) => {
-        return date.replaceAll('T', ' ').slice(0, 19)
-    }
+
     return (
         <div className='posting-comment-area '>
             <h3>{commentList.length}개의 댓글</h3>
@@ -182,7 +179,7 @@ const Comment = ({isCommentAllowed}: { isCommentAllowed: boolean }) => {
                                     }
                                     <div className="user-info">
                                         <div className="username">{c.user.nickname}</div>
-                                        <div className="date">{dateParser(c.createDt)}</div>
+                                        <div className="date"><TimeAgo timestamp={c.createDt}/></div>
                                     </div>
                                 </div>
                                 {
@@ -208,7 +205,6 @@ const Comment = ({isCommentAllowed}: { isCommentAllowed: boolean }) => {
                                                 style={{marginRight:'5px',backgroundColor:'#fff', color:'var(--primary1)', fontWeight:'bold'}}
                                                 onClick={()=>setEditable(0)} disabled={!isCommentAllowed}>취소</button>
                                     </>
-
                                 }
                             </div>
                                 {
@@ -224,7 +220,6 @@ const Comment = ({isCommentAllowed}: { isCommentAllowed: boolean }) => {
                                         </p>
 
                                 }
-
                             {
                                 /*대댓글 영역*/
                                 c.id === showChildComment &&
@@ -242,10 +237,9 @@ const Comment = ({isCommentAllowed}: { isCommentAllowed: boolean }) => {
                                                             }
                                                             <div className="user-info">
                                                                 <div className="username">{childC.user.nickname}</div>
-                                                                <div className="date">{dateParser(childC.createDt)}</div>
+                                                                <div className="date"><TimeAgo timestamp={childC.createDt}/></div>
                                                             </div>
                                                         </div>
-
                                                         {
                                                             String(childC.user.userID) === localStorage.getItem('userID') &&
                                                             <div className="edit-btns">
@@ -256,13 +250,9 @@ const Comment = ({isCommentAllowed}: { isCommentAllowed: boolean }) => {
                                                             </div>
                                                         }
                                                     </div>
-
                                                     {childEditable !== childC.id ?
                                                         <p>
-                                                            <span className='mention'
-                                                                  onClick={() => {moveToBlog(5)}}>
-                                                                {mentionParser(childC.commentContent)[0]}
-                                                            </span>
+                                                            <span className='mention'>{mentionParser(childC.commentContent)[0]}</span>
                                                             <span>{mentionParser(childC.commentContent)[1]}</span>
                                                         </p>
                                                         :
@@ -275,7 +265,7 @@ const Comment = ({isCommentAllowed}: { isCommentAllowed: boolean }) => {
                                                             <button className='comment-btn' onClick={()=>editChildComment(c.id)} disabled={!isCommentAllowed}>댓글 수정</button>
                                                             <button className='comment-btn'
                                                                     style={{marginRight:'5px',backgroundColor:'#f2f2f2', color:'var(--primary1)', fontWeight:'bold'}}
-                                                                    onClick={()=>setEditable(0)} disabled={!isCommentAllowed}>취소</button>
+                                                                    onClick={()=>setChildEditable(0)} disabled={!isCommentAllowed}>취소</button>
                                                         </>
                                                     }
                                                 </div>
@@ -284,7 +274,6 @@ const Comment = ({isCommentAllowed}: { isCommentAllowed: boolean }) => {
                                         :
                                         <></>
                                     }
-
                                     {
                                         !!localStorage.getItem('token') ?
                                             <>
