@@ -5,7 +5,7 @@ import {Box, Button, Grid, Link, Step, StepLabel, Stepper, TextField, Typography
 import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
 import {email} from '../../modules/validation'
 import {CodeParams, SignupParams} from "../../types/UMSType";
-import {getPlogAxios} from "../../modules/axios";
+import {getPlogAxios, plogAuthAxios} from "../../modules/axios";
 
 
 export function SignUp() {
@@ -13,7 +13,7 @@ export function SignUp() {
 
     const steps = ['이메일 인증', '상세정보 기입', '가입완료',];
 
-    const [activeStep, setActiveStep] = useState<number>(0)
+    const [activeStep, setActiveStep] = useState<number>(1)
     //STEP 1
     const [account, setAccount] = useState<string>(''); // 유저 이메일
     const [sendEmail, setSendEmail] = useState<boolean>(false); // 인증코드 메일 전송 체크
@@ -28,6 +28,7 @@ export function SignUp() {
     const [sex, setSex] = useState<string>('');
     const [birth, setBirth] = useState<string>('');
     const [blogName, setBlogName] = useState<string>('');
+    const [blogNameErr, setBlogNameErr] = useState<string>('');
     const [nickName, setNickName] = useState<string>('');
     const [shortIntro, setShortIntro] = useState<string>('');
     const [introHtml, setIntroHtml] = useState<string>('');
@@ -70,7 +71,7 @@ export function SignUp() {
                     }
                 })
                 .catch(err => {
-                    console.log(err.message)
+                    console.error(err.message)
                     setVerifyToken('')
                 })
         } else {
@@ -78,8 +79,7 @@ export function SignUp() {
         }
     }
 
-    const signupRequest = () => {
-
+    const signUpRequest = () => {
         const params: SignupParams = {
             "birth": birth,
             "blogName": blogName,
@@ -117,6 +117,19 @@ export function SignUp() {
         }
 
         return false
+    }
+
+    const checkDuplicateBlogId = () =>{
+        const params = {blogName : blogName}
+        getPlogAxios().post('/blogs/check-blog-name-exist', params)
+            .then(res => {
+                if(res.status === 204 || res.status === 200){
+                    setBlogNameErr('')
+                }
+            })
+            .catch(err => {
+                setBlogNameErr(err.response.data.message)
+            })
     }
 
     return (
@@ -238,8 +251,11 @@ export function SignUp() {
                     </div>
 
                     <div className='signup-inputs'>
-                        <input className='signup-input' type='text' placeholder='* 블로그 이름(4자 이상, 소문자, 숫자만)'
-                               onChange={(e) => setBlogName(e.target.value)}/>
+                        <input className='signup-input' type='text' placeholder='* 블로그 이름(4자 이상, 영문 소문자와 숫자만 조합가능합니다.)'
+                               onChange={(e) => setBlogName(e.target.value)}
+                               onBlur={checkDuplicateBlogId}
+                        />
+                        {blogName && blogNameErr && <p style={{color: '#d32f2f', fontSize:'13px', marginTop:'4px'}}>{blogNameErr}</p>}
                     </div>
                     <div className='signup-inputs'>
                         <input className='signup-input' type='text' placeholder='* 닉네임'
@@ -247,12 +263,13 @@ export function SignUp() {
                     </div>
                     <div className='signup-inputs'>
                         <input className='signup-input' type='text' placeholder='* 본인 소개'
-                               onChange={(e) => setShortIntro(e.target.value)}/>
+                               onChange={(e) => setShortIntro(e.target.value)}
+                        />
                     </div>
                     <Button className='join-btn'
                             variant='contained'
                             sx={{backgroundColor: 'var(--primary1)',color: '#fff', ':hover':{backgroundColor: 'var(--primary2)'}}}
-                            onClick={signupRequest}>회원가입</Button>
+                            onClick={signUpRequest}>회원가입</Button>
                 </div>
 
                 <div className='signup-form'
