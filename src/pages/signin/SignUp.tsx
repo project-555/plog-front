@@ -13,7 +13,7 @@ export function SignUp() {
 
     const steps = ['이메일 인증', '상세정보 기입', '가입완료',];
 
-    const [activeStep, setActiveStep] = useState<number>(1)
+    const [activeStep, setActiveStep] = useState<number>(0)
     //STEP 1
     const [account, setAccount] = useState<string>(''); // 유저 이메일
     const [sendEmail, setSendEmail] = useState<boolean>(false); // 인증코드 메일 전송 체크
@@ -151,13 +151,13 @@ export function SignUp() {
                                sx={{'& .MuiFormHelperText-root':{color:'var(--error)'}}}
                                required/>
                     <Button className='email-chk' size="small"
-                            disabled={regCheck(account, 'email') === false || account === ''}
+                            disabled={regCheck(account, 'email') === false || account === '' || !!verifyToken}
                             sx={{
                                 backgroundColor:sendEmail ? 'var(--primary1)' : '',
                                 color:sendEmail?'#fff':'var(--border)',
                                 border: sendEmail?'none':'1px solid var(--form-border)',
                                 '&.Mui-disabled':{ borderColor: 'var(--disabled)', color:'var(--disabled)'},
-                                '&:hover':{border: sendEmail?'none':'1px solid var(--form-border)', backgroundColor:sendEmail ? 'var(--primary1)' : '#fff',}
+                                '&:hover':{border: sendEmail?'none':'1px solid var(--form-border)', backgroundColor:sendEmail ? 'var(--primary1)' : 'var(--bg-car1)',}
                             }}
                             variant={sendEmail ? 'contained' : 'outlined'}
                             onClick={sendEmailRequest}>
@@ -170,9 +170,14 @@ export function SignUp() {
                                        onChange={(e) => setVerifyCode(e.target.value)}
                                        onKeyDown={codeCheckRequest}
                                        helperText={!!verifyToken ? '인증번호가 일치합니다' : '인증번호가 일치하지 않습니다.'}
-                                       sx={{'& .MuiFormHelperText-root':{color:'var(--primary1)'}}}
+                                       sx={{
+                                           '& .MuiFormHelperText-root':{color:'var(--primary1)'},
+                                           '& .MuiFormHelperText-root.Mui-error':{color:'#d32f2f'},
+                                           '& input.Mui-disabled':{ WebkitTextFillColor: "var(--text1)",color: 'var(--primary1)'},
+                                       }}
                                        color={!!verifyToken ? 'success' : 'primary'}
                                        required
+                                       disabled={!!verifyToken}
                                        error={!!verifyToken === false}
                             />
                         </Grid>
@@ -188,7 +193,9 @@ export function SignUp() {
                                onChange={(e) => setPasswordConfirm(e.target.value)}
                                helperText={passwordConfirm===null ? '' : password === passwordConfirm ? '비밀번호가 일치합니다' : '비밀번호가 일치하지 않습니다'}
                                error={password !== passwordConfirm && passwordConfirm !== null}
-                               sx={{'& .MuiFormHelperText-root':{color:'var(--primary1)'}}}
+                               sx={{'& .MuiFormHelperText-root':{color:'var(--primary1)'},
+                                   '& .MuiFormHelperText-root.Mui-error':{color:'#d32f2f'},
+                               }}
                                required
                     />
                     <Button variant='contained' className='btn-full'
