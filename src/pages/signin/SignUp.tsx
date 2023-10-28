@@ -3,7 +3,7 @@ import {useState} from 'react'
 import {useNavigate} from 'react-router-dom';
 import {Box, Button, Grid, Link, Step, StepLabel, Stepper, TextField, Typography,CircularProgress} from '@mui/material';
 import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
-import {email, required} from '../../modules/validation'
+import {email} from '../../modules/validation'
 import {CodeParams, SignupParams} from "../../types/UMSType";
 import {getPlogAxios} from "../../modules/axios";
 
@@ -21,7 +21,7 @@ export function SignUp() {
     const [verifyCode, setVerifyCode] = useState<string>(''); // 메일 인증코드
     const [verifyToken, setVerifyToken] = useState<string>(''); // 인증코드 맞으면 리턴되는 토큰값
     const [password, setPassword] = useState<string>(''); // 유저 비밀번호
-    const [passwordConfirm, setPasswordConfirm] = useState<string>(''); // 유저 비밀번호
+    const [passwordConfirm, setPasswordConfirm] = useState<string | null>(null); // 유저 비밀번호
     //STEP 2
     const [firstName, setFirstName] = useState<string>('');
     const [lastName, setLastName] = useState<string>('');
@@ -31,24 +31,7 @@ export function SignUp() {
     const [nickName, setNickName] = useState<string>('');
     const [shortIntro, setShortIntro] = useState<string>('');
     const [introHtml, setIntroHtml] = useState<string>('');
-    const [sent, setSent] = useState<boolean>(false);
 
-
-    // const validate = (values: { [index: string]: string }) => {
-    //     const errors = required(['firstName', 'lastName', 'email', 'password'], values);
-    //
-    //     if (!errors.email) {
-    //         const emailError = email(values.email);
-    //         if (emailError) {
-    //             errors.email = emailError;
-    //         }
-    //     }
-    //     return errors;
-    // };
-
-    // const handleSubmit = () => {
-    //     setSent(true);
-    // };
 
     const sendEmailRequest = () => {
         setLoad(true)
@@ -78,7 +61,7 @@ export function SignUp() {
             "email": account,
             "verifyCode": verifyCode
         }
-        if (verifyCode.length === 6 || e.keyCode === 9 || e.keyCode === 13) {
+        if (verifyCode.length === 6 && (e.keyCode === 9 || e.keyCode === 13) ) {
             getPlogAxios().post('/auth/verify-join-email', params)
                 .then(res => {
                     if (res.status === 200) {
@@ -175,18 +158,19 @@ export function SignUp() {
                             }}
                             variant={sendEmail ? 'contained' : 'outlined'}
                             onClick={sendEmailRequest}>
-                        {load ? <CircularProgress sx={{color: 'var(--form-border)'}} size="1.5rem"/> : '인증코드 전송'}
+                        {load ? <CircularProgress sx={{color: sendEmail ? '#fff' : 'var(--form-border)'}} size="1.5rem"/> : sendEmail ? '재전송' : '인증코드 전송'}
                     </Button>
                     {sendEmail && <Grid container spacing={2}>
                         <Grid item xs={12} sm={6}>
                             <TextField variant="standard" autoFocus autoComplete="given-name" label="인증번호" name="인증번호"
-                                       inputProps={{maxLength: 6,}}
+                                       inputProps={{maxLength: 6}}
                                        onChange={(e) => setVerifyCode(e.target.value)}
                                        onKeyDown={codeCheckRequest}
-                                       helperText={!!verifyToken || verifyCode.length === 0 ? '' : '인증번호가 일치하지 않습니다.'}
-                                       sx={{'& .MuiFormHelperText-root': {color: 'var(--error)'}}}
+                                       helperText={!!verifyToken ? '인증번호가 일치합니다' : '인증번호가 일치하지 않습니다.'}
+                                       sx={{'& .MuiFormHelperText-root':{color:'var(--primary1)'}}}
                                        color={!!verifyToken ? 'success' : 'primary'}
                                        required
+                                       error={!!verifyToken === false}
                             />
                         </Grid>
                     </Grid>}
@@ -199,11 +183,19 @@ export function SignUp() {
                     <TextField variant="standard" fullWidth name="password" autoComplete="new-password" label="비밀번호 확인"
                                type="password" margin="normal"
                                onChange={(e) => setPasswordConfirm(e.target.value)}
-                               helperText={password === passwordConfirm && passwordConfirm.length > 0 ? '비밀번호가 일치합니다' : ''}
+                               helperText={passwordConfirm===null ? '' : password === passwordConfirm ? '비밀번호가 일치합니다' : '비밀번호가 일치하지 않습니다'}
+                               error={password !== passwordConfirm && passwordConfirm !== null}
                                sx={{'& .MuiFormHelperText-root':{color:'var(--primary1)'}}}
                                required
                     />
-                    <Button variant='contained' className='btn-full' onClick={() => setActiveStep(1)}>
+                    <Button variant='contained' className='btn-full'
+                            onClick={() => {
+                                if(!!account && !!verifyToken && passwordConfirm===password){
+                                    setActiveStep(1)
+                                }else {
+                                    alert('필드를 모두 입력해주세요')
+                                }
+                            }}>
                         다음 단계 진행하기
                     </Button>
                 </Box>
