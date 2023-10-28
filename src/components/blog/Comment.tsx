@@ -105,8 +105,12 @@ const Comment = ({isCommentAllowed}: { isCommentAllowed: boolean }) => {
             .catch(err => alert(err.message))
     }
 
+    const resetChildComment = () => setValue('')
+
+
     //답글 영역 클릭 시 오픈
     const childCommentClick = (id: number, childC: any) => {
+        resetChildComment()
         const users: Set<string> = new Set(childC.filter((el: CommentInfo) => !el.isSecret).map((el: CommentInfo) => el.user.nickname))
         const deduplicationUser: Array<string> = Array.from(users)
         setShowChildComment(id)
