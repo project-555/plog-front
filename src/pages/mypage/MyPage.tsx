@@ -185,6 +185,7 @@ export function MyPage() {
         );
     };
 
+    console.log(showIntroEditor, myPageInfo.introMd )
 
     return (
         <Box className='inner-container mypage-container'>
@@ -491,14 +492,15 @@ export function MyPage() {
                 </Box>
                 <Box className="intro-container">
                     <Box sx={{width: '766px'}}>
-                        {!showIntroEditor && myPageInfo.introMd === null &&
+                        {!showIntroEditor && myPageInfo.introMd === null ?
                             <div className='make-introMd'>
                                 <button onClick={()=>setShowIntroEditor(true)}>자기소개 작성하기</button>
                             </div>
-                        }
-                        {!!myPageInfo.introMd &&
-                            <PlogEditor height={"600px"} initialValue={myPageInfo.introMd ? myPageInfo.introMd : ""}
-                                        ref={editorRef}/>
+                            :
+                            myPageInfo.introMd === null ?
+                                <PlogEditor height={"600px"} initialValue={!!myPageInfo.introMd ? myPageInfo.introMd : ""} ref={editorRef}/>
+                                :
+                            !!myPageInfo.introMd && <PlogEditor height={"600px"} initialValue={!!myPageInfo.introMd ? myPageInfo.introMd : ""} ref={editorRef}/>
                         }
                     </Box>
                 </Box>
