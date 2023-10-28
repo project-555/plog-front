@@ -16,11 +16,12 @@ const Comment = ({isCommentAllowed}: { isCommentAllowed: boolean }) => {
     const [comment, setComment] = useState<string>(''); // 댓글 등록
 
     const [editable, setEditable] = useState<number>(0)//내가 쓴 댓글 수정, 삭제 여부
-    const [editComment, setEditComment] = useState<string>(''); // 수정한 댓글 등록
+    const [editedComment, setEditedComment] = useState<string>(''); // 수정한 댓글 등록
 
     const [showChildComment, setShowChildComment] = useState<number>(0)//대댓글 컴포넌트 보여주기
     const [childComment, setChildComment] = useState<string>('')// 대댓글 내용
     const [childEditable, setChildEditable] = useState<number>(0)// 내가 쓴 대댓글 수정, 삭제 여부
+    const [editedChildComment, setEditedChildComment] = useState<string>(''); // 수정한 대댓글
 
     const moveToBlog = (blogID: number) => {
         navigate(`/blogs/${blogID}`)
@@ -30,7 +31,7 @@ const Comment = ({isCommentAllowed}: { isCommentAllowed: boolean }) => {
     useEffect(() => {
         plogAxios.get(`blogs/${blogID}/postings/${postingID}/comments`)
             .then(res => setCommentList(res.data.comments))
-    }, [blogID, postingID])
+    }, [blogID, postingID, editable, childEditable])
 
 
     //댓글 등록
@@ -51,9 +52,24 @@ const Comment = ({isCommentAllowed}: { isCommentAllowed: boolean }) => {
         }
     }
 
+    const editComment = (commentID:number) => {
+        const params = {
+            "commentContent": editedComment,
+            "isSecret": false,
+            "parentCommentID": null //대댓글인 경우 부모 댓글 아이디
+        }
+
+        if(localStorage.getItem('token')){
+            plogAuthAxios.put(`/blogs/${blogID}/postings/${postingID}/comments/${commentID}`, params)
+                .then(() => {
+                    setEditable(0)
+                })
+                .catch(err => alert(err.message))
+        }
+    }
+
     //댓글 삭제
     const delComment = (c: CommentInfo) => {
-
         const params = {
             "blogID": Number(blogID),
             "commentID": c.id,
@@ -74,10 +90,22 @@ const Comment = ({isCommentAllowed}: { isCommentAllowed: boolean }) => {
         }
 
         plogAuthAxios.post(`/blogs/${blogID}/postings/${postingID}/comment`, params)
-            .then(res => {
+            .then(() => {
                 setChildComment('')
                 window.location.reload()
             })
+    }
+
+    //대댓글 수정
+    const editChildComment = (id : number) => {
+        const params = {
+            "commentContent": editedChildComment,
+            "isSecret": false,
+            "parentCommentID": id
+        }
+
+        plogAuthAxios.put(`/blogs/${blogID}/postings/${postingID}/comments/${id}`, params)
+            .then(() => setChildEditable(0))
     }
 
     //답글 영역 클릭 시 오픈
@@ -169,8 +197,18 @@ const Comment = ({isCommentAllowed}: { isCommentAllowed: boolean }) => {
                                 {!!commentList.length && editable !== c.id ?
                                     <p>{c.commentContent}</p>
                                     :
-                                    <textarea className='comment-input' value={c.commentContent}
-                                              onChange={(e) => setEditComment(e.target.value)}/>
+                                    <>
+                                        <textarea
+                                            className='comment-input' autoFocus
+                                            value={editedComment}
+                                            onFocus={()=> setEditedComment(c.commentContent)}
+                                            onChange={(e) => setEditedComment(e.target.value)}/>
+                                        <button className='comment-btn' onClick={()=>editComment(c.id)} disabled={!isCommentAllowed}>댓글 수정</button>
+                                        <button className='comment-btn'
+                                                style={{marginRight:'5px',backgroundColor:'#fff', color:'var(--primary1)', fontWeight:'bold'}}
+                                                onClick={()=>setEditable(0)} disabled={!isCommentAllowed}>취소</button>
+                                    </>
+
                                 }
                             </div>
                                 {
@@ -221,15 +259,24 @@ const Comment = ({isCommentAllowed}: { isCommentAllowed: boolean }) => {
 
                                                     {childEditable !== childC.id ?
                                                         <p>
-                                                            <span className='mention' onClick={() => {
-                                                                moveToBlog(5)
-                                                            }}>{mentionParser(childC.commentContent)[0]}</span>
+                                                            <span className='mention'
+                                                                  onClick={() => {moveToBlog(5)}}>
+                                                                {mentionParser(childC.commentContent)[0]}
+                                                            </span>
                                                             <span>{mentionParser(childC.commentContent)[1]}</span>
                                                         </p>
                                                         :
-                                                        <textarea className='comment-input'
-                                                                  value={childC.commentContent}
-                                                                  onChange={(e) => setChildComment(e.target.value)}/>
+                                                        <>
+                                                            <textarea className='comment-input'
+                                                                      value={editedChildComment}
+                                                                      autoFocus
+                                                                      onFocus={()=> setEditedChildComment(childC.commentContent)}
+                                                                      onChange={(e) => setEditedChildComment(e.target.value)}/>
+                                                            <button className='comment-btn' onClick={()=>editChildComment(c.id)} disabled={!isCommentAllowed}>댓글 수정</button>
+                                                            <button className='comment-btn'
+                                                                    style={{marginRight:'5px',backgroundColor:'#f2f2f2', color:'var(--primary1)', fontWeight:'bold'}}
+                                                                    onClick={()=>setEditable(0)} disabled={!isCommentAllowed}>취소</button>
+                                                        </>
                                                     }
                                                 </div>
                                             )}
