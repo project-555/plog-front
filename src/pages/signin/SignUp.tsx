@@ -13,7 +13,7 @@ export function SignUp() {
 
     const steps = ['이메일 인증', '상세정보 기입', '가입완료',];
 
-    const [activeStep, setActiveStep] = useState<number>(0)
+    const [activeStep, setActiveStep] = useState<number>(1)
     //STEP 1
     const [account, setAccount] = useState<string>(''); // 유저 이메일
     const [sendEmail, setSendEmail] = useState<boolean>(false); // 인증코드 메일 전송 체크
@@ -131,6 +131,8 @@ export function SignUp() {
                         {steps.map((label) => (
                             <Step key={label}
                                   sx={{
+                                      '& .MuiStepLabel-root .Mui-disabled': {color: 'var(--text3)',},
+                                      '& .MuiStepLabel-root .Mui-disabled circle': {color: 'var(--bg-element4)',},
                                       '& .MuiStepLabel-root .Mui-completed': {color: 'var(--primary1)',},
                                       '& .MuiStepLabel-root .Mui-active': {color:  'var(--primary1)'},
                                   }}>
@@ -154,6 +156,7 @@ export function SignUp() {
                                 backgroundColor:sendEmail ? 'var(--primary1)' : '',
                                 color:sendEmail?'#fff':'var(--border)',
                                 border: sendEmail?'none':'1px solid var(--form-border)',
+                                '&.Mui-disabled':{ borderColor: 'var(--disabled)', color:'var(--disabled)'},
                                 '&:hover':{border: sendEmail?'none':'1px solid var(--form-border)', backgroundColor:sendEmail ? 'var(--primary1)' : '#fff',}
                             }}
                             variant={sendEmail ? 'contained' : 'outlined'}
