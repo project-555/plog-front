@@ -20,6 +20,7 @@ import AddIcon from "@mui/icons-material/Add";
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import CheckIcon from '@mui/icons-material/Check';
+import CancelIcon from '@mui/icons-material/Cancel';
 import {repeatQuerySerializer} from "../../modules/serialize";
 
 type CategoryListProps = {
@@ -236,6 +237,9 @@ export function CategoryList(props: CategoryListProps) {
                             </FormGroup>
                             <IconButton onClick={handleOnClickAddCategoryIconBtn}>
                                 <AddIcon/>
+                            </IconButton>
+                            <IconButton onClick={(e: any) => setAddCategoryBtnClicked(false)}>
+                                <CancelIcon/>
                             </IconButton>
                         </Box>
                     </ListItem>
