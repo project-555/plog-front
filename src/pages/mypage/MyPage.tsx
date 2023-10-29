@@ -160,8 +160,11 @@ export function MyPage() {
         }
         plogAuthAxios.post('/auth/exit-user', params)
             .then(res => {
-                localStorage.clear()
                 navigate('/')
+                localStorage.removeItem('token')
+                localStorage.removeItem('userID')
+                localStorage.removeItem('nickname')
+                window.location.reload()
             })
             .catch((err) => {
                 console.log(err);
