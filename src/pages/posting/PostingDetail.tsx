@@ -1,6 +1,6 @@
 import React, {useContext, useEffect,useState} from "react";
 import {useNavigate, useParams} from 'react-router-dom'
-import {plogAuthAxios, plogAxios} from "../../modules/axios";
+import {getPlogAxios, plogAuthAxios, plogAxios} from "../../modules/axios";
 import {Chip} from '@mui/material';
 import {Viewer} from '@toast-ui/react-editor';
 import {BlogTag} from "../../types/BlogType";
@@ -21,12 +21,12 @@ export function PostingDetail() {
     const [tags, setTags] = useState<BlogTag[]>([])
 
     useEffect(() => {
-        plogAxios.get(`/blogs/${blogID}`)
+        getPlogAxios().get(`/blogs/${blogID}`)
             .then(response => setNickname(response.data.blogUser.nickname))
     }, [])
 
     useEffect(() => {
-        plogAxios.get(`/blogs/${blogID}/postings/${postingID}`)
+        getPlogAxios().get(`/blogs/${blogID}/postings/${postingID}`)
             .then(res => setPost(res.data))
             .catch(err => console.log(err.message))
         getTags()

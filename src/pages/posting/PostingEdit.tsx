@@ -15,7 +15,7 @@ import {
 } from "@mui/material";
 import Select, {SelectChangeEvent} from '@mui/material/Select';
 import {Send} from "@mui/icons-material";
-import {plogAuthAxios, plogAxios} from "../../modules/axios";
+import {getPlogAxios, plogAuthAxios} from "../../modules/axios";
 import React, {RefObject, useEffect, useRef, useState} from "react";
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Switch from '@mui/material/Switch';
@@ -87,18 +87,16 @@ export function PostingEdit() {
     const [isSubmitted, setIsSubmitted] = useState<boolean>(false);
 
     useEffect(() => {
-        plogAxios.get(`/blogs/${blogID}/postings/${postingID}`)
+        getPlogAxios().get(`/blogs/${blogID}/postings/${postingID}`)
             .then((response) => {
-                console.log(response.data)
                 setPostingResponse(response.data)
                 setCategoryID(response.data.categoryID)
             })
             .catch((error: any) => {
                 console.log(error);
             })
-        plogAxios.get(`/blogs/${blogID}/postings/${postingID}/tags`)
+        getPlogAxios().get(`/blogs/${blogID}/postings/${postingID}/tags`)
             .then((response) => {
-                console.log(response.data)
                 setPostingTagResponse(response.data)
             })
             .catch((error: any) => {
@@ -107,7 +105,7 @@ export function PostingEdit() {
     }, [blogID, postingID])
 
     useEffect(() => {
-        plogAxios.get(`/blogs/${blogID}/categories`)
+        getPlogAxios().get(`/blogs/${blogID}/categories`)
             .then((response) => {
                 setCategories(response.data.categories)
             })
@@ -117,14 +115,14 @@ export function PostingEdit() {
     }, [blogID])
 
     useEffect(() => {
-        plogAxios.get(`blogs/${blogID}/tags`)
+        getPlogAxios().get(`blogs/${blogID}/tags`)
             .then((response) =>
                 setTags(response.data.tags)
             );
     }, [blogID, postingTagResponse.postingTags])
 
     useEffect(() => {
-        plogAxios.get(`blogs/states`)
+        getPlogAxios().get(`blogs/states`)
             .then((response) => {
                 setStates(response.data.states)
             })
