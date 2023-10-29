@@ -185,8 +185,6 @@ export function MyPage() {
         );
     };
 
-    console.log(showIntroEditor, myPageInfo.introMd )
-
     return (
         <Box className='inner-container mypage-container'>
             <Box className="profile-container">
@@ -485,9 +483,16 @@ export function MyPage() {
                             anchorOrigin={{vertical: 'bottom', horizontal: 'right'}}
                             autoHideDuration={800}
                             open={introSnackbarOpen}
-                            onClose={event => setIntroSnackbarOpen(false)}
-                            message="자기소개가 저장되었습니다."
-                        />
+                            onClose={() => setIntroSnackbarOpen(false)}
+                        >
+                            <Alert
+                                id='intro-snackbar'
+                                onClose={() => setIntroSnackbarOpen(false)}
+                                severity="success"
+                                sx={{ width: '100%'}}>
+                                자기소개가 저장되었습니다
+                            </Alert>
+                        </Snackbar>
                     </Box>
                 </Box>
                 <Box className="intro-container">
