@@ -546,7 +546,11 @@ div, p, h1, h2, h3, h4, h5, h6, input {
     margin-top: 15%;
 }
 
-#password-snackbar .MuiAlert-message,.MuiSvgIcon-root {
+#password-snackbar .MuiAlert-message, #intro-snackbar .MuiAlert-message {
+    color: #fff;
+}
+
+#password-snackbar .MuiSvgIcon-root, #intro-snackbar .MuiSvgIcon-root {
     color: #fff;
 }
 
