@@ -82,6 +82,8 @@ export function PostingWrite() {
     const [states, setStates] = useState<State[]>([]);
     const editorRef = useRef<Editor>(null) as RefObject<Editor>;
     const [isPosted, setIsPosted] = useState<boolean>(false);
+    const [isSubmitted, setIsSubmitted] = useState<boolean>(false);
+
     const handleFileAdded = (file: File) => {
         uploadFile(file, setThumbnailURL)
     };
@@ -152,50 +154,58 @@ export function PostingWrite() {
     }
 
     const handleChangeInputTag = (event: React.SyntheticEvent, newValue: any) => {
-        // 사용자가 셀렉트 아이템을 선택하지 않고 엔터를 누른 경우
+        // newValue가 없을 경우 함수를 종료합니다.
+        if (!newValue) return;
+
+        let newTag: BlogTag | null = null;
+
+        // 문자열인 경우
         if (typeof newValue === 'string') {
-            // 공백을 _로 치환
-            newValue = newValue.replaceAll(" ", "_")
-            // tags에서 newValue가 이름인 태그가 존재하는 지 확인
-            const tag = tags.find((tag) => tag.tagName === newValue);
-            // 있으면 포스팅 태그에 등록
-            if (tag) {
-                setUniquePostingTags([...postingTags, tag])
-                setInputTag(tag)
+            newValue = newValue.replaceAll(" ", "_");
+            const existingTag = tags.find(tag => tag.tagName === newValue);
+
+            if (existingTag) {
+                newTag = existingTag;
             } else {
-                // 없으면 새로운 태그 생성
-                plogAuthAxios.post(
-                    `blogs/${blogID}/tags`,
-                    {tagName: newValue}
-                ).then((response) => {
-                    setUniquePostingTags([...postingTags, {
+                // 없으면 새로운 태그 생성 후 setPostingTags에 추가
+                plogAuthAxios.post(`blogs/${blogID}/tags`, {tagName: newValue}).then(response => {
+                    newTag = {
                         tagID: response.data.tagID,
                         tagName: response.data.tagName
-                    }])
-                    setInputTag({tagID: response.data.tagID, tagName: response.data.tagName})
-                })
+                    };
+                    if (newTag) {
+                        setUniquePostingTags([...postingTags, newTag]);
+                        setInputTag(newTag);
+                    }
+                });
+                return; // API 호출 후 바로 함수를 종료합니다.
             }
-
         }
-        // 사용자가 Add: 을 눌렀을 경우
-        else if (newValue && newValue.tagName && newValue.tagID === undefined) {
-            plogAuthAxios.post(
-                `blogs/${blogID}/tags`,
-                {tagName: newValue.inputValue}
-            ).then((response) => {
-                setUniquePostingTags([...postingTags, {
+        // 새로운 태그를 추가하려는 경우
+        else if (newValue.inputValue) {
+            plogAuthAxios.post(`blogs/${blogID}/tags`, {tagName: newValue.inputValue}).then(response => {
+                newTag = {
                     tagID: response.data.tagID,
                     tagName: response.data.tagName
-                }])
-                setInputTag({tagID: response.data.tagID, tagName: response.data.tagName})
-            })
+                };
+                if (newTag) {
+                    setUniquePostingTags([...postingTags, newTag]);
+                    setInputTag(newTag);
+                }
+            });
+            return; // API 호출 후 바로 함수를 종료합니다.
         }
-        // 사용자가 이미 존재하는 셀렉트 아이템을 선택한 경우
+        // 이미 존재하는 태그를 선택한 경우
         else {
-            setUniquePostingTags([...postingTags, newValue])
-            setInputTag(newValue)
+            newTag = newValue;
+        }
+
+        if (newTag) {
+            setUniquePostingTags([...postingTags, newTag]);
+            setInputTag(newTag);
         }
     }
+
 
     const handleGetOptionLabel = (option: any): string => {
         if (typeof option === 'string') {
@@ -205,7 +215,10 @@ export function PostingWrite() {
             return option.inputValue;
         }
 
-        return option.tagName;
+        if (option.tagName)
+            return option.tagName;
+
+        return "";
     }
     const handleFilterOptions = (options: any, params: any) => {
         params.inputValue = params.inputValue.replaceAll(" ", "_");
@@ -238,6 +251,7 @@ export function PostingWrite() {
 
 
     const handleClickSubmit = () => {
+        setIsSubmitted(true);
         let tagIDs: number[] = postingTags.filter((postingTag) => postingTag.tagID !== undefined).map((postingTag) => postingTag.tagID as number);
         setIsPosted(true);
 
@@ -278,15 +292,22 @@ export function PostingWrite() {
                         variant="standard"
                         // placeholder="제목을 입력하세요"
                         inputRef={titleRef}
-                        error={validateEmpty(title)}
-                        helperText={validateEmpty(title) && "제목을 입력해주세요."}
-                        InputProps={{disableUnderline: true, style: {fontSize: 30, fontWeight: 'bold', color:'var(--text1)'}}}
+                        error={isSubmitted && validateEmpty(title)}
+                        helperText={isSubmitted && validateEmpty(title) && "제목을 입력해주세요."}
+                        InputProps={{
+                            disableUnderline: true,
+                            style: {fontSize: 30, fontWeight: 'bold', color: 'var(--text1)'}
+                        }}
                         InputLabelProps={{style: {fontSize: 30, fontWeight: 'bold'}}}
                         onChange={handleChangeTitle}
                         value={title}
-                        sx={{mb: 3,
-                            '& input.MuiInputBase-input':{color: 'var(--text1)', borderBottom: '1px solid var(--form-border)'},
-                            '& label.MuiFormLabel-root':{color: 'var(--text1)'},
+                        sx={{
+                            mb: 3,
+                            '& input.MuiInputBase-input': {
+                                color: 'var(--text1)',
+                                borderBottom: '1px solid var(--form-border)'
+                            },
+                            '& label.MuiFormLabel-root': {color: 'var(--text1)'},
                         }}
                     />
                     <Box sx={{mb: 3}}>
@@ -318,13 +339,14 @@ export function PostingWrite() {
                             )}
                             sx={{
                                 borderBottom: '1px solid var(--form-border)',
-                                '& input.MuiInputBase-input, & label.MuiFormLabel-root':{color: 'var(--text1)'},
+                                '& input.MuiInputBase-input, & label.MuiFormLabel-root': {color: 'var(--text1)'},
                             }}
                         />
                     </Box>
                     {isCategoryRendered &&
                         <FormControl fullWidth variant="standard">
-                            <InputLabel id="category-label" required error={validateEmpty(categoryID)} sx={{color: 'var(--text1)'}}>카테고리</InputLabel>
+                            <InputLabel id="category-label" required error={isSubmitted && validateEmpty(categoryID)}
+                                        sx={{color: 'var(--text1)'}}>카테고리</InputLabel>
                             <Select
                                 labelId="category-label"
                                 id="demo-simple-select"
@@ -333,9 +355,9 @@ export function PostingWrite() {
                                 value={categoryID.toString()}
                                 label="카테고리"
                                 disableUnderline={true}
-                                error={validateEmpty(categoryID)}
+                                error={isSubmitted && validateEmpty(categoryID)}
                                 onChange={handleChangeCategoryID}
-                                sx={{color: 'var(--text1)', borderBottom:'1px solid var(--form-border)',}}
+                                sx={{color: 'var(--text1)', borderBottom: '1px solid var(--form-border)',}}
                             >
                                 {
                                     categories.map((category) => {
@@ -347,7 +369,7 @@ export function PostingWrite() {
                                     })
                                 }
                             </Select>
-                            {validateEmpty(categoryID) &&
+                            {isSubmitted && validateEmpty(categoryID) &&
                                 <FormHelperText error={validateEmpty(categoryID)}>카테고리를 선택해주세요.</FormHelperText>
                             }
                         </FormControl>
@@ -390,8 +412,10 @@ export function PostingWrite() {
                                 sx={{
                                     backgroundColor: 'var(--primary1)',
                                     color: '#fff',
-                                    '&:hover': {backgroundColor: 'var(--primary2)'}
+                                    '&:hover': {backgroundColor: 'var(--primary2)'},
+                                    minWidth: '150px',
                                 }}
+
                                 onClick={handleClickSubmit}
                                 variant="contained"
                                 endIcon={<Send sx={{color: '#fff'}}/>}>
