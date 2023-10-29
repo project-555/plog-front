@@ -243,6 +243,12 @@ export function PostingTab(props: PostingTabProps) {
                                         </Typography>
                                         <Typography variant={"subtitle2"} color="text.secondary" sx={{mb: 1}}>
                                             <TimeAgo timestamp={posting.createDt}/>
+                                            <span style={{color: 'var(--text3)'}}>
+                                                       {posting.stateID === 1 && " · 공개"}
+                                            </span>
+                                            <span style={{color: 'var(--text3)'}}>
+                                                {posting.stateID === 2 && " · 비공개"}
+                                            </span>
                                         </Typography>
                                         <Stack direction="row" spacing={1} sx={{mb: 2}}>
                                             {
