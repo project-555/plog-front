@@ -45,7 +45,14 @@ const Comment = ({isCommentAllowed}: { isCommentAllowed: boolean }) => {
                     setComment('')
                     window.location.reload()
                 })
-                .catch(err => alert(err.message))
+                .catch(err => {
+                    console.log(err)
+                    if(err.response.status === 400 || err.response.status === 404){
+                        alert(err.response.data.message)
+                    }else {
+                        alert('댓글 등록에 실패했습니다. 다시 시도해주십시오.')
+                    }
+                })
         }
     }
 
@@ -89,6 +96,13 @@ const Comment = ({isCommentAllowed}: { isCommentAllowed: boolean }) => {
             .then(() => {
                 setChildComment('')
                 window.location.reload()
+            })
+            .catch(err => {
+                if(err.response.status === 400 || err.response.status === 404){
+                    alert(err.response.data.message)
+                }else {
+                    alert('댓글 등록에 실패했습니다. 다시 시도해주십시오.')
+                }
             })
     }
 
