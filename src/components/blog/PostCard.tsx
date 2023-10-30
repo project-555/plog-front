@@ -67,7 +67,7 @@ const PostCard: React.FC<ChildProps> = ({ post }) => {
                 <Typography id='postcard-summary' variant="body2" color="text.secondary"
                             sx={{
                                 height: !!post.thumbnailImageURL ? '80px' : '230px',
-                                '-webkit-line-clamp': !!post.thumbnailImageURL ? '4' : '12',
+                                WebkitLineClamp: !!post.thumbnailImageURL ? '4' : '12',
                             }}
                 >
                     {summary(post.htmlContent)}
