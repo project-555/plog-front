@@ -8,7 +8,7 @@ export interface Login {
 //회원가입
 export interface CodeParams {
     "email": string;
-    "verifyCode": string;
+    "verifyCode": string | null;
 }
 
 export interface SignupParams {

@@ -1,5 +1,5 @@
 /* eslint-disable */
-import {useState} from 'react'
+import {useState, useEffect} from 'react'
 import {useNavigate} from 'react-router-dom';
 import {Box, Button, Grid, Link, Step, StepLabel, Stepper, TextField, Typography,CircularProgress} from '@mui/material';
 import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
@@ -10,15 +10,17 @@ import {getPlogAxios, plogAuthAxios} from "../../modules/axios";
 
 export function SignUp() {
     const navigate = useNavigate();
-
+    
     const steps = ['이메일 인증', '상세정보 기입', '가입완료',];
+    
 
     const [activeStep, setActiveStep] = useState<number>(0)
     //STEP 1
     const [account, setAccount] = useState<string>(''); // 유저 이메일
     const [sendEmail, setSendEmail] = useState<boolean>(false); // 인증코드 메일 전송 체크
     const [load, setLoad] = useState<boolean>(false)// 인증코드 전송 로딩스피너
-    const [verifyCode, setVerifyCode] = useState<string>(''); // 메일 인증코드
+    const [showVerifyCodeInput, setShowVerifyCodeInput] = useState<boolean>(false)
+    const [verifyCode, setVerifyCode] = useState<string | null>(null); // 메일 인증코드
     const [verifyToken, setVerifyToken] = useState<string>(''); // 인증코드 맞으면 리턴되는 토큰값
     const [password, setPassword] = useState<string>(''); // 유저 비밀번호
     const [passwordConfirm, setPasswordConfirm] = useState<string | null>(null); // 유저 비밀번호
@@ -44,6 +46,7 @@ export function SignUp() {
                 if(res.status === 200 || res.status === 204){
                     setSendEmail(true)
                     setLoad(false)
+                    setShowVerifyCodeInput(true)
                 }
             })
             .catch(err => {
@@ -57,27 +60,33 @@ export function SignUp() {
 
     }
 
-    const codeCheckRequest = (e: any) => {
+    const codeCheckRequest = () => {
         const params: CodeParams = {
             "email": account,
             "verifyCode": verifyCode
         }
-        if (verifyCode.length === 6 && (e.keyCode === 9 || e.keyCode === 13) ) {
-            getPlogAxios().post('/auth/verify-join-email', params)
-                .then(res => {
-                    if (res.status === 200) {
-                        const token = res.data.verifyToken //인증번호 일치하면 토큰획득
-                        setVerifyToken(token)
-                    }
-                })
-                .catch(err => {
-                    console.error(err.message)
-                    setVerifyToken('')
-                })
-        } else {
-            setVerifyToken('')
+
+        if(verifyCode !== null){
+            if (verifyCode.length === 6 ) {
+                getPlogAxios().post('/auth/verify-join-email', params)
+                    .then(res => {
+                        if (res.status === 200) {
+                            const token = res.data.verifyToken //인증번호 일치하면 토큰획득
+                            setVerifyToken(token)
+                        }
+                    })
+                    .catch(err => {
+                        console.error(err.message)
+                        setVerifyToken('')
+                    })
+            } else {
+                setVerifyToken('')
+            }
         }
+
     }
+
+    useEffect(codeCheckRequest, [verifyCode])
 
     const signUpRequest = () => {
         const params: SignupParams = {
@@ -158,6 +167,7 @@ export function SignUp() {
                 <Box className='step1-container' sx={{mt: 6}} style={{display: activeStep === 0 ? 'block' : 'none'}}>
                     <TextField className='email-input' variant="standard" label="이메일" name="이메일"
                                autoComplete="email" margin="normal"
+                               autoFocus
                                onChange={(e) => setAccount(e.target.value)}
                                helperText={regCheck(account, 'email') ? '' : '올바른 이메일 형식을 입력해주세요'}
                                sx={{'& .MuiFormHelperText-root':{color:'var(--error)'}}}
@@ -175,13 +185,13 @@ export function SignUp() {
                             onClick={sendEmailRequest}>
                         {load ? <CircularProgress sx={{color: sendEmail ? '#fff' : 'var(--form-border)'}} size="1.5rem"/> : sendEmail ? '재전송' : '인증코드 전송'}
                     </Button>
-                    {sendEmail && <Grid container spacing={2}>
+                    {showVerifyCodeInput && <Grid container spacing={2}>
                         <Grid item xs={12} sm={6}>
                             <TextField variant="standard" autoFocus autoComplete="given-name" label="인증번호" name="인증번호"
                                        inputProps={{maxLength: 6}}
                                        onChange={(e) => setVerifyCode(e.target.value)}
-                                       onKeyDown={codeCheckRequest}
-                                       helperText={!!verifyToken ? '인증번호가 일치합니다' : '인증번호가 일치하지 않습니다.'}
+                                       onPaste={(e:any) => setVerifyCode(e.target.value)}
+                                       helperText={verifyCode === null ? '' : !!verifyToken ? '인증번호가 일치합니다' : '인증번호가 일치하지 않습니다.'}
                                        sx={{
                                            '& .MuiFormHelperText-root':{color:'var(--primary1)'},
                                            '& .MuiFormHelperText-root.Mui-error':{color:'#d32f2f'},
@@ -195,12 +205,26 @@ export function SignUp() {
                         </Grid>
                     </Grid>}
                     <TextField
-                        variant="standard" fullWidth name="password" autoComplete="new-password" label="비밀번호"
-                        type="password" margin="normal"
+                        variant="standard"
+                        fullWidth
+                        name="password"
+                        autoComplete="new-password"
+                        label="비밀번호"
+                        type="password"
+                        margin="normal"
                         onChange={(e) => setPassword(e.target.value)}
+                        InputLabelProps={{
+                            style: {color: verifyToken === '' ? 'var(--disabled2)' : ''}
+                        }}
+                        disabled={verifyToken === ''}
+                        autoFocus
                         required
                     />
-                    <TextField variant="standard" fullWidth name="password" autoComplete="new-password" label="비밀번호 확인"
+                    <TextField variant="standard"
+                               fullWidth
+                               name="password"
+                               autoComplete="new-password"
+                               label="비밀번호 확인"
                                type="password" margin="normal"
                                onChange={(e) => setPasswordConfirm(e.target.value)}
                                helperText={passwordConfirm===null ? '' : password === passwordConfirm ? '비밀번호가 일치합니다' : '비밀번호가 일치하지 않습니다'}
@@ -208,6 +232,12 @@ export function SignUp() {
                                sx={{'& .MuiFormHelperText-root':{color:'var(--primary1)'},
                                    '& .MuiFormHelperText-root.Mui-error':{color:'#d32f2f'},
                                }}
+                               InputLabelProps={{
+                                   style: {
+                                       color: verifyToken === '' ? 'var(--disabled2)' : '', // 여기에서 색상을 조절합니다
+                                   }
+                               }}
+                               disabled={verifyToken === ''}
                                required
                     />
                     <Button variant='contained' className='btn-full'
@@ -226,6 +256,7 @@ export function SignUp() {
                 <div className='step2-container signup-form' style={{display: activeStep === 1 ? 'block' : 'none'}}>
                     <div className='signup-inputs'>
                         <input className='signup-input' type='text' placeholder='* 성'
+                               autoFocus
                                onChange={(e) => setFirstName(e.target.value)}/>
                     </div>
                     <div className='signup-inputs'>
@@ -279,8 +310,6 @@ export function SignUp() {
                             sx={{backgroundColor: 'var(--primary1)',color: '#fff', ':hover':{backgroundColor: 'var(--primary2)'}}}
                             onClick={() => navigate('/sign-in')}>로그인하러가기</Button>
                 </div>
-
-
             </div>
         </div>
     )
