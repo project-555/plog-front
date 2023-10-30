@@ -19,6 +19,7 @@ html[class~='dark'] {
     --error: #f56f6f;
     --important: #ef3636;
     --disabled: #dedede;
+    --disabled2: #9b9b9b;
     --mode: dark;
 
 }
@@ -42,6 +43,7 @@ html[class~='light'] {
     --error: #ff5b5b;
     --important: #ef3636;
     --disabled: #9f9f9f;
+    --disabled2: #9f9f9f;
     --mode: light;
 }
 
