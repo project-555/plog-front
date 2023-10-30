@@ -280,7 +280,7 @@ const Comment = ({isCommentAllowed}: { isCommentAllowed: boolean }) => {
                                                                       autoFocus
                                                                       onFocus={()=> setEditedChildComment(childC.commentContent)}
                                                                       onChange={(e) => setEditedChildComment(e.target.value)}/>
-                                                            <button className='comment-btn' onClick={()=>editChildComment(c.id)} disabled={!isCommentAllowed}>댓글 수정</button>
+                                                            <button className='comment-btn' onClick={()=>editChildComment(childC.id)} disabled={!isCommentAllowed}>댓글 수정</button>
                                                             <button className='comment-btn'
                                                                     style={{marginRight:'5px',backgroundColor:'#f2f2f2', color:'var(--primary1)', fontWeight:'bold'}}
                                                                     onClick={()=>setChildEditable(0)} disabled={!isCommentAllowed}>취소</button>
