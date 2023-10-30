@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
+import {Avatar} from "@mui/material";
 import {plogAxios} from "../../modules/axios";
-import {postType} from "../../types/PostingType";
-import {Avatar, CardHeader} from "@mui/material";
+import TimeAgo from "../../components/common/TimeAgo";
 
 export function SearchPosting(){
 
@@ -24,12 +24,6 @@ export function SearchPosting(){
         }
     }
 
-    const dateParser = (date: string) => {
-        const year = date.substring(0,3)
-        const month = date.substring(5,7)
-        const day = date.substring(8,10)
-        return `${year}년 ${month}월 ${day}일`
-    }
 
     const summary = (htmlstring: any) => {
 
@@ -82,7 +76,7 @@ export function SearchPosting(){
                         style={{marginBottom: '2rem', marginTop: '1rem', lineHeight:1.5, color:'var(--text3)', WebkitLineClamp: '6'}}>
                         {summary(post.htmlContent)}</p>
                     <div className="subinfo" style={{color: '#868E96',display: 'flex', alignItems: 'center', marginTop: '1rem', fontSize: '0.875rem'}}>
-                        <span>{dateParser(post.createDt)}</span>
+                        <span><TimeAgo timestamp={post.createDt}/></span>
                         <div className="separator" style={{margin: '0 0.5rem'}}>·</div>
                         <span>{post.starCnt}개의 스타</span>
                     </div>
