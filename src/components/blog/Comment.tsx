@@ -1,24 +1,29 @@
 import React, {useEffect, useState} from 'react';
 import AddBoxOutlinedIcon from '@mui/icons-material/AddBoxOutlined';
 import {useParams} from "react-router-dom";
-import {CommentInfo} from '../../types/PostingType';
 // @ts-ignore
 import {Mention, MentionsInput} from 'react-mentions';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
-import '../../assets/comment.css'
 import {plogAuthAxios, plogAxios} from "../../modules/axios";
 import TimeAgo from "../common/TimeAgo";
+import {CommentInfo} from '../../types/PostingType';
+import '../../assets/comment.css'
 
 
-const Comment = ({isCommentAllowed}: { isCommentAllowed: boolean }) => {
+type Props = {
+    isCommentAllowed: boolean,
+    blogOwnerId: number
+};
+
+const Comment :React.FC<Props>  = ({isCommentAllowed, blogOwnerId}) => {
 
     const {blogID, postingID} = useParams();
+    const logInUser = localStorage.getItem('userID')
+
     const [commentList, setCommentList] = useState<any>([]);// 댓글 목록 불러오기
     const [comment, setComment] = useState<string>(''); // 댓글 등록
-
     const [editable, setEditable] = useState<number>(0)//내가 쓴 댓글 수정, 삭제 여부
     const [editedComment, setEditedComment] = useState<string>(''); // 수정한 댓글 등록
-
     const [showChildComment, setShowChildComment] = useState<number>(0)//대댓글 컴포넌트 보여주기
     const [childComment, setChildComment] = useState<string>('')// 대댓글 내용
     const [childEditable, setChildEditable] = useState<number>(0)// 내가 쓴 대댓글 수정, 삭제 여부
@@ -28,6 +33,7 @@ const Comment = ({isCommentAllowed}: { isCommentAllowed: boolean }) => {
     useEffect(() => {
         plogAxios.get(`blogs/${blogID}/postings/${postingID}/comments`)
             .then(res => setCommentList(res.data.comments))
+            .catch(() => alert('댓글 정보를 불러오지 못했습니다'))
     }, [blogID, postingID, editable, childEditable])
 
 
@@ -43,7 +49,7 @@ const Comment = ({isCommentAllowed}: { isCommentAllowed: boolean }) => {
             plogAuthAxios.post(`/blogs/${blogID}/postings/${postingID}/comment`, params)
                 .then(() => {
                     setComment('')
-                    window.location.reload()
+                    // window.location.reload()
                 })
                 .catch(err => {
                     console.log(err)
@@ -71,10 +77,10 @@ const Comment = ({isCommentAllowed}: { isCommentAllowed: boolean }) => {
     }
 
     //댓글 삭제
-    const delComment = (c: CommentInfo) => {
+    const delComment = (comment: CommentInfo) => {
         const params = {
             "blogID": Number(blogID),
-            "commentID": c.id,
+            "commentID": comment.id,
             "postingID": Number(postingID)
         }
 
@@ -151,7 +157,7 @@ const Comment = ({isCommentAllowed}: { isCommentAllowed: boolean }) => {
 
     const mentionParser = (mention: any) => {
         const userReg = /@{{[ㄱ-ㅎ가-힣a-zA-Z]{2,}}}/;
-        let user = ''
+        let user = '';
         let comment = mention.split(' ')
         if (userReg.test(mention)) {
             user = mention.match(userReg)[0].slice(3, -2)
@@ -161,6 +167,25 @@ const Comment = ({isCommentAllowed}: { isCommentAllowed: boolean }) => {
         }
         return [user, comment]
     }
+
+
+    const commentFixOrDel = (type:any, target:any, writer:any)  => {
+        if(writer === 'owner'){
+            return (
+                <div className="edit-btns">
+                    <span className='edit' onClick={ type === 'comment' ? ()=>setEditable(target.id) : ()=>setChildEditable(target.id)}>수정</span>
+                    <span className='del' onClick={() => delComment(target)}>삭제</span>
+                </div>
+            )
+        }else if(writer === 'person' && String(blogOwnerId) === logInUser){
+            return (
+                <div className="edit-btns">
+                    <span className='del' onClick={() => delComment(target)}>삭제</span>
+                </div>
+            )
+        }else return
+    }
+
 
 
     return (
@@ -187,7 +212,7 @@ const Comment = ({isCommentAllowed}: { isCommentAllowed: boolean }) => {
                 isCommentAllowed &&
                 <div className='comment-area'>
                     {commentList && commentList.map((c: CommentInfo) =>
-                        <div className='comment-container'>
+                        <div className='comment-container' key={c.id}>
                             <div className="profile-wrapper">
                                 <div className='profile'>
                                     {!!c.user.profileImageURL ?
@@ -201,11 +226,10 @@ const Comment = ({isCommentAllowed}: { isCommentAllowed: boolean }) => {
                                     </div>
                                 </div>
                                 {
-                                    String(c.user.userID) === localStorage.getItem('userID') &&
-                                    <div className="edit-btns">
-                                        <span className='edit' onClick={() => setEditable(c.id)}>수정</span>
-                                        <span className='del' onClick={() => delComment(c)}>삭제</span>
-                                    </div>
+                                    String(c.user.userID) === localStorage.getItem('userID') ?
+                                        commentFixOrDel('comment',c,'owner')
+                                        :
+                                        commentFixOrDel('comment',c,'person')
                                 }
                             </div>
                             <div className="comment-contents">
@@ -244,8 +268,8 @@ const Comment = ({isCommentAllowed}: { isCommentAllowed: boolean }) => {
                                 <>
                                     {c.children ?
                                         <>
-                                            {c.children.map((childC, idx) =>
-                                                <div key={idx} className='child-comment-container'>
+                                            {c.children.map((childC) =>
+                                                <div key={childC.id} className='child-comment-container'>
                                                     <div className="profile-wrapper">
                                                         <div className='profile'>
                                                             {!!childC.user.profileImageURL ?
@@ -259,13 +283,10 @@ const Comment = ({isCommentAllowed}: { isCommentAllowed: boolean }) => {
                                                             </div>
                                                         </div>
                                                         {
-                                                            String(childC.user.userID) === localStorage.getItem('userID') &&
-                                                            <div className="edit-btns">
-                                                                <span className='edit'
-                                                                      onClick={() => setChildEditable(childC.id)}>수정</span>
-                                                                <span className='del'
-                                                                      onClick={() => delComment(childC)}>삭제</span>
-                                                            </div>
+                                                            String(childC.user.userID) === localStorage.getItem('userID') ?
+                                                                commentFixOrDel('childComment',childC,'owner')
+                                                                :
+                                                                commentFixOrDel('childComment',childC,'person')
                                                         }
                                                     </div>
                                                     {childEditable !== childC.id ?

@@ -17,12 +17,17 @@ export function PostingDetail() {
     const {blogID, postingID} = useParams();
     const theme = useContext(ModeContext)
     const [nickname, setNickname] = useState('')
+    const [blogOwnerId, setBlogOwnerId] = useState<number>(0)
     const [post, setPost] = useState(null);
     const [tags, setTags] = useState<BlogTag[]>([])
 
     useEffect(() => {
         getPlogAxios().get(`/blogs/${blogID}`)
-            .then(response => setNickname(response.data.blogUser.nickname))
+            .then(response => {
+                console.log(response.data.blogUser.userID, 'posting detail userID')
+                setNickname(response.data.blogUser.nickname)
+                setBlogOwnerId(response.data.blogUser.userID)
+            })
     }, [])
 
     useEffect(() => {
@@ -46,7 +51,6 @@ export function PostingDetail() {
 
     const delThisPosting = () => {
         const result = window.confirm('해당 포스팅을 삭제하시겠습니까?')
-
         if (result) {
             plogAuthAxios.delete(`blogs/${blogID}/postings/${postingID}`)
                 .then(() => {
@@ -78,7 +82,7 @@ export function PostingDetail() {
                                 <h1 className='title'>{post['title']}</h1>
                                 <div className='posting-info'>
                                     <div>
-                                        <span className='bolder'>{nickname}</span>
+                                        <span className='bolder' onClick={()=>navigate(`/blogs/${blogID}`)}>{nickname}</span>
                                         <span className='explain'>
                                             <TimeAgo timestamp={post['updateDt']}/>
                                         </span>
@@ -101,7 +105,7 @@ export function PostingDetail() {
                             <div className='posting-contents-area'>
                                 <Viewer initialValue={post['htmlContent']}/>
                             </div>
-                            <Comment isCommentAllowed={post['isCommentAllowed']}/>
+                            <Comment isCommentAllowed={post['isCommentAllowed']} blogOwnerId={blogOwnerId}/>
                         </div>
                         <Toc htmlString={post['htmlContent']}/>
                     </div>
