@@ -8,6 +8,7 @@ export function SignIn() {
     const navigate = useNavigate();
     const [email, setEmail] = useState<string>('');
     const [password, setPassword] = useState<string>('');
+    const [helperMsg, setHelperMsg] = useState<string | null>(null);
 
     const loginRequest = () => {
         const params: Login = {
@@ -24,9 +25,11 @@ export function SignIn() {
                 switch (getErrorCode(err) ?? "UNKNOWN") {
                     case "ERR_LOGIN_FAILED":
                         console.log("로그인에 실패")
+                        setHelperMsg(err?.response?.data?.message)
                         break;
                     case "UNKNOWN":
                         console.log("알 수 없는 오류입니다.")
+                        setHelperMsg(err?.response?.data?.message)
                         break;
                 }
             })
@@ -50,12 +53,10 @@ export function SignIn() {
                                    if(e.keyCode === 13){
                                        loginRequest()
                                    }
-                               }}
-                        />
+                               }}/>
                     </div>
-                    <Button className='login-btn-full' variant='contained'
-                            onClick={loginRequest}
-                    >Login</Button>
+                    {helperMsg && <p style={{color: 'var(--error)', fontSize:'13px'}}>{helperMsg}</p>}
+                    <Button className='login-btn-full' variant='contained' onClick={loginRequest}>Login</Button>
                     <p className='sentence'>
                         <span className='forgot-pw' onClick={() => navigate('/forgot-password')}>비밀번호 찾기 </span>
                         |

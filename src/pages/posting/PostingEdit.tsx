@@ -97,6 +97,7 @@ export function PostingEdit() {
             })
         getPlogAxios().get(`/blogs/${blogID}/postings/${postingID}/tags`)
             .then((response) => {
+                setPostingTags(response.data.postingTags)
                 setPostingTagResponse(response.data)
             })
             .catch((error: any) => {
@@ -119,7 +120,7 @@ export function PostingEdit() {
             .then((response) =>
                 setTags(response.data.tags)
             );
-    }, [blogID, postingTagResponse.postingTags])
+    }, [blogID])
 
     useEffect(() => {
         getPlogAxios().get(`blogs/states`)
@@ -150,9 +151,11 @@ export function PostingEdit() {
     }
 
     const handleDeletePostingTag = (tag: PostingTag) => {
+        console.log(tag)
         setPostingTagResponse({
             postingTags: postingTagResponse.postingTags.filter((postingTag) => postingTag.tagID !== tag.tagID)
         })
+        setUniquePostingTags(postingTags.filter((postingTag) => postingTag.tagID !== tag.tagID))
     }
 
     const handleChangeTitle = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -167,6 +170,7 @@ export function PostingEdit() {
             ...prevState,
             categoryID: parseInt(event.target.value)
         }));
+        setCategoryID(parseInt(event.target.value))
     };
 
     const handleStateID = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -200,69 +204,75 @@ export function PostingEdit() {
         if (typeof newValue === 'string') {
             // 공백을 _로 치환
             newValue = newValue.replaceAll(" ", "_")
+
             // tags에서 newValue가 이름인 태그가 존재하는 지 확인
-            const tag = tags.find((tag) => tag.tagName === newValue);
+            const existingTag = tags.find((tag) => tag.tagName === newValue);
+
             // 있으면 포스팅 태그에 등록
-            if (tag) {
+            if (existingTag) {
+                newTag = existingTag
                 if (checkDuplicateTags({tagID: newValue.tagID, tagName: newValue.tagName})) {
                     setPostingTagResponse(prevState => ({
                         postingTags: [
-                            ...prevState.postingTags,
-                            {
-                                tagID: tag.tagID,
-                                tagName: tag.tagName
-                            }
-                        ]
-                    }))
+                            ...prevState.postingTags, existingTag]
+                    }) as PostingTagResponse)
                 }
-                setInputTag(tag)
             } else {
                 // 없으면 새로운 태그 생성
-                plogAuthAxios.post(
-                    `blogs/${blogID}/tags`,
-                    {tagName: newValue}
-                ).then((response) => {
-                    setUniquePostingTags([...postingTags, {
-                        tagID: response.data.tagID,
-                        tagName: response.data.tagName
-                    }])
-                    setInputTag({tagID: response.data.tagID, tagName: response.data.tagName})
-                })
+                plogAuthAxios.post(`blogs/${blogID}/tags`, {tagName: newValue})
+                    .then((response) => {
+                        newTag = {
+                            tagID: response.data.tagID,
+                            tagName: response.data.tagName
+                        };
+                        if (newTag) {
+                            setUniquePostingTags([...postingTags, newTag]);
+                            setInputTag(newTag);
+                            setPostingTagResponse(prevState => ({
+                                postingTags: [
+                                    ...prevState.postingTags, newTag
+                                ]
+                            }) as PostingTagResponse)
+                        }
+                });
+                return;
             }
 
         }
         // 사용자가 Add: 을 눌렀을 경우
         else if (newValue && newValue.tagName && newValue.tagID === undefined) {
-            plogAuthAxios.post(
-                `blogs/${blogID}/tags`,
-                {tagName: newValue.inputValue}
-            ).then((response) => {
-                setPostingTagResponse(prevState => ({
-                    postingTags: [
-                        ...prevState.postingTags,
-                        {
-                            tagID: response.data.tagID,
-                            tagName: response.data.tagName
-                        }
-                    ]
-                }))
-                setInputTag({tagID: response.data.tagID, tagName: response.data.tagName})
+            plogAuthAxios.post(`blogs/${blogID}/tags`, {tagName: newValue.inputValue})
+                .then((response) => {
+                    newTag = {
+                        tagID: response.data.tagID,
+                        tagName: response.data.tagName
+                    };
+                    if (newTag) {
+                        setUniquePostingTags([...postingTags, newTag]);
+                        setInputTag(newTag);
+                        setPostingTagResponse(prevState => ({
+                            postingTags: [
+                                ...prevState.postingTags, newTag
+                            ]
+                        }) as PostingTagResponse)
+                    }
             })
         }
         // 사용자가 이미 존재하는 셀렉트 아이템을 선택한 경우
         else {
+            newTag = newValue;
             if (checkDuplicateTags({tagID: newValue.tagID, tagName: newValue.tagName})) {
                 setPostingTagResponse(prevState => ({
                     postingTags: [
-                        ...prevState.postingTags,
-                        {
-                            tagID: newValue.tagID,
-                            tagName: newValue.tagName
-                        }
+                        ...prevState.postingTags, newTag
                     ]
-                }))
+                }) as PostingTagResponse)
             }
-            setInputTag(newValue)
+        }
+
+        if (newTag) {
+            setUniquePostingTags([...postingTags, newTag]);
+            setInputTag(newTag);
         }
     }
 
@@ -373,7 +383,7 @@ export function PostingEdit() {
                     />
                     <Box sx={{mb: 3}}>
                         {
-                            postingTagResponse.postingTags.length > 0 && postingTagResponse.postingTags.map((tag) => {
+                            postingTags.length > 0 && postingTags.map((tag) => {
                                 return (tag != null &&
                                     <Chip
                                         key={tag.tagID}

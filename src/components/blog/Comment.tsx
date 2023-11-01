@@ -1,36 +1,34 @@
 import React, {useEffect, useState} from 'react';
 import AddBoxOutlinedIcon from '@mui/icons-material/AddBoxOutlined';
-import {useNavigate, useParams} from "react-router-dom";
+import {useParams} from "react-router-dom";
 import {CommentInfo} from '../../types/PostingType';
 // @ts-ignore
 import {Mention, MentionsInput} from 'react-mentions';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import '../../assets/comment.css'
 import {plogAuthAxios, plogAxios} from "../../modules/axios";
+import TimeAgo from "../common/TimeAgo";
 
 
 const Comment = ({isCommentAllowed}: { isCommentAllowed: boolean }) => {
-    const navigate = useNavigate();
+
     const {blogID, postingID} = useParams();
     const [commentList, setCommentList] = useState<any>([]);// 댓글 목록 불러오기
     const [comment, setComment] = useState<string>(''); // 댓글 등록
 
     const [editable, setEditable] = useState<number>(0)//내가 쓴 댓글 수정, 삭제 여부
-    const [editComment, setEditComment] = useState<string>(''); // 수정한 댓글 등록
+    const [editedComment, setEditedComment] = useState<string>(''); // 수정한 댓글 등록
 
     const [showChildComment, setShowChildComment] = useState<number>(0)//대댓글 컴포넌트 보여주기
     const [childComment, setChildComment] = useState<string>('')// 대댓글 내용
     const [childEditable, setChildEditable] = useState<number>(0)// 내가 쓴 대댓글 수정, 삭제 여부
-
-    const moveToBlog = (blogID: number) => {
-        navigate(`/blogs/${blogID}`)
-    }
+    const [editedChildComment, setEditedChildComment] = useState<string>(''); // 수정한 대댓글
 
     // 댓글 데이터 조회
     useEffect(() => {
         plogAxios.get(`blogs/${blogID}/postings/${postingID}/comments`)
             .then(res => setCommentList(res.data.comments))
-    }, [blogID, postingID])
+    }, [blogID, postingID, editable, childEditable])
 
 
     //댓글 등록
@@ -43,17 +41,37 @@ const Comment = ({isCommentAllowed}: { isCommentAllowed: boolean }) => {
 
         if(localStorage.getItem('token')){
             plogAuthAxios.post(`/blogs/${blogID}/postings/${postingID}/comment`, params)
-                .then(res => {
+                .then(() => {
                     setComment('')
                     window.location.reload()
                 })
+                .catch(err => {
+                    console.log(err)
+                    if(err.response.status === 400 || err.response.status === 404){
+                        alert(err.response.data.message)
+                    }else {
+                        alert('댓글 등록에 실패했습니다. 다시 시도해주십시오.')
+                    }
+                })
+        }
+    }
+
+    const editComment = (commentID:number) => {
+        const params = {
+            "commentContent": editedComment,
+            "isSecret": false,
+            "parentCommentID": null //대댓글인 경우 부모 댓글 아이디
+        }
+
+        if(localStorage.getItem('token')){
+            plogAuthAxios.put(`/blogs/${blogID}/postings/${postingID}/comments/${commentID}`, params)
+                .then(() => setEditable(0))
                 .catch(err => alert(err.message))
         }
     }
 
     //댓글 삭제
     const delComment = (c: CommentInfo) => {
-
         const params = {
             "blogID": Number(blogID),
             "commentID": c.id,
@@ -61,7 +79,8 @@ const Comment = ({isCommentAllowed}: { isCommentAllowed: boolean }) => {
         }
 
         plogAuthAxios.delete(`/blogs/${blogID}/postings/${postingID}/comments/${c.id}`, {params: params})
-            .then(res => window.location.reload())
+            .then(() => window.location.reload())
+            .catch(err => alert(err.message))
     }
 
 
@@ -74,14 +93,38 @@ const Comment = ({isCommentAllowed}: { isCommentAllowed: boolean }) => {
         }
 
         plogAuthAxios.post(`/blogs/${blogID}/postings/${postingID}/comment`, params)
-            .then(res => {
+            .then(() => {
                 setChildComment('')
                 window.location.reload()
             })
+            .catch(err => {
+                if(err.response.status === 400 || err.response.status === 404){
+                    alert(err.response.data.message)
+                }else {
+                    alert('댓글 등록에 실패했습니다. 다시 시도해주십시오.')
+                }
+            })
     }
+
+    //대댓글 수정
+    const editChildComment = (id : number) => {
+        const params = {
+            "commentContent": editedChildComment,
+            "isSecret": false,
+            "parentCommentID": id
+        }
+
+        plogAuthAxios.put(`/blogs/${blogID}/postings/${postingID}/comments/${id}`, params)
+            .then(() => setChildEditable(0))
+            .catch(err => alert(err.message))
+    }
+
+    const resetChildComment = () => setValue('')
+
 
     //답글 영역 클릭 시 오픈
     const childCommentClick = (id: number, childC: any) => {
+        resetChildComment()
         const users: Set<string> = new Set(childC.filter((el: CommentInfo) => !el.isSecret).map((el: CommentInfo) => el.user.nickname))
         const deduplicationUser: Array<string> = Array.from(users)
         setShowChildComment(id)
@@ -113,13 +156,13 @@ const Comment = ({isCommentAllowed}: { isCommentAllowed: boolean }) => {
         if (userReg.test(mention)) {
             user = mention.match(userReg)[0].slice(3, -2)
             comment = comment.slice(1).join(' ')
+        }else {
+            comment = comment.join(' ')
         }
         return [user, comment]
     }
 
-    const dateParser = (date: string) => {
-        return date.replaceAll('T', ' ').slice(0, 19)
-    }
+
     return (
         <div className='posting-comment-area '>
             <h3>{commentList.length}개의 댓글</h3>
@@ -154,7 +197,7 @@ const Comment = ({isCommentAllowed}: { isCommentAllowed: boolean }) => {
                                     }
                                     <div className="user-info">
                                         <div className="username">{c.user.nickname}</div>
-                                        <div className="date">{dateParser(c.createDt)}</div>
+                                        <div className="date"><TimeAgo timestamp={c.createDt}/></div>
                                     </div>
                                 </div>
                                 {
@@ -169,8 +212,17 @@ const Comment = ({isCommentAllowed}: { isCommentAllowed: boolean }) => {
                                 {!!commentList.length && editable !== c.id ?
                                     <p>{c.commentContent}</p>
                                     :
-                                    <textarea className='comment-input' value={c.commentContent}
-                                              onChange={(e) => setEditComment(e.target.value)}/>
+                                    <>
+                                        <textarea
+                                            className='comment-input' autoFocus
+                                            value={editedComment}
+                                            onFocus={()=> setEditedComment(c.commentContent)}
+                                            onChange={(e) => setEditedComment(e.target.value)}/>
+                                        <button className='comment-btn' onClick={()=>editComment(c.id)} disabled={!isCommentAllowed}>댓글 수정</button>
+                                        <button className='comment-btn'
+                                                style={{marginRight:'5px',backgroundColor:'#fff', color:'var(--primary1)', fontWeight:'bold'}}
+                                                onClick={()=>setEditable(0)} disabled={!isCommentAllowed}>취소</button>
+                                    </>
                                 }
                             </div>
                                 {
@@ -186,7 +238,6 @@ const Comment = ({isCommentAllowed}: { isCommentAllowed: boolean }) => {
                                         </p>
 
                                 }
-
                             {
                                 /*대댓글 영역*/
                                 c.id === showChildComment &&
@@ -204,10 +255,9 @@ const Comment = ({isCommentAllowed}: { isCommentAllowed: boolean }) => {
                                                             }
                                                             <div className="user-info">
                                                                 <div className="username">{childC.user.nickname}</div>
-                                                                <div className="date">{dateParser(childC.createDt)}</div>
+                                                                <div className="date"><TimeAgo timestamp={childC.createDt}/></div>
                                                             </div>
                                                         </div>
-
                                                         {
                                                             String(childC.user.userID) === localStorage.getItem('userID') &&
                                                             <div className="edit-btns">
@@ -218,18 +268,23 @@ const Comment = ({isCommentAllowed}: { isCommentAllowed: boolean }) => {
                                                             </div>
                                                         }
                                                     </div>
-
                                                     {childEditable !== childC.id ?
                                                         <p>
-                                                            <span className='mention' onClick={() => {
-                                                                moveToBlog(5)
-                                                            }}>{mentionParser(childC.commentContent)[0]}</span>
+                                                            <span className='mention'>{mentionParser(childC.commentContent)[0]}</span>
                                                             <span>{mentionParser(childC.commentContent)[1]}</span>
                                                         </p>
                                                         :
-                                                        <textarea className='comment-input'
-                                                                  value={childC.commentContent}
-                                                                  onChange={(e) => setChildComment(e.target.value)}/>
+                                                        <>
+                                                            <textarea className='comment-input'
+                                                                      value={editedChildComment}
+                                                                      autoFocus
+                                                                      onFocus={()=> setEditedChildComment(childC.commentContent)}
+                                                                      onChange={(e) => setEditedChildComment(e.target.value)}/>
+                                                            <button className='comment-btn' onClick={()=>editChildComment(childC.id)} disabled={!isCommentAllowed}>댓글 수정</button>
+                                                            <button className='comment-btn'
+                                                                    style={{marginRight:'5px',backgroundColor:'#f2f2f2', color:'var(--primary1)', fontWeight:'bold'}}
+                                                                    onClick={()=>setChildEditable(0)} disabled={!isCommentAllowed}>취소</button>
+                                                        </>
                                                     }
                                                 </div>
                                             )}
@@ -237,7 +292,6 @@ const Comment = ({isCommentAllowed}: { isCommentAllowed: boolean }) => {
                                         :
                                         <></>
                                     }
-
                                     {
                                         !!localStorage.getItem('token') ?
                                             <>

@@ -18,6 +18,9 @@ html[class~='dark'] {
     --form-border: #ECECEC;
     --error: #f56f6f;
     --important: #ef3636;
+    --disabled: #dedede;
+    --disabled2: #9b9b9b;
+    --mode: dark;
 
 }
 
@@ -27,7 +30,7 @@ html[class~='light'] {
     --bg-element1: #FFFFFF;
     --bg-element2: #F8F9FA;
     --bg-element3: #F1F3F5;
-    --bg-element4: #343A40;
+    --bg-element4: #868E96;
     --text1: #212529;
     --text2: #495057;
     --text3: #868E96;
@@ -39,7 +42,11 @@ html[class~='light'] {
     --form-border: #ADB5BD;
     --error: #ff5b5b;
     --important: #ef3636;
+    --disabled: #9f9f9f;
+    --disabled2: #9f9f9f;
+    --mode: light;
 }
+
 
 /* 레이아웃 공용 디자인 */
 body {
@@ -292,8 +299,8 @@ div, p, h1, h2, h3, h4, h5, h6, input {
     color: var(--text3);
     border: none;
     border-bottom: 2px solid var(--text3);
+    color-scheme: var(--mode);
 }
-
 
 .step2-container .signup-inputs .birth-input:focus {
     outline: 0;
@@ -624,7 +631,7 @@ div, p, h1, h2, h3, h4, h5, h6, input {
 }
 
 .comment-input {
-    margin: 15px 0;
+    margin: 15px 0 5px 0;
     width: 100%;
     height: 69px;
     color: var(--text1);
@@ -712,7 +719,7 @@ div, p, h1, h2, h3, h4, h5, h6, input {
 .comment-area .child-comment-container {
     margin-top: 10px;
     padding: 20px;
-    background-color: rgba(0, 0, 0, 0.016);
+    background-color: #f2f2f2;
     border-radius: 4px;
 }
 
