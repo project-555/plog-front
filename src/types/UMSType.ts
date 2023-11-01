@@ -58,7 +58,7 @@ export interface MyPageInfo {
 }
 
 export interface UpdateUserRequest {
-    nickName: string
+    nickname: string
     profileImageURL: string
     userID: number
 }

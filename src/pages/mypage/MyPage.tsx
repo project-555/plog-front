@@ -108,7 +108,7 @@ export function MyPage() {
 
     const updateUserNickname = () => {
         let params: UpdateUserRequest = {
-            nickName: myPageInfo.nickname as string,
+            nickname: myPageInfo.nickname as string,
             profileImageURL: myPageInfo.profileImageURL as string,
             userID: userID
         }
@@ -292,10 +292,10 @@ export function MyPage() {
                                         sx={{
                                             '& textarea':{color: 'var(--text1)'},
                                             '& fieldset':{borderColor: 'var(--form-border)'},
-                                    }}
+                                        }}
                                         InputProps={{style: {padding: '4px'}}}
                                         InputLabelProps={{style: {fontSize: '16px'}}}
-                                        defaultValue={myPageInfo.shortIntro}
+                                        defaultValue={myPageInfo.shortIntro && myPageInfo.shortIntro.length > 0 ? myPageInfo.shortIntro : "짧은 소개를 작성해보세요!"}
                                         onChange={handleIntroChange}
                                         fullWidth
                                         multiline
@@ -314,7 +314,7 @@ export function MyPage() {
                                     <Typography
                                         variant="body1"
                                     >
-                                        {myPageInfo.shortIntro}
+                                        {myPageInfo.shortIntro && myPageInfo.shortIntro.length > 0 ? myPageInfo.shortIntro : "짧은 소개를 작성해보세요!"}
                                     </Typography>
                                     <Button
                                         style={{color: 'var(--primary1)'}}
