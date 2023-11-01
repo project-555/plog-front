@@ -247,7 +247,7 @@ export function MyPage() {
                             {isNicknameEditMode ? (
                                 <>
                                     <TextField
-                                        sx={{'& input': {fontSize: '24px', fontWeight: 'bold'}}}
+                                        sx={{'& input': {fontSize: '24px', fontWeight: 'bold', color:'var(--text1)'}}}
                                         size='small'
                                         variant="standard"
                                         defaultValue={myPageInfo.nickname}
@@ -292,6 +292,7 @@ export function MyPage() {
                                         sx={{
                                             '& textarea':{color: 'var(--text1)'},
                                             '& fieldset':{borderColor: 'var(--form-border)'},
+                                            '& .MuiInputBase-root-MuiInput-root':{color:'var(--text1)'},
                                         }}
                                         InputProps={{style: {padding: '4px'}}}
                                         InputLabelProps={{style: {fontSize: '16px'}}}
@@ -376,9 +377,9 @@ export function MyPage() {
                                             '& textarea':{color: 'var(--text1)'},
                                             '& fieldset':{borderColor: 'var(--form-border)'},
                                             marginRight: '10px'
-                                    }}
-                                        InputProps={{style: {padding: '4px'}}}
-                                        InputLabelProps={{style: {fontSize: '16px'}}}
+                                         }}
+                                        InputProps={{style: {padding: '4px', color: 'white'}}}
+                                        InputLabelProps={{style: {fontSize: '16px', color: 'white'}}}
                                         label='현재 비밀번호'
                                         type="password"
                                         size='small'
@@ -391,9 +392,9 @@ export function MyPage() {
                                             '& textarea':{color: 'var(--text1)'},
                                             '& fieldset':{borderColor: 'var(--form-border)'},
                                             marginRight: '10px'
-                                    }}
-                                        InputProps={{style: {padding: '4px'}}}
-                                        InputLabelProps={{style: {fontSize: '16px'}}}
+                                        }}
+                                        InputProps={{style: {padding: '4px', color: 'white'}}}
+                                        InputLabelProps={{style: {fontSize: '16px', color: 'white'}}}
                                         label='변경할 비밀번호'
                                         type="password"
                                         size='small'
