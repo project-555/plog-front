@@ -10,12 +10,7 @@ import {CommentInfo} from '../../types/PostingType';
 import '../../assets/comment.css'
 
 
-type Props = {
-    isCommentAllowed: boolean,
-    blogOwnerId: number
-};
-
-const Comment :React.FC<Props>  = ({isCommentAllowed, blogOwnerId}) => {
+const Comment = ({isCommentAllowed, blogOwnerId}:{ isCommentAllowed: boolean, blogOwnerId: number }) => {
 
     const {blogID, postingID} = useParams();
     const logInUser = localStorage.getItem('userID')
@@ -102,14 +97,13 @@ const Comment :React.FC<Props>  = ({isCommentAllowed, blogOwnerId}) => {
             .then(() => {
                 setChildComment('')
                 window.location.reload()
-            })
-            .catch(err => {
-                if(err.response.status === 400 || err.response.status === 404){
-                    alert(err.response.data.message)
-                }else {
-                    alert('댓글 등록에 실패했습니다. 다시 시도해주십시오.')
-                }
-            })
+            }).catch(err => {
+            if (err.response.status === 400 || err.response.status === 404) {
+                alert(err.response.data.message)
+            } else {
+                alert('댓글 등록에 실패했습니다. 다시 시도해주십시오.')
+            }
+        })
     }
 
     //대댓글 수정
