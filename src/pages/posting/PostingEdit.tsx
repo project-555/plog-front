@@ -15,7 +15,7 @@ import {
 } from "@mui/material";
 import Select, {SelectChangeEvent} from '@mui/material/Select';
 import {Send} from "@mui/icons-material";
-import {plogAuthAxios, plogAxios} from "../../modules/axios";
+import {getPlogAxios, plogAuthAxios} from "../../modules/axios";
 import React, {RefObject, useEffect, useRef, useState} from "react";
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Switch from '@mui/material/Switch';
@@ -84,20 +84,19 @@ export function PostingEdit() {
     const [states, setStates] = useState<State[]>([]);
     const editorRef = useRef<Editor>(null) as RefObject<Editor>;
     const [isPosted, setIsPosted] = useState<boolean>(false);
+    const [isSubmitted, setIsSubmitted] = useState<boolean>(false);
 
     useEffect(() => {
-        plogAxios.get(`/blogs/${blogID}/postings/${postingID}`)
+        getPlogAxios().get(`/blogs/${blogID}/postings/${postingID}`)
             .then((response) => {
-                console.log(response.data)
                 setPostingResponse(response.data)
                 setCategoryID(response.data.categoryID)
             })
             .catch((error: any) => {
                 console.log(error);
             })
-        plogAxios.get(`/blogs/${blogID}/postings/${postingID}/tags`)
+        getPlogAxios().get(`/blogs/${blogID}/postings/${postingID}/tags`)
             .then((response) => {
-                console.log(response.data)
                 setPostingTagResponse(response.data)
             })
             .catch((error: any) => {
@@ -106,7 +105,7 @@ export function PostingEdit() {
     }, [blogID, postingID])
 
     useEffect(() => {
-        plogAxios.get(`/blogs/${blogID}/categories`)
+        getPlogAxios().get(`/blogs/${blogID}/categories`)
             .then((response) => {
                 setCategories(response.data.categories)
             })
@@ -116,14 +115,14 @@ export function PostingEdit() {
     }, [blogID])
 
     useEffect(() => {
-        plogAxios.get(`blogs/${blogID}/tags`)
+        getPlogAxios().get(`blogs/${blogID}/tags`)
             .then((response) =>
                 setTags(response.data.tags)
             );
     }, [blogID, postingTagResponse.postingTags])
 
     useEffect(() => {
-        plogAxios.get(`blogs/states`)
+        getPlogAxios().get(`blogs/states`)
             .then((response) => {
                 setStates(response.data.states)
             })
@@ -192,6 +191,11 @@ export function PostingEdit() {
     }
 
     const handleChangeInputTag = (event: React.SyntheticEvent, newValue: any) => {
+        // newValue가 없을 경우 함수를 종료합니다.
+        if (!newValue) return;
+
+        let newTag: BlogTag | null = null;
+
         // 사용자가 셀렉트 아이템을 선택하지 않고 엔터를 누른 경우
         if (typeof newValue === 'string') {
             // 공백을 _로 치환
@@ -358,9 +362,13 @@ export function PostingEdit() {
                         InputLabelProps={{style: {fontSize: 30, fontWeight: 'bold'}}}
                         onChange={handleChangeTitle}
                         value={postingResponse.title}
-                        sx={{mb: 3,
-                            '& input.MuiInputBase-input':{color: 'var(--text1)', borderBottom: '1px solid var(--form-border)'},
-                            '& label.MuiFormLabel-root':{color: 'var(--text1)'},
+                        sx={{
+                            mb: 3,
+                            '& input.MuiInputBase-input': {
+                                color: 'var(--text1)',
+                                borderBottom: '1px solid var(--form-border)'
+                            },
+                            '& label.MuiFormLabel-root': {color: 'var(--text1)'},
                         }}
                     />
                     <Box sx={{mb: 3}}>
@@ -392,13 +400,14 @@ export function PostingEdit() {
                             )}
                             sx={{
                                 borderBottom: '1px solid var(--form-border)',
-                                '& input.MuiInputBase-input, & label.MuiFormLabel-root':{color: 'var(--text1)'},
+                                '& input.MuiInputBase-input, & label.MuiFormLabel-root': {color: 'var(--text1)'},
                             }}
                         />
                     </Box>
                     {categories &&
                         <FormControl fullWidth variant="standard">
-                            <InputLabel id="category-label" required error={validateEmpty(categoryID)} sx={{color: 'var(--text1)'}}>카테고리</InputLabel>
+                            <InputLabel id="category-label" required error={validateEmpty(categoryID)}
+                                        sx={{color: 'var(--text1)'}}>카테고리</InputLabel>
                             <Select
                                 labelId="category-label"
                                 id="demo-simple-select"
@@ -462,6 +471,12 @@ export function PostingEdit() {
                             <LoadingButton
                                 loading={isPosted}
                                 fullWidth
+                                sx={{
+                                    backgroundColor: 'var(--primary1)',
+                                    color: '#fff',
+                                    '&:hover': {backgroundColor: 'var(--primary2)'},
+                                    minWidth: '150px',
+                                }}
                                 onClick={handleClickSubmit}
                                 variant="contained"
                                 endIcon={<Send/>}>

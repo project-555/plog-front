@@ -51,7 +51,7 @@ export function PostingTab(props: PostingTabProps) {
     const [needRefresh, setNeedRefresh] = useState<boolean>(false);
     const navigate = useNavigate();
     const isBlogOwner = getLoginTokenPayload() !== null && getLoginTokenPayload()?.userID === props.blog.blogUser?.userID;
-    const setCategoryID = (categoryID: number) => {
+    const setCategoryID = (categoryID: number | undefined) => {
         setListBlogPostingsRequest((prevRequest: ListBlogPostingsRequest) => {
             return {
                 ...prevRequest,
@@ -243,6 +243,12 @@ export function PostingTab(props: PostingTabProps) {
                                         </Typography>
                                         <Typography variant={"subtitle2"} color="text.secondary" sx={{mb: 1}}>
                                             <TimeAgo timestamp={posting.createDt}/>
+                                            <span style={{color: 'var(--text3)'}}>
+                                                       {posting.stateID === 1 && " · 공개"}
+                                            </span>
+                                            <span style={{color: 'var(--text3)'}}>
+                                                {posting.stateID === 2 && " · 비공개"}
+                                            </span>
                                         </Typography>
                                         <Stack direction="row" spacing={1} sx={{mb: 2}}>
                                             {
@@ -291,7 +297,10 @@ export function PostingTab(props: PostingTabProps) {
                         카테고리
                     </Typography>
                     <Divider/>
-                    <CategoryList blogID={props.blog.blogID} setCategoryID={setCategoryID} isBlogOwner={isBlogOwner}
+                    <CategoryList blogID={props.blog.blogID}
+                                  setCategoryID={setCategoryID}
+                                  selectedCategoryID={listBlogPostingsRequest.categoryID}
+                                  isBlogOwner={isBlogOwner}
                                   setNeedPostingRefresh={setNeedRefresh}/>
                     <Typography sx={{mt: 2, mb: 0.5}} variant={"h6"}>
                         태그

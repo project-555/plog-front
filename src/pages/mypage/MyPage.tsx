@@ -160,8 +160,11 @@ export function MyPage() {
         }
         plogAuthAxios.post('/auth/exit-user', params)
             .then(res => {
-                localStorage.clear()
                 navigate('/')
+                localStorage.removeItem('token')
+                localStorage.removeItem('userID')
+                localStorage.removeItem('nickname')
+                window.location.reload()
             })
             .catch((err) => {
                 console.log(err);
@@ -184,7 +187,6 @@ export function MyPage() {
             })
         );
     };
-
 
     return (
         <Box className='inner-container mypage-container'>
@@ -484,21 +486,29 @@ export function MyPage() {
                             anchorOrigin={{vertical: 'bottom', horizontal: 'right'}}
                             autoHideDuration={800}
                             open={introSnackbarOpen}
-                            onClose={event => setIntroSnackbarOpen(false)}
-                            message="자기소개가 저장되었습니다."
-                        />
+                            onClose={() => setIntroSnackbarOpen(false)}
+                        >
+                            <Alert
+                                id='intro-snackbar'
+                                onClose={() => setIntroSnackbarOpen(false)}
+                                severity="success"
+                                sx={{ width: '100%'}}>
+                                자기소개가 저장되었습니다
+                            </Alert>
+                        </Snackbar>
                     </Box>
                 </Box>
                 <Box className="intro-container">
                     <Box sx={{width: '766px'}}>
-                        {!showIntroEditor && myPageInfo.introMd === null &&
+                        {!showIntroEditor && myPageInfo.introMd === null ?
                             <div className='make-introMd'>
                                 <button onClick={()=>setShowIntroEditor(true)}>자기소개 작성하기</button>
                             </div>
-                        }
-                        {!!myPageInfo.introMd &&
-                            <PlogEditor height={"600px"} initialValue={myPageInfo.introMd ? myPageInfo.introMd : ""}
-                                        ref={editorRef}/>
+                            :
+                            myPageInfo.introMd === null ?
+                                <PlogEditor height={"600px"} initialValue={!!myPageInfo.introMd ? myPageInfo.introMd : ""} ref={editorRef}/>
+                                :
+                            !!myPageInfo.introMd && <PlogEditor height={"600px"} initialValue={!!myPageInfo.introMd ? myPageInfo.introMd : ""} ref={editorRef}/>
                         }
                     </Box>
                 </Box>
