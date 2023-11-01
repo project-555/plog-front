@@ -8,7 +8,7 @@ export interface Login {
 //회원가입
 export interface CodeParams {
     "email": string;
-    "verifyCode": string;
+    "verifyCode": string | null;
 }
 
 export interface SignupParams {
@@ -18,7 +18,7 @@ export interface SignupParams {
     "firstName": string;
     "introHTML": string;
     "lastName": string;
-    "nickName": string;
+    "nickname": string;
     "password": string;
     "sex": string;
     "shortIntro": string;
@@ -58,7 +58,7 @@ export interface MyPageInfo {
 }
 
 export interface UpdateUserRequest {
-    nickName: string
+    nickname: string
     profileImageURL: string
     userID: number
 }

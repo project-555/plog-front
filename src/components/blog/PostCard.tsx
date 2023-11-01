@@ -61,7 +61,9 @@ const PostCard: React.FC<ChildProps> = ({ post }) => {
                 alt="썸네일 사진"
                 onClick={moveToPost}/>}
             <CardContent sx={{paddingBottom:0,}}>
-                <Typography variant="body1" color="text.first" sx={{height: '48px'}}>
+                <Typography variant="body1" color="text.first"
+                            sx={{height: '48px', overflowY:'hidden', textOverflow: 'ellipsis',  WebkitLineClamp:  '2', display:'-webkit-box',
+                                WebkitBoxOrient: 'vertical'}}>
                     {post.title}
                 </Typography>
                 <Typography id='postcard-summary' variant="body2" color="text.secondary"
