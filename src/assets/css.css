@@ -1,4 +1,6 @@
 @import "reset.css";
+@import url('https://fonts.googleapis.com/css2?family=Courgette&family=Noto+Sans+KR&display=swap');
+
 
 html[class~='dark'] {
     --bg-page1: #121212;
@@ -96,11 +98,18 @@ div, p, h1, h2, h3, h4, h5, h6, input {
 }
 
 .header .logo {
+    margin-left: 8px;
     height: 30px;
     color: var(--text1);
     font-weight: bold;
+    font-family:  -apple-system,'Courgette', serif;
     font-size: 25px;
-    letter-spacing: 1.3px
+    letter-spacing: 1.3px;
+}
+
+
+.header div:last-child {
+    margin-right: 5px;
 }
 
 .header .mode-toggle-btn {
@@ -581,7 +590,9 @@ div, p, h1, h2, h3, h4, h5, h6, input {
 
 .posting-info .bolder {
     margin-right: 10px;
+    cursor: pointer;
 }
+
 
 .posting-info ul {
     text-decoration: none;
