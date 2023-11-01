@@ -23,11 +23,12 @@
 }
 
 .mentions--multiLine .mentions__highlighter {
-    padding: 9px;
+    padding: 11px;
+    opacity: 0;
 }
 
 .mentions--multiLine .mentions__input {
-    padding: 9px;
+    padding: 11px;
     min-height: 63px;
     outline: 0;
     border: 0;
