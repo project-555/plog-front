@@ -123,9 +123,9 @@ const Comment = ({isCommentAllowed}: { isCommentAllowed: boolean }) => {
 
 
     //답글 영역 클릭 시 오픈
-    const childCommentClick = (id: number, childC: any) => {
+    const childCommentClick = (id: number,owner: string, childC: any) => {
         resetChildComment()
-        const users: Set<string> = new Set(childC.filter((el: CommentInfo) => !el.isSecret).map((el: CommentInfo) => el.user.nickname))
+        const users: Set<string> = new Set([...childC.filter((el: CommentInfo) => !el.isSecret).map((el: CommentInfo) => el.user.nickname), owner])
         const deduplicationUser: Array<string> = Array.from(users)
         setShowChildComment(id)
         setUsers(deduplicationUser)
@@ -227,12 +227,12 @@ const Comment = ({isCommentAllowed}: { isCommentAllowed: boolean }) => {
                             </div>
                                 {
                                     c.children ?
-                                        <p className='add-comment' onClick={() => {childCommentClick(c.id, c.children)}}>
+                                        <p className='add-comment' onClick={() => {childCommentClick(c.id, c.user.nickname, c.children)}}>
                                             <span><AddBoxOutlinedIcon fontSize='small' sx={{marginRight: '5px', verticalAlign:'text-bottom'}}/></span>
                                             <span>{c.children.length}개의 댓글</span>
                                         </p>
                                         :
-                                        <p className='add-comment' onClick={() => childCommentClick(c.id, [])}>
+                                        <p className='add-comment' onClick={() => childCommentClick(c.id, c.user.nickname, [])}>
                                             <span><AddBoxOutlinedIcon fontSize='small' sx={{marginRight: '5px', verticalAlign:'text-bottom'}}/></span>
                                             <span>답글달기</span>
                                         </p>
