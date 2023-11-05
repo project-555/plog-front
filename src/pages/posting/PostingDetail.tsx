@@ -18,16 +18,21 @@ export function PostingDetail() {
     const theme = useContext(ModeContext)
     const [nickname, setNickname] = useState('')
     const [blogOwnerId, setBlogOwnerId] = useState<number>(0)
+    const [categories, setCategories] = useState<[]>([])
     const [post, setPost] = useState(null);
     const [tags, setTags] = useState<BlogTag[]>([])
 
     useEffect(() => {
         getPlogAxios().get(`/blogs/${blogID}`)
-            .then(response => {
-                console.log(response.data.blogUser.userID, 'posting detail userID')
-                setNickname(response.data.blogUser.nickname)
-                setBlogOwnerId(response.data.blogUser.userID)
+            .then(res => {
+                setNickname(res.data.blogUser.nickname)
+                setBlogOwnerId(res.data.blogUser.userID)
             })
+            .catch(err => console.log(err.message))
+
+        getPlogAxios().get(`/blogs/${blogID}/categories`)
+            .then(res => setCategories(res.data.categories))
+            .catch(err => console.log(err.message))
     }, [])
 
     useEffect(() => {
@@ -65,6 +70,15 @@ export function PostingDetail() {
             .then(res => setTags(res.data.postingTags))
     }
 
+    const getCategoryName = (id: number) => {
+        if(categories.length === 0){
+            return ''
+        }else {
+            const target = categories.filter(category => category['categoryID'] === id)
+            return target[0]['categoryName']
+        }
+    }
+
     return (
         <div className='inner-container'>
             {
@@ -79,6 +93,7 @@ export function PostingDetail() {
                         {post['isStarAllowed'] && <StarShare blogId={blogID!} postingId={postingID!}/>}
                         <div className='content-container' style={{flexGrow: '1'}}>
                             <div className='posting-header-area' style={{height: '200px', textAlign: 'center'}}>
+                                <p className='category'>{getCategoryName(post['categoryID'])}</p>
                                 <h1 className='title'>{post['title']}</h1>
                                 <div className='posting-info'>
                                     <div>
