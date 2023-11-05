@@ -577,8 +577,15 @@ div, p, h1, h2, h3, h4, h5, h6, input {
     margin: 3rem auto 0 auto;
 }
 
+.posting-header-area .category {
+    text-align: left;
+    margin-bottom: 10px;
+    color: var(--text2);
+    cursor: default;
+}
 .posting-header-area h1 {
     text-align: left;
+    cursor: default;
 }
 
 .posting-info {
