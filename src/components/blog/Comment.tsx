@@ -79,7 +79,7 @@ const Comment = ({isCommentAllowed, blogOwnerId}:{ isCommentAllowed: boolean, bl
             "postingID": Number(postingID)
         }
 
-        plogAuthAxios.delete(`/blogs/${blogID}/postings/${postingID}/comments/${c.id}`, {params: params})
+        plogAuthAxios.delete(`/blogs/${blogID}/postings/${postingID}/comments/${comment.id}`, {params: params})
             .then(() => window.location.reload())
             .catch(err => alert(err.message))
     }
